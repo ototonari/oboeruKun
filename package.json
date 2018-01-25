@@ -4,6 +4,10 @@
   "dependencies": {
     "expo": "^25.0.0",
     "react": "16.2.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
+    "react-native-material-dropdown": "^0.7.1",
+    "react-native-modal": "^4.1.1",
+    "react-native-router-flux": "^4.0.0-beta.28",
+    "react-native-swipeout": "^2.3.3"
   }
 }

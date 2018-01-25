@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image, TextInput, Switch, Picker, Platform } from 'react-native';
 import styles from "./registerStyle";
-import { CheckBox } from 'react-native-elements'
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
 import { validation, registerTask } from "./registerAction";
