@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "exp-oboeruKun",
-    "description": "This project is really great.",
+    "name": "おぼえる君",
+    "description": "記憶定着を支援するアプリ。資格取得や試験対策についての学習を登録すると、忘却曲線に基づいた日に復習するように通知します。",
     "slug": "exp-oboeruKun",
     "privacy": "public",
     "sdkVersion": "25.0.0",
@@ -15,7 +15,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "jp.tsubasaNagata.oboeruKun"
     }
   }
 }
