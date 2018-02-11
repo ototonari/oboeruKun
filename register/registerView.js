@@ -93,7 +93,9 @@ export default class RegisterView extends Component {
     if (this.state.visibleModal === 1) {
       func = (page) => {
         this.setState({startPage: page})
-        this.setState({endPage: page})
+        if (Number(page) > Number(this.state.endPage)) {
+          this.setState({endPage: page})
+        }
       }
       selected = this.state.startPage
     } else if (this.state.visibleModal === 2) {
