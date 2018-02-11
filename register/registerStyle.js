@@ -15,9 +15,11 @@ const container = StyleSheet.create({
   title: {
     width: '100%',
     height: '100%',
-    padding: 10,
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     flex: 1,
-    flexDirection: 'row'
+    
   },
   page: {
     marginBottom: 10,
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 20,
     backgroundColor: 'white',
+    position: 'absolute',
   },
   modalButton: {
     backgroundColor: 'lightblue',
@@ -117,9 +120,12 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   cameraIcon: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'lightgrey'
+    width: 20,
+    height: 20,
+    overflow: 'visible',
+    position: 'absolute',
+    top: 5,
+    right: 5
   },
 
 })

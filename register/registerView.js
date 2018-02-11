@@ -3,8 +3,8 @@ import { Text, View, TouchableOpacity, Image, TextInput, Switch, Picker, Platfor
 import styles from "./registerStyle";
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
-import { validation, registerTask } from "./registerAction";
-import { createDB } from "../database";
+import { validation, registerTask, renderPageModalContent, renderTitleModalContent } from "./registerAction";
+import { createDB, getTitle } from "../database";
 
 export default class RegisterView extends Component {
   constructor(props) {
@@ -18,7 +18,6 @@ export default class RegisterView extends Component {
       title: '',
       titleError: '',
       noticeMethod: 'forgetting',
-
     }
   }
 
@@ -28,17 +27,25 @@ export default class RegisterView extends Component {
         <Text style={styles.styles.registerText} >{text}</Text>
       </View>
     </TouchableOpacity>
-  );
+  )
 
   _title = () => (
     <View style={styles.container.title} >
       <View style={{ flex: 1 }} >
         <Text style={styles.styles.titleLabel} >タイトル</Text>
         <Text style={{ color: 'red' }} >{ this.state.titleError }</Text>
+      </View>
+      <View style={{ flex: 1 }} >
         <TextInput
           style={styles.styles.titleInputBox}
           onChangeText={(text) => this.setState({title: text})}
           value={this.state.title} />
+        <View style={{position: 'relative', alignContent: 'flex-end'}} >
+          <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
+            <Image source={require('../assets/select2.png')} style={styles.styles.cameraIcon} />
+          </TouchableOpacity>
+        </View>
+          
       </View>
     </View>
   )
@@ -87,6 +94,7 @@ export default class RegisterView extends Component {
     return srvItems
   }
 
+
   _renderModalContent = () => {
     let func = null
     let selected = null
@@ -121,6 +129,7 @@ export default class RegisterView extends Component {
     )
   }
 
+
   _notice = () => {
     let data = [
       {
@@ -139,6 +148,10 @@ export default class RegisterView extends Component {
       />
     </View>
     )
+  }
+
+  componentWillMount() {
+    getTitle(this)
   }
 
   componentDidMount() {
@@ -165,11 +178,14 @@ export default class RegisterView extends Component {
           { this._renderButton('登録',() => validation(this, registerTask) , styles.styles.registerButton) }
         </View>
         <Modal isVisible={this.state.visibleModal === 1}>
-          { this._renderModalContent() }
+          { renderPageModalContent(this) }
         </Modal>
         <Modal isVisible={this.state.visibleModal === 2}>
-          { this._renderModalContent() }
+          { renderPageModalContent(this) }
         </Modal>
+        
+        
+        
       </View>
     )
   }

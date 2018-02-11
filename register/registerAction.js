@@ -1,7 +1,9 @@
-import { Alert } from 'react-native';
+import React, { Component } from 'react';
+import { Alert, View, Picker, TouchableOpacity, Text } from 'react-native';
 import { Constants, Notifications, Permissions } from 'expo';
 import { Actions } from "react-native-router-flux";
-import { selectAll, insertInto, addTaskData, addNotice } from "../database";
+import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle } from "../database";
+import styles from "./registerStyle";
 
 
 export function validation(target, callback) {
@@ -53,10 +55,9 @@ export function registerTask(target) {
   }
 
   // db
-  //addTaskData(taskData)
+  checkTitle(title)
 
   // Notification API に登録
-  //notificationTestCalls(taskData)
   notificationBasedOnForgettingCurve(taskData)
 
   // ユーザーに通知
@@ -78,9 +79,8 @@ async function notificationBasedOnForgettingCurve(notification) {
   const registerdDate = notification.registerd
   const notificationDates = [
     1,
-    3,
     7,
-    14
+    30
   ]
   for (let i = 0; i < notificationDates.length; i++) {
     const schedulingOptions = { time: changeDate(registerdDate, notificationDates[i]) };
@@ -96,37 +96,6 @@ async function notificationBasedOnForgettingCurve(notification) {
   }
 }
 
-async function notificationTestCalls(notification) {
-  const localnotification = notification
-  let sendAfterFiveSeconds = localnotification.registerd
-  
-  // とりあえず、前回からの差分のパラメーターを入力せよ
-  const notificationSeconds = [
-    10,
-    20,
-    30
-  ]
-  for (let i = 0; i < notificationSeconds.length; i++) {
-    const schedulingOptions = { time: changeSeconds(sendAfterFiveSeconds, notificationSeconds[i]) };
-    Notifications.scheduleLocalNotificationAsync(
-      localnotification,
-      schedulingOptions
-    ).then(function (value) {
-      // 非同期処理成功
-      //console.log('notificationId' + value)
-      addNotice(localnotification, schedulingOptions.time, value)
-    }).catch(function (error) {
-      // 非同期処理失敗。
-      console.log(error)
-    })
-  }
-}
-
-function changeSeconds (registerdDate, seconds) {
-  let tmpDate = new Date(registerdDate)
-  tmpDate.setSeconds(registerdDate.getSeconds() + seconds)
-  return tmpDate
-}
 
 function changeDate(registerdDate, date) {
   let tmpDate = new Date(registerdDate)
@@ -136,4 +105,81 @@ function changeDate(registerdDate, date) {
   tmpDate.setMinutes(0)
   tmpDate.setSeconds(0)
   return tmpDate
+}
+
+export function renderPageModalContent(target) {
+  const self = target
+  let func = null
+  let selected = null
+  const modalNumber = self.state.visibleModal
+  if (self.state.visibleModal === 1) {
+    func = (page) => {
+      self.setState({startPage: page})
+      if (Number(page) > Number(self.state.endPage)) {
+        self.setState({endPage: page})
+      }
+    }
+    selected = self.state.startPage
+  } else if (self.state.visibleModal === 2) {
+    func = (page) => {
+      if (Number(page) < Number(self.state.startPage)) {
+        page = self.state.startPage
+      }
+      self.setState({endPage: page})
+    }
+    selected = self.state.endPage
+  }
+  return (
+    <View style={styles.container.pageModal} >
+      <Picker onValueChange={ (value) => func(value)} selectedValue = {selected} >
+        { _renderPickerItems(modalNumber) }
+      </Picker>
+      <TouchableOpacity onPress={() => self.setState({visibleModal: null})}>
+        <View style={styles.styles.modalButton}>
+          <Text style={styles.styles.registerText} >決定</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+function _renderPickerItems(modalNumber) {
+  if (modalNumber == 1 || modalNumber == 2) {
+    const srvItems = []
+    for (let i = 1; i <= 500 ; i++){
+      srvItems.push(<Picker.Item key={String(i)} label = {String(i)} value = {String(i)} />)
+    }
+    return srvItems
+  }
+}
+
+export function renderTitleModalContent(target) {
+  const self = target
+  let func = null
+  let selected = null
+  return (
+    <View style={styles.container.pageModal} >
+      <Picker onValueChange={ (value) => func(value)} selectedValue = {selected} >
+        { _renderTitlePickerItems(self) }
+      </Picker>
+      <TouchableOpacity onPress={() => self.setState({visibleModal: null})}>
+        <View style={styles.styles.modalButton}>
+          <Text style={styles.styles.registerText} >決定</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+function _renderTitlePickerItems(target) {
+  const self = target
+  const srvItems = self.state.titleList.map( (value, index) => {
+    return (<Picker.Item key={String(index)} label = {String(index)} value = {String(index)} />)
+  })
+  return srvItems
+}
+
+function testCallback(array) {
+  console.log(array)
+  return (<Picker.Item key={String(1)} label = {String(1)} value = {String(1)} />)
 }

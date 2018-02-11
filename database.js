@@ -13,6 +13,9 @@ export function createDB() {
     tx.executeSql(
       'create table if not exists notification (id integer primary key not null, title text, page text, noticeDate blob, notificationId text);'
     )
+    tx.executeSql(
+      'create table if not exists titleList (id integer primary key not null, title text);'
+    )
   });
 }
 
@@ -70,6 +73,30 @@ export function addNotice(taskData, noticeDate, notificationId) {
   })
 }
 
+export function checkTitle(title) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'select title from titleList where title = ?', [title],
+      (_, { rows: { length } }) => {
+        console.log(length)
+        if (length == 0) {
+          addTitle(title)
+        }
+      },
+      console.log('checkTitle: already added')
+    )
+  })
+}
+
+export function addTitle(title) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'insert into titleList (title) values (?)', [title],
+      console.log('addTitle succesed')
+    )
+  })
+}
+
 export function deleteNotice(id, notificationId, callback) {
   db.transaction(tx => {
     tx.executeSql(
@@ -102,6 +129,16 @@ export function getAllItems(target) {
     tx.executeSql(
       'select * from taskData',[],
       (_, { rows: { _array } }) => self.setState({ items: _array })
+    )
+  })
+}
+
+export function getTitle(target) {
+  const self = target
+  db.transaction(tx => {
+    tx.executeSql(
+      'select title from titleList',[],
+      (_, { rows: { _array } }) => self.setState({ titleList: _array })
     )
   })
 }
