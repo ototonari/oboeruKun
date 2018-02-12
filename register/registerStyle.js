@@ -51,7 +51,7 @@ const container = StyleSheet.create({
   },
   boxContainer: {
     padding: 10,
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: 'blue'  
   }
 })
@@ -107,6 +107,9 @@ const styles = StyleSheet.create({
     height: 30,
     width: '100%',
     fontSize: 20,
+    borderRadius: 5,
+    borderColor: 'powderblue',
+    borderWidth: 2,
     backgroundColor: 'white',
     position: 'absolute',
   },
@@ -136,8 +139,9 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     height: 60,
-    borderWidth: 1,
-    borderColor: 'blue',
+    borderWidth: 2,
+    borderRadius: 5,
+    borderColor: 'powderblue',
     backgroundColor: 'whitesmoke'
   }
 })

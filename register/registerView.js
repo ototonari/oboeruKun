@@ -43,7 +43,8 @@ export default class RegisterView extends Component {
         <TextInput
           style={styles.styles.titleInputBox}
           onChangeText={(text) => this.setState({title: text})}
-          value={this.state.title} />
+          value={this.state.title}
+          maxLength={200} />
         <View style={{position: 'relative', alignContent: 'flex-end'}} >
           <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
             <Image source={require('../assets/titleList.png')} style={styles.styles.cameraIcon} />
@@ -112,7 +113,11 @@ export default class RegisterView extends Component {
         <View style={styles.container.boxContainer} >
           <TextInput 
             style={styles.styles.inputBox}
-            multiline={true}  />
+            multiline={true}
+            maxLength={200}
+            onChangeText={(text) => this.setState({memoValue: text})}
+            value={this.state.memoValue}
+              />
         </View>
       )
     }
