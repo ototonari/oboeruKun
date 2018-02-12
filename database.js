@@ -138,7 +138,9 @@ export function getTitle(target) {
   db.transaction(tx => {
     tx.executeSql(
       'select title from titleList',[],
-      (_, { rows: { _array } }) => self.setState({ titleList: _array })
+      (_, { rows: { _array } }) => {
+        self.setState({ titleList: _array })
+      }
     )
   })
 }

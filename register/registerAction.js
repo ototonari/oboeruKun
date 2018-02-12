@@ -131,7 +131,7 @@ export function renderPageModalContent(target) {
   }
   return (
     <View style={styles.container.pageModal} >
-      <Picker onValueChange={ (value) => func(value)} selectedValue = {selected} >
+      <Picker onValueChange={ (value) => func(value)} selectedValue = {selected} style={{ width: '100%', height: 200 }} >
         { _renderPickerItems(modalNumber) }
       </Picker>
       <TouchableOpacity onPress={() => self.setState({visibleModal: null})}>
@@ -155,12 +155,16 @@ function _renderPickerItems(modalNumber) {
 
 export function renderTitleModalContent(target) {
   const self = target
-  let func = null
+  const titleList = self.state.titleList
   let selected = null
+  let func = (value) => {
+    self.setState({ title: value })
+  }
+  selected = self.state.title
   return (
     <View style={styles.container.pageModal} >
-      <Picker onValueChange={ (value) => func(value)} selectedValue = {selected} >
-        { _renderTitlePickerItems(self) }
+      <Picker onValueChange={ (value) => func(value)} selectedValue={selected} >
+        { _renderTitlePickerItems(titleList) }
       </Picker>
       <TouchableOpacity onPress={() => self.setState({visibleModal: null})}>
         <View style={styles.styles.modalButton}>
@@ -171,15 +175,17 @@ export function renderTitleModalContent(target) {
   )
 }
 
-function _renderTitlePickerItems(target) {
-  const self = target
-  const srvItems = self.state.titleList.map( (value, index) => {
-    return (<Picker.Item key={String(index)} label = {String(index)} value = {String(index)} />)
+function _renderTitlePickerItems(array) {
+  const srvItems = []
+  srvItems.push(<Picker.Item key={-1} label = {'選択してください'} value = {''} />)
+  array.forEach( (value, index) => {
+    srvItems.push(<Picker.Item key={index} label = {String(value.title)} value = {String(value.title)} />)
   })
   return srvItems
 }
 
-function testCallback(array) {
-  console.log(array)
-  return (<Picker.Item key={String(1)} label = {String(1)} value = {String(1)} />)
+function testCallback() {
+  const testArray = []
+  testArray.push(<Picker.Item key={String(1)} label = {String(1)} value = {String(1)} />)
+  return testArray
 }

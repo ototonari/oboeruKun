@@ -17,6 +17,8 @@ export default class RegisterView extends Component {
       endPage: '1',
       title: '',
       titleError: '',
+      titleList: [],
+      titleIndex: null,
       noticeMethod: 'forgetting',
     }
   }
@@ -150,12 +152,9 @@ export default class RegisterView extends Component {
     )
   }
 
-  componentWillMount() {
-    getTitle(this)
-  }
-
   componentDidMount() {
     createDB()
+    getTitle(this)
   }
 
   render () {
@@ -182,6 +181,9 @@ export default class RegisterView extends Component {
         </Modal>
         <Modal isVisible={this.state.visibleModal === 2}>
           { renderPageModalContent(this) }
+        </Modal>
+        <Modal isVisible={this.state.visibleModal === 3}>
+          { renderTitleModalContent(this) }
         </Modal>
         
         
