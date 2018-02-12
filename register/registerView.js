@@ -11,6 +11,8 @@ export default class RegisterView extends Component {
     super(props)
     this.state = {
       page: true,
+      memo: false,
+      memoValue: '',
       notice: true,
       visibleModal: null,
       startPage: '1',
@@ -44,7 +46,7 @@ export default class RegisterView extends Component {
           value={this.state.title} />
         <View style={{position: 'relative', alignContent: 'flex-end'}} >
           <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
-            <Image source={require('../assets/select2.png')} style={styles.styles.cameraIcon} />
+            <Image source={require('../assets/titleList.png')} style={styles.styles.cameraIcon} />
           </TouchableOpacity>
         </View>
           
@@ -54,7 +56,7 @@ export default class RegisterView extends Component {
 
   _page = () => (
     <View style={styles.container.page} >
-      <View style={styles.container.pageSwitch} >
+      <View style={styles.container.switch} >
         <Text style={styles.styles.titleLabel} >ページ範囲</Text>
         <Switch
           onValueChange={() => this.setState({page: !this.state.page})}
@@ -68,7 +70,7 @@ export default class RegisterView extends Component {
 
   _renderPagePicker = () => {
     if (this.state.page == false) {
-      return (<Text></Text>)
+      return 
     } else if (this.state.page == true) {
       return (
         <View style={styles.container.pageSet}  >
@@ -88,49 +90,33 @@ export default class RegisterView extends Component {
     }
   }
 
-  _renderPickerItems = () => {
-    const srvItems = []
-    for (let i = 1; i <= 500 ; i++){
-      srvItems.push(<Picker.Item key={String(i)} label = {String(i)} value = {String(i)} />)
-    }
-    return srvItems
-  }
-
-
-  _renderModalContent = () => {
-    let func = null
-    let selected = null
-    if (this.state.visibleModal === 1) {
-      func = (page) => {
-        this.setState({startPage: page})
-        if (Number(page) > Number(this.state.endPage)) {
-          this.setState({endPage: page})
-        }
-      }
-      selected = this.state.startPage
-    } else if (this.state.visibleModal === 2) {
-      func = (page) => {
-        if (Number(page) < Number(this.state.startPage)) {
-          page = this.state.startPage
-        }
-        this.setState({endPage: page})
-      }
-      selected = this.state.endPage
-    }
-    return (
-      <View style={styles.container.pageModal} >
-        <Picker onValueChange={ (page) => func(page)} selectedValue = {selected} >
-          { this._renderPickerItems() }
-        </Picker>
-        <TouchableOpacity onPress={() => this.setState({visibleModal: null})}>
-          <View style={styles.styles.modalButton}>
-            <Text style={styles.styles.registerText} >決定</Text>
-          </View>
-        </TouchableOpacity>
+  _memo = () => (
+    <View style={styles.container.page} >
+      <View style={styles.container.switch} >
+        <Text style={styles.styles.titleLabel} >メモ</Text>
+        <Switch
+          onValueChange={() => this.setState({memo: !this.state.memo})}
+          value={this.state.memo}
+          
+        />
       </View>
-    )
-  }
+      { this._renderMemoInputBox() }
+    </View>
+  )
 
+  _renderMemoInputBox = () => {
+    if (this.state.memo == false) {
+      return
+    } else if (this.state.memo == true) {
+      return (
+        <View style={styles.container.boxContainer} >
+          <TextInput 
+            style={styles.styles.inputBox}
+            multiline={true}  />
+        </View>
+      )
+    }
+  }
 
   _notice = () => {
     let data = [
@@ -167,6 +153,9 @@ export default class RegisterView extends Component {
 
           <View style={styles.params.param} >
             { this._page() }
+          </View>
+          <View style={styles.params.param} >
+            { this._memo() }
           </View>
           <View style={styles.params.notice} >
             { this._notice() }

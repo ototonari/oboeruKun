@@ -22,15 +22,16 @@ const container = StyleSheet.create({
     
   },
   page: {
-    marginBottom: 10,
+    
   },
-  pageSwitch: {
+  switch: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 10,
     borderColor: 'gray',
     borderBottomWidth: 1,
+    borderTopWidth: 1,
     width: '100%'
   },
   pageSet: {
@@ -48,6 +49,11 @@ const container = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
+  boxContainer: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'blue'  
+  }
 })
 
 const params = StyleSheet.create({
@@ -57,7 +63,7 @@ const params = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'gray',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
 
   },
   
@@ -65,6 +71,7 @@ const params = StyleSheet.create({
   param: {
     width: '100%',
     borderColor: 'gray',
+    borderWidth: 0
   },
   notice: {
     width: '100%',
@@ -127,7 +134,12 @@ const styles = StyleSheet.create({
     top: 5,
     right: 5
   },
-
+  inputBox: {
+    height: 60,
+    borderWidth: 1,
+    borderColor: 'blue',
+    backgroundColor: 'whitesmoke'
+  }
 })
 
 module.exports = {
