@@ -4,11 +4,13 @@ import MeinmenuView from "./meinmenu/meinmenuView";
 import RegisterView from "./register/registerView";
 import ManagerView from "./manager/managerView";
 import { Actions, Router, Scene } from "react-native-router-flux";
+import { initialize } from "./update";
 
 
 export default class App extends React.Component {
   
   render() {
+    initialize()
     return (
       <Router>
         <Scene key="root"  >

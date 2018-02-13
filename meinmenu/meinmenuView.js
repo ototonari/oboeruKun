@@ -46,7 +46,6 @@ export default class MeinmenuView extends Component{
 
 
   render () {
-    
     return (
       <View style={meinmenuStyle.meinmenu.container} >
         { this._renderButton('登録', () => Actions.register() ) }

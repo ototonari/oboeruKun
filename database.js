@@ -19,6 +19,53 @@ export function createDB() {
   });
 }
 
+export function createUpdateTable(callback) {
+  db.transaction(tx => {
+    tx.executeSql(
+      "create table if not exists updateTable (id integer primary key default 0 not null, buildNumber text default '1.0.0' not null );", [],
+      () => {
+        console.log('createUpdateTable: success')
+        getBuildNumber(callback)
+      },
+      () => console.log('createUpdateTable: raise error')
+    )
+  })
+}
+
+export function updateBuildNumber(currentBuildNumber) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'update updateTable set buildNumber = ? where id = 0', [String(currentBuildNumber)],
+      () => {
+        console.log('updateBuildNumber: success')
+      },
+      console.log('updateBuildNumber: raise error')
+    )
+  })
+}
+
+export function getBuildNumber(callback) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'select buildNumber from updateTable', [],
+      (_, { rows: { _array } }) => callback(_array)
+    )
+  })
+}
+
+export function initializeUpdateTable(callback) {
+  db.transaction(tx => {
+    tx.executeSql(
+      "insert into updateTable (id, buildNumber) values (0, '1.0.0')", [],
+      () => {
+        console.log('updateTable initialized success')
+        callback()
+      },
+      () => console.log('updateTable initialized raise error')
+    )
+  })
+}
+
 export function dropDB(tableName) {
   db.transaction(tx => {
     tx.executeSql(

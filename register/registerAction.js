@@ -65,15 +65,6 @@ export function registerTask(target) {
   Actions.pop()
 }
 
-// NotificationAPIを叩くメソッド
-//  通知間隔の処理を挟んで、複数登録する。
-function addNotification(taskData) {
-  const localnotification = taskData;
-
-  // 通知間隔を分離して管理する
-  
-}
-
 async function notificationBasedOnForgettingCurve(notification) {
   const localnotification = notification
   const registerdDate = notification.registerd
