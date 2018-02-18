@@ -1,6 +1,8 @@
 // those actions need when this app was update.
+import { AsyncStorage } from 'react-native';
 import { createUpdateTable, updateBuildNumber, getBuildNumber, initializeUpdateTable } from "./database";
 import { Constants } from 'expo';
+import { Actions, ActionConst } from "react-native-router-flux";
 
 const currentBuildNumber = Constants.manifest.ios.buildNumber
 
@@ -44,6 +46,19 @@ function checkBuildNumber() {
 
 function update() {
   console.log('update process.')
+  startTutorial()
+  versionUp()
+}
+
+function versionUp() {
   const dummyBuildNumber = '1.0.2'
   updateBuildNumber(dummyBuildNumber)
+}
+
+export function startTutorial() {
+  Actions.step1()
+}
+
+export function endTutorial() {
+  Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
 }

@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image, TextInput, Switch, Picker, Platfor
 import styles from './configStyle'
 import { Actions } from "react-native-router-flux";
 import { FlatButton } from "../components";
+import { startTutorial } from "../update";
 
 export default class ConfigView extends Component {
   constructor(props){
@@ -14,7 +15,8 @@ export default class ConfigView extends Component {
     return(
       <View style={{ flex: 1, }} >
         <FlatButton text={'Developers'} function={() => Actions.developers()} />
-        
+        <FlatButton text={'Tutorial'} function={() => startTutorial()} />
+
       </View>
     )
   }

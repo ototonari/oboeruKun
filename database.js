@@ -127,16 +127,50 @@ export function addNotice(taskData, noticeDate, notificationId) {
 export function checkTitle(title) {
   db.transaction(tx => {
     tx.executeSql(
-      'select title from titleList where title = ?', [title],
-      (_, { rows: { length } }) => {
-        console.log(length)
+      'select id from titleList where title = ?', [title],
+      (_, { rows }) => {
+        const length = rows.length
         if (length == 0) {
           addTitle(title)
+        } else if (length == 1) {
+          const selectedId = rows._array[0].id
+          console.log(selectedId)
+          //sortTitle(selectedId-1, title)
         }
       },
-      console.log('checkTitle: already added')
+      () => console.log('checkTitle: error')
     )
   })
+}
+
+function countLength() {
+
+}
+
+function sortTitle(count, title) {
+  let i = count
+  if (i > 0) {
+    console.log('true')
+    db.transaction(tx => {
+      tx.executeSql(
+        'update titleList set id=? where id=?', [i+1, i],
+        () => {
+          console.log('updating: ', i)
+          i = i - 1
+          sortTitle(i, title)
+        },
+        (error) => console.log(error)
+      )
+    })
+  } else {
+    console.log('false')
+    db.transaction(tx => {
+      tx.executeSql(
+        'insert into titleList values (?, ?)', [1, title],
+        () => console.log('addTitle succesed')
+      )
+    })
+  }
 }
 
 export function addTitle(title) {

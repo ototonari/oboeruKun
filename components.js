@@ -55,7 +55,7 @@ export class FlatButton extends Component {
                 onPress={() => func()}
                 style={this.style.container} >
                     <View style={this.style.inContainer} >
-                        <Text style={this.style.text} >Developers</Text>
+                        <Text style={this.style.text} >{text}</Text>
                         <Image source={require('./assets/right.png')} style={this.style.image} />
                     </View>
             </TouchableOpacity>
