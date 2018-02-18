@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, View, Picker, TouchableOpacity, Text } from 'react-native';
 import { Constants, Notifications, Permissions } from 'expo';
-import { Actions } from "react-native-router-flux";
+import { Actions, ActionConst } from "react-native-router-flux";
 import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle } from "../database";
 import styles from "./registerStyle";
 
@@ -62,7 +62,11 @@ export function registerTask(target) {
 
   // ユーザーに通知
   Alert.alert('登録しました')
-  Actions.pop()
+  //Actions.reset('tabbar', { reload: true})
+  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+  //Actions.pop({reload: true})
+  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP });
+  //Actions.tabbar({ type: ActionConst.REFRESH });
 }
 
 async function notificationBasedOnForgettingCurve(notification) {

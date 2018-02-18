@@ -1,4 +1,6 @@
 import { SQLite } from 'expo';
+import { Actions, ActionConst } from "react-native-router-flux";
+
 
 const db = SQLite.openDatabase('db.db');
 
@@ -115,7 +117,9 @@ export function addNotice(taskData, noticeDate, notificationId) {
   const page = taskData.page
   db.transaction(tx => {
     tx.executeSql(
-      'insert into notification (title, page, noticeDate, notificationId) values (?, ?, ?, ?)', [title, page, noticeDate, notificationId]
+      'insert into notification (title, page, noticeDate, notificationId) values (?, ?, ?, ?)', [title, page, noticeDate, notificationId],
+      // 追加処理成功時
+      () => { Actions.tabbar({ type: ActionConst.PUSH_OR_POP }) }
     )
   })
 }

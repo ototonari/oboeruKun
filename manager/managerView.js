@@ -9,6 +9,7 @@ export default class ManagerView extends Component {
     super(props)
     this.state = {
       items: [],
+      reload: this.props.reload ? this.props.reload : false,
     }
   }
 
