@@ -3,6 +3,7 @@ import {
     View,
     Text,
     StyleSheet,
+    Image
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -12,6 +13,10 @@ const styles = StyleSheet.create({
     tabTextActive: {
         color: 'blue',
     },
+    imageIcon: {
+      width: 35,
+      height: 35
+    }
 });
 
 
@@ -21,12 +26,37 @@ export default class TabIcon extends Component {
 
   }
 
-  render () {
-    //console.log(this.props)
-    if (this.props.focused == true) {
-      return(<Text>focused = true</Text>)
-    } else {
-      return(<Text>focused = false</Text>)
+  managerIcon = (key, isFocused) => {
+    if (key == 'manager') {
+      if (isFocused == true) {
+        return(
+          <Image source={require('../assets/listIcon.png')} style={styles.imageIcon} />
+        )
+      } else {
+        return(
+          <Image source={require('../assets/listIcon2.png')} style={styles.imageIcon} />
+        )
+      }
+    } else if (key == 'config') {
+      if (isFocused == true) {
+        return(
+          <Image source={require('../assets/config.png')} style={styles.imageIcon} />
+        )
+      } else {
+        return(
+          <Image source={require('../assets/config2.png')} style={styles.imageIcon} />
+        )
+      }
     }
+  }
+
+  render () {
+    const key = this.props.navigation.state.key
+    const isFocused = this.props.focused
+    return(
+      <View>
+        { this.managerIcon(key, isFocused) }
+      </View>
+    )
   }
 }
