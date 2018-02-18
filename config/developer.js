@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
 
 const programer = 'Tsubasa Nagata'
-const designer = ''
+const designer = 'Hibiki Shono'
 
-export default class Developer extends Component {
+export default class Developers extends Component {
   constructor (props) {
     super (props)
   }
