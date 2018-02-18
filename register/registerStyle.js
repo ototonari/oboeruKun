@@ -143,6 +143,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: 'powderblue',
     backgroundColor: 'whitesmoke'
+  },
+  titleListIcom: {
+    width: 18,
+    height: 18,
+    position: 'absolute',
+    top: 6,
+    right: 8,
+    overflow: 'visible'
   }
 })
 

@@ -39,7 +39,7 @@ export function updateBuildNumber(currentBuildNumber) {
       () => {
         console.log('updateBuildNumber: success')
       },
-      console.log('updateBuildNumber: raise error')
+      () => console.log('updateBuildNumber: raise error')
     )
   })
 }

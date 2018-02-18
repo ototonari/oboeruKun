@@ -47,7 +47,7 @@ export default class RegisterView extends Component {
           maxLength={200} />
         <View style={{position: 'relative', alignContent: 'flex-end'}} >
           <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
-            <Image source={require('../assets/titleList.png')} style={styles.styles.cameraIcon} />
+            <Image source={require('../assets/titleList.png')} style={styles.styles.titleListIcom} />
           </TouchableOpacity>
         </View>
           

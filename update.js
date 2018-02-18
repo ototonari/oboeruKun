@@ -44,5 +44,6 @@ function checkBuildNumber() {
 
 function update() {
   console.log('update process.')
-  
+  const dummyBuildNumber = '1.0.2'
+  updateBuildNumber(dummyBuildNumber)
 }
