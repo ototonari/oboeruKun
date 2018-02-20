@@ -14,8 +14,8 @@ export default class ConfigView extends Component {
 
     return(
       <View style={{ flex: 1, }} >
-        <FlatButton text={'Developers'} function={() => Actions.developers()} />
-        <FlatButton text={'Tutorial'} function={() => startTutorial()} />
+        <FlatButton text={'開発者'} function={() => Actions.developers()} />
+        <FlatButton text={'チュートリアル'} function={() => startTutorial()} />
 
       </View>
     )

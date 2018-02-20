@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 const container = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white'
   },
   view: {
     flex: 9,
@@ -38,7 +39,7 @@ const container = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: 10,
     borderColor: 'gray',
     borderBottomWidth: 1,
   },

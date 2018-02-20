@@ -29,6 +29,7 @@ function updateChecker(buildNumber) {
   if (buildNumber == currentBuildNumber) {
     // 最新版
     console.log('this version is current')
+    //versionChange('1.0.3')
     return
 
   } else {
@@ -47,12 +48,13 @@ function checkBuildNumber() {
 function update() {
   console.log('update process.')
   startTutorial()
-  versionUp()
+  //versionChange(currentBuildNumber)
 }
 
-function versionUp() {
-  const dummyBuildNumber = '1.0.2'
-  updateBuildNumber(dummyBuildNumber)
+function versionChange(versionNumber) {
+  let buildNumber = '1.0.0'
+  if (versionNumber !== null) buildNumber = versionNumber
+  updateBuildNumber(buildNumber)
 }
 
 export function startTutorial() {
@@ -62,3 +64,4 @@ export function startTutorial() {
 export function endTutorial() {
   Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
 }
+
