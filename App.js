@@ -9,20 +9,22 @@ import tabIcon from "./dummy/tabIcon";
 import ConfigView from "./config/config";
 import Developers from "./config/developer"
 import { Step1, Step2, Step3 } from "./dummy/tutorial";
+import CalenderView from "./dummy/calender";
 
 export default class App extends React.Component {
   
   render() {
-    initialize()
+    //initialize()
     return (
       <Router>
         <Scene key="root"  >
           <Scene key="tabbar" tabs >
-            <Scene key="manager" initial component={ManagerView} icon={tabIcon} onRight={() => Actions.register()} rightButtonImage={require('./assets/plus.png')} />
+            <Scene key="manager"  component={ManagerView} icon={tabIcon} onRight={() => Actions.register()} rightButtonImage={require('./assets/plus.png')} />
             <Scene key="config" component={ConfigView} icon={tabIcon} />
           </Scene>
           <Scene key="register" component={RegisterView} title={'登録画面'} />
           <Scene key="developers" component={Developers} title={'Developers'} />
+          <Scene key="calender" initial component={CalenderView} title={'Calender'} />
           <Scene key="tutorial" hideNavBar >
             <Scene key="step1" component={Step1} title={'step1'} />
             <Scene key="step2" component={Step2} title={'step2'} />
