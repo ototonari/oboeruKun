@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Alert, View, Picker, TouchableOpacity, Text } from 'react-native';
 import { Constants, Notifications, Permissions } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
-import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle } from "../database";
+import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, insertPage, insertMemo, insertMaster, insertNotice } from "../database";
 import styles from "./registerStyle";
 
 
@@ -22,6 +22,98 @@ export function validation(target, callback) {
     }
   }
 }
+
+export function arrangement(target) {
+  const self = target
+
+  // 各種パラメーターの定義
+  // タイトル
+  const title = self.state.title
+  // ボディ
+  let body = ''
+  // 登録日時
+  const registerdDate = new Date()
+  
+  // 通知API用のパラメータ
+  let notification = {
+    android: {
+      sound: true,
+    },
+    ios: {
+      sound: true,
+    },
+    registerd: registerdDate,
+  }
+  
+  // タイトル履歴に保存
+  checkTitle(title)
+  
+  // master への追加後,該当するアクションを行う
+  const register = (result) => {
+    // master id
+    const id = result.insertId
+    // notification用データ
+    let data = { title: title }
+    if (self.state.page == true) {
+      // ページ範囲（テキスト化）
+      const page = self.state.page === true ? JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage }) : {}
+      // dbに保存
+      insertPage(id, page)
+      
+      data['page'] = page
+
+      body += self.state.title + '  p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + '\n'
+      body += '本日は「 ' + self.state.title + ' 」を復習しましょう。'    
+    }
+  
+    if (self.state.memo == true) {
+      // memo Text
+      const memo = self.state.memoValue
+      // dbに保存
+      insertMemo(id, memo)
+
+      data['memo'] = memo
+    }
+
+    if (self.state.notice == true) {
+      notification['title'] = title
+      notification['body'] = body
+      notification['data'] = data
+      setNotification(id, notification)
+    }
+
+  }
+
+  // id登録後、callback処理にて各種データを登録、処理する
+  insertMaster(register)
+
+
+}
+
+async function setNotification(id, notification) {
+  const localnotification = notification
+  const registerdDate = notification.registerd
+  // const notificationDates = [
+  //   1,
+  //   7,
+  //   30
+  // ]
+  const notificationDates = [ 0 ]
+  for (let i = 0; i < notificationDates.length; i++) {
+    const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) };
+    Notifications.scheduleLocalNotificationAsync(
+      localnotification,
+      schedulingOptions
+    ).then(function (notificationId) {
+      // 非同期処理成功
+      //addNotice(localnotification, schedulingOptions.time, notificationId)
+      insertNotice(id, notificationId, schedulingOptions.time)
+    }).catch(function (error) {
+      console.log(error)
+    })
+  }
+}
+
 
 export function registerTask(target) {
   const self = target
@@ -54,8 +146,10 @@ export function registerTask(target) {
 
   }
 
-  // db
+  // add to titleDB
   checkTitle(title)
+
+  // add to masterDB and others
 
   // Notification API に登録
   notificationBasedOnForgettingCurve(taskData)
@@ -99,6 +193,16 @@ function changeDate(registerdDate, date) {
   tmpDate.setHours(7)
   tmpDate.setMinutes(0)
   tmpDate.setSeconds(0)
+  return tmpDate
+}
+
+function testChangeDate(registerdDate, date) {
+  let tmpDate = new Date(registerdDate)
+  // 通知する日時をセットする
+  tmpDate.setDate(registerdDate.getDate() + date)
+  //tmpDate.setHours(7)
+  //tmpDate.setMinutes(0)
+  tmpDate.setSeconds(registerdDate.getSeconds() + 10)
   return tmpDate
 }
 

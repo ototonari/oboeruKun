@@ -51,8 +51,72 @@ export function initDB() {
       (error) => console.log('initDB, create notice error: ', error)
     )
   })
+  db.transaction(tx => {
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS titleList (id INTEGER NOT NULL PRIMARY KEY, title TEXT);',[],
+      () => console.log('initDB, create titleList success') ,
+      (error) => console.log('initDB, create titleList error: ', error)
+    )
+  })
   
 }
+
+export function insertMaster(callback) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO master (alive) values (1)', [],
+      (result) => {
+        console.log('insertMaster success, result: ', result)
+        callback(result)
+      },
+      (error) => console.log('insertMaster error: ', error)
+    )
+  })
+}
+
+export function insertMemo(id, text) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO memo (id, text) values (?, ?)', [id, text],
+      () => console.log('insertMemo success'),
+      (error) => console.log('insertMemo error: ', error)
+    )
+  })
+}
+
+export function insertPage(id, text) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO page (id, text) values (?, ?)', [id, text],
+      () => console.log('insertPage success'),
+      (error) => console.log('insertPage error: ', error)
+    )
+  })
+}
+
+export function insertNotice(id, notificationId, noticeDate) {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO notice (id, notificationId, noticeDate) values (?, ?, ?)', [id, notificationId, noticeDate],
+      () => console.log('insertNotice success'),
+      (error) => console.log('insertNotice error: ', error)
+    )
+  })
+}
+
+
+export function addNotice(taskData, noticeDate, notificationId) {
+  const title = taskData.title
+  const page = taskData.page
+  db.transaction(tx => {
+    tx.executeSql(
+      'insert into notification (title, page, noticeDate, notificationId) values (?, ?, ?, ?)', [title, page, noticeDate, notificationId],
+      // 追加処理成功時
+      () => { Actions.tabbar({ type: ActionConst.PUSH_OR_POP }) }
+    )
+  })
+}
+
 
 export function createUpdateTable(callback) {
   db.transaction(tx => {
@@ -145,17 +209,6 @@ export function addTaskData(taskData) {
   })
 }
 
-export function addNotice(taskData, noticeDate, notificationId) {
-  const title = taskData.title
-  const page = taskData.page
-  db.transaction(tx => {
-    tx.executeSql(
-      'insert into notification (title, page, noticeDate, notificationId) values (?, ?, ?, ?)', [title, page, noticeDate, notificationId],
-      // 追加処理成功時
-      () => { Actions.tabbar({ type: ActionConst.PUSH_OR_POP }) }
-    )
-  })
-}
 
 export function checkTitle(title) {
   db.transaction(tx => {
