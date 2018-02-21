@@ -11,10 +11,12 @@ import Developers from "./config/developer"
 import { Step1, Step2, Step3 } from "./dummy/tutorial";
 import CalenderView from "./dummy/calender";
 import AgendaView from "./calenders/agendaView";
+
+
 export default class App extends React.Component {
   
   render() {
-    //initialize()
+    initialize()
     return (
       <Router>
         <Scene key="root"  >

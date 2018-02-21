@@ -21,6 +21,39 @@ export function createDB() {
   });
 }
 
+// 各種データベースが追加された際はinitDBに追記すること！
+export function initDB() {
+  db.transaction(tx => {
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS master (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL);',[],
+      () => console.log('initDB, create master success') ,
+      (error) => console.log('initDB, create master error: ', error)
+    )
+  })
+  db.transaction(tx => {
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS memo (id INTEGER NOT NULL PRIMARY KEY, value TEXT);',[],
+      () => console.log('initDB, create memo success') ,
+      (error) => console.log('initDB, create memo error: ', error)
+    )
+  })
+  db.transaction(tx => {
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS page (id INTEGER NOT NULL PRIMARY KEY, value TEXT);',[],
+      () => console.log('initDB, create page success') ,
+      (error) => console.log('initDB, create page error: ', error)
+    )
+  })
+  db.transaction(tx => {
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS notice (id INTEGER NOT NULL, notificationId TEXT, noticeDate BLOB);',[],
+      () => console.log('initDB, create notice success') ,
+      (error) => console.log('initDB, create notice error: ', error)
+    )
+  })
+  
+}
+
 export function createUpdateTable(callback) {
   db.transaction(tx => {
     tx.executeSql(
@@ -200,7 +233,8 @@ export function getAllNoticeDate(target) {
       'select * from notification', [],
       (_, { rows: { _array } }) => {
         function setstate (target, array) {
-          target.setState({ items: array})
+          //target.setState({ items: array})
+          //console.log(array)
         }
         sortedNoticeDate(self, _array, setstate)
       }

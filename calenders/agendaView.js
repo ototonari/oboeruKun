@@ -5,6 +5,7 @@ import {
   StyleSheet
 } from 'react-native';
 import {Agenda} from 'react-native-calendars';
+import { getAllNoticeDate } from "../database";
 
 export default class AgendaView extends Component {
   constructor(props) {
@@ -15,6 +16,11 @@ export default class AgendaView extends Component {
         "2018-02-22": [{ name: 'huu', height: 200 }]
       }
     };
+  }
+
+  componentDidMount() {
+    //getAllNoticeDate(this)
+    
   }
 
   render() {
