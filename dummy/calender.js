@@ -45,9 +45,9 @@ export default class CalenderView extends Component {
           // Max amount of months allowed to scroll to the future. Default = 50
           futureScrollRange={50}
           // specify how each item should be rendered in agenda
-          renderItem={(item, firstItemInDay) => {return (<View ><Text>{item.text}</Text></View>);}}
+          renderItem={(item, firstItemInDay) => {return (<View />);}}
           // specify how each date should be rendered. day can be undefined if the item is not first in that day.
-          //renderDay={(day, item) => {return (<View ><Text>item</Text></View>);}}
+          renderDay={(day, item) => {return (<View />)}}
           // specify how empty date content with no items should be rendered
           renderEmptyDate={() => {return (<View />);}}
           // specify how agenda knob should look like
