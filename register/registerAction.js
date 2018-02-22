@@ -49,21 +49,21 @@ export function arrangement(target) {
   checkTitle(title)
   
   // master への追加後,該当するアクションを行う
-  const register = (result) => {
+  const register = (insertId) => {
     // master id
-    const id = result.insertId
+    const id = insertId
     // notification用データ
     let data = { title: title }
     if (self.state.page == true) {
-      // ページ範囲（テキスト化）
-      const page = self.state.page === true ? JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage }) : {}
+      // ページ範囲
+      const page = { startPage: self.state.startPage, endPage: self.state.endPage }
+      console.log(page)
       // dbに保存
       insertPage(id, page)
       
       data['page'] = page
 
-      body += self.state.title + '  p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + '\n'
-      body += '本日は「 ' + self.state.title + ' 」を復習しましょう。'    
+      body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
     }
   
     if (self.state.memo == true) {
@@ -81,13 +81,14 @@ export function arrangement(target) {
       notification['data'] = data
       setNotification(id, notification)
     }
-
+    
+    Alert.alert('登録しました')
   }
 
   // id登録後、callback処理にて各種データを登録、処理する
-  insertMaster(register)
+  insertMaster(title, register)
 
-
+  Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
 }
 
 async function setNotification(id, notification) {
@@ -98,7 +99,7 @@ async function setNotification(id, notification) {
   //   7,
   //   30
   // ]
-  const notificationDates = [ 0 ]
+  const notificationDates = [ 0, 0 ]
   for (let i = 0; i < notificationDates.length; i++) {
     const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) };
     Notifications.scheduleLocalNotificationAsync(
@@ -201,8 +202,8 @@ function testChangeDate(registerdDate, date) {
   // 通知する日時をセットする
   tmpDate.setDate(registerdDate.getDate() + date)
   //tmpDate.setHours(7)
-  //tmpDate.setMinutes(0)
-  tmpDate.setSeconds(registerdDate.getSeconds() + 10)
+  tmpDate.setMinutes(registerdDate.getMinutes() + 1)
+  tmpDate.setSeconds(0)
   return tmpDate
 }
 

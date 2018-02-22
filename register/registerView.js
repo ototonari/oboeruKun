@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, Image, TextInput, Switch, Picker, Platfor
 import styles from "./registerStyle";
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
-import { validation, registerTask, renderPageModalContent, renderTitleModalContent } from "./registerAction";
+import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement } from "./registerAction";
 import { createDB, getTitle } from "../database";
 
 export default class RegisterView extends Component {
@@ -168,7 +168,7 @@ export default class RegisterView extends Component {
 
         </View>
         <View style={styles.container.register} >
-          { this._renderButton('登録',() => validation(this, registerTask) , styles.styles.registerButton) }
+          { this._renderButton('登録',() => validation(this, arrangement) , styles.styles.registerButton) }
         </View>
         <Modal isVisible={this.state.visibleModal === 1}>
           { renderPageModalContent(this) }

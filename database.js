@@ -25,24 +25,32 @@ export function createDB() {
 export function initDB() {
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS master (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL);',[],
+      'CREATE TABLE IF NOT EXISTS master (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL, title TEXT NOT NULL);',[],
       () => console.log('initDB, create master success') ,
       (error) => console.log('initDB, create master error: ', error)
     )
+    //tx.executeSql('DELETE FROM master WHERE id = 2')
+    tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
+    //tx.executeSql( 'drop table master' );
   })
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS memo (id INTEGER NOT NULL PRIMARY KEY, value TEXT);',[],
+      'CREATE TABLE IF NOT EXISTS memo (id INTEGER NOT NULL, value TEXT);',[],
       () => console.log('initDB, create memo success') ,
       (error) => console.log('initDB, create memo error: ', error)
     )
+    tx.executeSql('SELECT * FROM memo', [], (_, { rows }) => console.log('select memo : ', rows));
+    // tx.executeSql( 'drop table memo' );
+
   })
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS page (id INTEGER NOT NULL PRIMARY KEY, value TEXT);',[],
+      'CREATE TABLE IF NOT EXISTS page (id INTEGER NOT NULL, value BLOB);',[],
       () => console.log('initDB, create page success') ,
       (error) => console.log('initDB, create page error: ', error)
     )
+    tx.executeSql('SELECT * FROM page', [], (_, { rows }) => console.log('select page : ', rows));
+    // tx.executeSql( 'drop table page' );
   })
   db.transaction(tx => {
     tx.executeSql(
@@ -50,6 +58,9 @@ export function initDB() {
       () => console.log('initDB, create notice success') ,
       (error) => console.log('initDB, create notice error: ', error)
     )
+    tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
+    //tx.executeSql( 'drop table notice' );
+
   })
   db.transaction(tx => {
     tx.executeSql(
@@ -61,33 +72,34 @@ export function initDB() {
   
 }
 
-export function insertMaster(callback) {
+export function insertMaster(title, callback) {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO master (alive) values (1)', [],
-      (result) => {
-        console.log('insertMaster success, result: ', result)
-        callback(result)
-      },
+      'INSERT INTO master (alive, title) values (1, ?)', [title],
+      (_, { insertId }) => {
+        console.log('insertMaster success : ', insertId)
+        callback(insertId)
+      }
+      ,
       (error) => console.log('insertMaster error: ', error)
     )
   })
 }
 
-export function insertMemo(id, text) {
+export function insertMemo(id, memo) {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO memo (id, text) values (?, ?)', [id, text],
+      'INSERT INTO memo (id, value) values (?, ?)', [id, memo],
       () => console.log('insertMemo success'),
       (error) => console.log('insertMemo error: ', error)
     )
   })
 }
 
-export function insertPage(id, text) {
+export function insertPage(id, page) {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO page (id, text) values (?, ?)', [id, text],
+      'INSERT INTO page (id, value) values (?, ?)', [id, page],
       () => console.log('insertPage success'),
       (error) => console.log('insertPage error: ', error)
     )
