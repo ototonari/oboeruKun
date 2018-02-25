@@ -4,7 +4,7 @@ import { Constants, Notifications, Permissions } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, insertPage, insertMemo, insertMaster, insertNotice } from "../database";
 import styles from "./registerStyle";
-
+import { dateToFormatString } from "../dateToFormatString";
 
 export function validation(target, callback) {
   const self = target
@@ -108,7 +108,8 @@ async function setNotification(id, notification) {
     ).then(function (notificationId) {
       // 非同期処理成功
       //addNotice(localnotification, schedulingOptions.time, notificationId)
-      insertNotice(id, notificationId, schedulingOptions.time)
+      const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
+      insertNotice(id, notificationId, registerdDate)
     }).catch(function (error) {
       console.log(error)
     })

@@ -1,5 +1,6 @@
 import { SQLite } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
+import { dateToFormatString } from './dateToFormatString';
 
 
 const db = SQLite.openDatabase('db.db');
@@ -116,6 +117,18 @@ export function insertNotice(id, notificationId, noticeDate) {
   })
 }
 
+// notice table から where 句でどこまで絞り込めるかの検証を行った。
+// 結論としては、年月日に加え、時間情報を持った文字列を含む情報から任意の日時を検索することができた。これは大きい。
+// 本日を基準にして、初回ロードは前後1月分をロードさせるように調節する。数字一つのパラメーターでロードする月をシフトするように設計する。
+export function getNotice() {
+  const selectDate = dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM notice WHERE noticeDate <= ? AND noticeDate > ?', [selectDate, '2018-02-23'],
+      (_, { rows: { _array } }) => { console.log('getNotice success : ', _array)}
+    )
+  })
+}
 
 export function addNotice(taskData, noticeDate, notificationId) {
   const title = taskData.title
