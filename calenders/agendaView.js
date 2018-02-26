@@ -6,21 +6,23 @@ import {
 } from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import { getAllNoticeDate, getNotice } from "../database";
+import { initializeCalender } from "./agendaAction";
+import { dateToFormatString } from '../dateToFormatString';
 
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       items: {
-        "2018-02-21": [{ name: 'hoge', height: 100 }],
+        "2018-02-21": [{ name: 'hoge', height: 100 }, { name: 'nya', height: 50 }],
         "2018-02-22": [{ name: 'huu', height: 200 }]
-      }
+      },
+      today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
     };
   }
 
   componentDidMount() {
-    //getAllNoticeDate(this)
-    getNotice()
+    initializeCalender(this)
   }
 
   render() {
@@ -28,7 +30,7 @@ export default class AgendaView extends Component {
       <Agenda
         items={this.state.items}
         loadItemsForMonth={this.loadItems.bind(this)}
-        selected={'2018-02-21'}
+        selected={this.state.today}
         renderItem={this.renderItem.bind(this)}
         renderEmptyDate={this.renderEmptyDate.bind(this)}
         rowHasChanged={this.rowHasChanged.bind(this)}

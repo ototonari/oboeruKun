@@ -109,6 +109,7 @@ async function setNotification(id, notification) {
       // 非同期処理成功
       //addNotice(localnotification, schedulingOptions.time, notificationId)
       const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
+      console.log('insert notice ::: ', registerdDate)
       insertNotice(id, notificationId, registerdDate)
     }).catch(function (error) {
       console.log(error)
