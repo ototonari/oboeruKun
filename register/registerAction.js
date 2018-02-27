@@ -56,7 +56,7 @@ export function arrangement(target) {
     let data = { title: title }
     if (self.state.page == true) {
       // ページ範囲
-      const page = { startPage: self.state.startPage, endPage: self.state.endPage }
+      const page = JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage })
       console.log(page)
       // dbに保存
       insertPage(id, page)
@@ -94,12 +94,11 @@ export function arrangement(target) {
 async function setNotification(id, notification) {
   const localnotification = notification
   const registerdDate = notification.registerd
-  // const notificationDates = [
-  //   1,
-  //   7,
-  //   30
-  // ]
-  const notificationDates = [ 0, 0 ]
+  const notificationDates = [
+    1,
+    7,
+    30
+  ]
   for (let i = 0; i < notificationDates.length; i++) {
     const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) };
     Notifications.scheduleLocalNotificationAsync(
@@ -109,7 +108,7 @@ async function setNotification(id, notification) {
       // 非同期処理成功
       //addNotice(localnotification, schedulingOptions.time, notificationId)
       const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
-      console.log('insert notice ::: ', registerdDate)
+      //console.log('insert notice ::: ', registerdDate)
       insertNotice(id, notificationId, registerdDate)
     }).catch(function (error) {
       console.log(error)

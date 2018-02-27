@@ -81,14 +81,29 @@ export default class AgendaView extends Component {
   }
 
   renderItem(item) {
+    const page = (item) => {
+      if (item !== null) {
+        return (<Text>Page: {item.startPage} ~ {item.endPage}</Text>)
+      }
+    }
+    const memo = (item) => {
+      if (item !== null) {
+        return (<Text>メモ: {item}</Text>)
+      }
+    }
     return (
-      <View style={[styles.item, {height: item.height}]}><Text>{item.name}</Text></View>
+      <View style={[styles.item, {height: item.height}]}>
+        <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
+        { page(item.page) }
+        { memo(item.memo) }
+      </View>
     );
   }
 
   renderEmptyDate() {
     return (
-      <View style={styles.emptyDate}><Text>This is empty date!</Text></View>
+      //<View style={styles.emptyDate}></View>
+      <View />
     );
   }
 
@@ -112,8 +127,12 @@ const styles = StyleSheet.create({
     marginTop: 17
   },
   emptyDate: {
-    height: 15,
     flex:1,
-    paddingTop: 30
+    height: 10,
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+    marginTop: 17,
+    backgroundColor: 'white',
   }
 });
