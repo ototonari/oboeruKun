@@ -146,6 +146,7 @@ export default class RegisterView extends Component {
   componentDidMount() {
     createDB()
     getTitle(this)
+    console.log(this.props.data)
   }
 
   render () {

@@ -8,6 +8,7 @@ import {Agenda} from 'react-native-calendars';
 import { getAllNoticeDate, getNotice } from "../database";
 import { initializeCalender } from "./agendaAction";
 import { dateToFormatString } from '../dateToFormatString';
+import Swipeable from 'react-native-swipeable';
 
 export default class AgendaView extends Component {
   constructor(props) {

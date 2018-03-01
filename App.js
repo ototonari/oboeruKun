@@ -21,7 +21,7 @@ export default class App extends React.Component {
       <Router>
         <Scene key="root"  >
           <Scene key="tabbar" tabs >
-            <Scene key="manager" initial component={AgendaView} icon={tabIcon} onRight={() => Actions.register()} rightButtonImage={require('./assets/plus.png')} />
+            <Scene key="manager" initial component={AgendaView} icon={tabIcon} onRight={() => Actions.register(12345)} rightButtonImage={require('./assets/plus.png')} />
             <Scene key="config" component={ConfigView} icon={tabIcon} />
           </Scene>
           <Scene key="register" component={RegisterView} title={'登録画面'} />
