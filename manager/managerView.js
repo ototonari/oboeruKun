@@ -4,6 +4,7 @@ import { getAllNoticeDate } from "../database";
 import styles from "./managerStyle";
 import TaskCellView from "./cellView";
 
+
 export default class ManagerView extends Component {
   constructor(props) {
     super(props)

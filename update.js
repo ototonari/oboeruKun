@@ -1,12 +1,13 @@
 // those actions need when this app was update.
 import { AsyncStorage } from 'react-native';
-import { createUpdateTable, updateBuildNumber, getBuildNumber, initializeUpdateTable } from "./database";
+import { createUpdateTable, updateBuildNumber, getBuildNumber, initializeUpdateTable, initDB } from "./database";
 import { Constants } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
 
 const currentBuildNumber = Constants.manifest.ios.buildNumber
 
 export function initialize() {
+  initDB()
   setup = (array) => {
     const hitCount = array.length
     // initialize
@@ -58,7 +59,7 @@ function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  Actions.step1()
+  //Actions.step1()
 }
 
 export function endTutorial() {
