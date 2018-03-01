@@ -53,7 +53,7 @@ export default class AgendaView extends Component {
   }
 
   loadItems(day) {
-    console.log('called loadItems , day: ', day)
+    //console.log('called loadItems , day: ', day)
     // setTimeout(() => {
     //   for (let i = -15; i < 15; i++) {
     //     const time = day.timestamp + i * 24 * 60 * 60 * 1000;

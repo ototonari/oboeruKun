@@ -28,25 +28,6 @@ export async function initializeCalender(target) {
     console.log('items : ', items)
   }
   getNotice(setCalender)
-
-
-  // createEmptyCalender().then((items) => {
-  //   //console.log('createEmptyCalender : ', items)
-  //   const setCalender = (array) => {
-
-  //     for (let i = 0; i < array.length; i++) {
-  //       const select = array[i].noticeDate
-  //       const item = {
-  //         name: array[i].id
-  //       }
-  //       items[select].push(item)
-  //     }
-  //     self.setState({ items })
-  //     console.log('items : ', items)
-  //   }
-  //   getNotice(setCalender)
-  // })
-
 }
 
 
