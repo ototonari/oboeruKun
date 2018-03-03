@@ -23,7 +23,7 @@ export function validation(target, callback) {
   }
 }
 
-export function arrangement(target) {
+export async function arrangement(target) {
   const self = target
 
   // 各種パラメーターの定義
@@ -48,48 +48,76 @@ export function arrangement(target) {
   // タイトル履歴に保存
   checkTitle(title)
   
-  // master への追加後,該当するアクションを行う
-  const register = (insertId) => {
-    // master id
-    const id = insertId
-    // notification用データ
-    let data = { title: title }
-    if (self.state.page == true) {
-      // ページ範囲
-      const page = JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage })
-      console.log(page)
-      // dbに保存
-      insertPage(id, page)
+  // // master への追加後,該当するアクションを行う
+  // const register = (insertId) => {
+  //   // master id
+  //   const id = insertId
+  //   // notification用データ
+  //   let data = { title: title }
+  //   if (self.state.page == true) {
+  //     // ページ範囲
+  //     const page = JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage })
+  //     console.log(page)
+  //     // dbに保存
+  //     insertPage(id, page)
       
-      data['page'] = page
+  //     data['page'] = page
 
-      body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
-    }
+  //     body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
+  //   }
   
-    if (self.state.memo == true) {
-      // memo Text
-      const memo = self.state.memoValue
-      // dbに保存
-      insertMemo(id, memo)
+  //   if (self.state.memo == true) {
+  //     // memo Text
+  //     const memo = self.state.memoValue
+  //     // dbに保存
+  //     insertMemo(id, memo)
 
-      data['memo'] = memo
-    }
+  //     data['memo'] = memo
+  //   }
 
-    if (self.state.notice == true) {
-      notification['title'] = title
-      notification['body'] = body
-      notification['data'] = data
-      setNotification(id, notification)
-    }
+  //   if (self.state.notice == true) {
+  //     notification['title'] = title
+  //     notification['body'] = body
+  //     notification['data'] = data
+  //     setNotification(id, notification)
+  //   }
     
-    Alert.alert('登録しました')
-  }
+  //   Alert.alert('登録しました')
+  // }
 
+  let id = 0
   // id登録後、callback処理にて各種データを登録、処理する
-  insertMaster(title, register)
+  id = await insertMaster(title)
+  // notification用データ
+  let data = { title: title }
+  if (self.state.page == true) {
+    // ページ範囲
+    const page = JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage })
+    console.log(page)
+    // dbに保存
+    insertPage(id, page)
+    data['page'] = page
+    body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
+  }
+  if (self.state.memo == true) {
+    // memo Text
+    const memo = self.state.memoValue
+    // dbに保存
+    insertMemo(id, memo)
 
-  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
-  Actions.manager()
+    data['memo'] = memo
+  }
+  if (self.state.notice == true) {
+    notification['title'] = title
+    notification['body'] = body
+    notification['data'] = data
+    await setNotification(id, notification)
+    //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+    Alert.alert(
+      '登録しました','',
+      [{text: 'OK', onPress: () => Actions.manager() }]
+    )
+  }
 }
 
 async function setNotification(id, notification) {
@@ -105,7 +133,7 @@ async function setNotification(id, notification) {
     Notifications.scheduleLocalNotificationAsync(
       localnotification,
       schedulingOptions
-    ).then(function (notificationId) {
+    ).then(async function (notificationId) {
       // 非同期処理成功
       //addNotice(localnotification, schedulingOptions.time, notificationId)
       const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
@@ -115,6 +143,7 @@ async function setNotification(id, notification) {
       console.log(error)
     })
   }
+  return
 }
 
 

@@ -14,18 +14,6 @@ import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
 import CellView from "./cellView";
 
-const rightButtons = [
-  <TouchableHighlight style={{
-    backgroundColor: 'white',
-    flex: 1,
-    padding: 10,
-    marginRight: 0,
-    marginTop: 17,
-    paddingLeft: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
-  }} ><Image source={require('../assets/error.png')} style={{height: 30, width: 30}} /></TouchableHighlight>
-];
 
 export default class AgendaView extends Component {
   constructor(props) {
@@ -99,7 +87,7 @@ export default class AgendaView extends Component {
 
   renderItem(item) {
     return (
-      <CellView item={item} />
+      <CellView item={item} this={this} />
     );
   }
 

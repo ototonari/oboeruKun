@@ -31,7 +31,7 @@ export function initDB() {
       (error) => console.log('initDB, create master error: ', error)
     )
     //tx.executeSql('DELETE FROM master WHERE id = 2')
-    tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
+    //tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
     //tx.executeSql( 'drop table master' );
   })
   db.transaction(tx => {
@@ -40,7 +40,7 @@ export function initDB() {
       () => console.log('initDB, create memo success') ,
       (error) => console.log('initDB, create memo error: ', error)
     )
-    tx.executeSql('SELECT * FROM memo', [], (_, { rows }) => console.log('select memo : ', rows));
+    //tx.executeSql('SELECT * FROM memo', [], (_, { rows }) => console.log('select memo : ', rows));
     //tx.executeSql( 'drop table memo' );
 
   })
@@ -50,7 +50,7 @@ export function initDB() {
       () => console.log('initDB, create page success') ,
       (error) => console.log('initDB, create page error: ', error)
     )
-    tx.executeSql('SELECT * FROM page', [], (_, { rows }) => console.log('select page : ', rows));
+    //tx.executeSql('SELECT * FROM page', [], (_, { rows }) => console.log('select page : ', rows));
     //tx.executeSql( 'drop table page' );
   })
   db.transaction(tx => {
@@ -59,7 +59,7 @@ export function initDB() {
       () => console.log('initDB, create notice success') ,
       (error) => console.log('initDB, create notice error: ', error)
     )
-    tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
+    //tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
     //tx.executeSql( 'drop table notice' );
 
   })
@@ -73,71 +73,88 @@ export function initDB() {
   
 }
 
-export function insertMaster(title, callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'INSERT INTO master (title) values (?)', [title],
-      (_, { insertId }) => {
-        console.log('insertMaster success : ', insertId)
-        callback(insertId)
-      }
-      ,
-      (error) => console.log('insertMaster error: ', error)
-    )
+export async function insertMaster(title) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'INSERT INTO master (title) values (?)', [title],
+        (_, { insertId }) => {
+          console.log('insertMaster success : ', insertId)
+          resolve(insertId)
+        }
+        ,
+        (error) => console.log('insertMaster error: ', error)
+      )
+    })
   })
 }
 
-export function insertMemo(id, memo) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'INSERT INTO memo (id, value) values (?, ?)', [id, memo],
-      () => console.log('insertMemo success'),
-      (error) => console.log('insertMemo error: ', error)
-    )
+export async function insertMemo(id, memo) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'INSERT INTO memo (id, value) values (?, ?)', [id, memo],
+        () => {
+          console.log('insertMemo success')
+          resolve()
+        },
+        (error) => console.log('insertMemo error: ', error)
+      )
+    })
   })
 }
 
-export function insertPage(id, page) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'INSERT INTO page (id, value) values (?, ?)', [id, page],
-      () => console.log('insertPage success'),
-      (error) => console.log('insertPage error: ', error)
-    )
+export async function insertPage(id, page) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'INSERT INTO page (id, value) values (?, ?)', [id, page],
+        () => {
+          console.log('insertPage success')
+          resolve()
+        },
+        (error) => console.log('insertPage error: ', error)
+      )
+    })
   })
 }
 
-export function insertNotice(id, notificationId, noticeDate) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'INSERT INTO notice (id, notificationId, noticeDate) values (?, ?, ?)', [id, notificationId, noticeDate],
-      () => console.log('insertNotice success'),
-      (error) => console.log('insertNotice error: ', error)
-    )
+export async function insertNotice(id, notificationId, noticeDate) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'INSERT INTO notice (id, notificationId, noticeDate) values (?, ?, ?)', [id, notificationId, noticeDate],
+        () => {
+          console.log('insertNotice success')
+          resolve()
+        },
+        (error) => console.log('insertNotice error: ', error)
+      )
+    })
   })
 }
 
 // notice table から where 句でどこまで絞り込めるかの検証を行った。
 // 結論としては、年月日に加え、時間情報を持った文字列を含む情報から任意の日時を検索することができた。これは大きい。
 // 本日を基準にして、初回ロードは前後1月分をロードさせるように調節する。数字一つのパラメーターでロードする月をシフトするように設計する。
-export async function getNotice(callback) {
-  const getThisMonth = () => {
-    let thisMonth = new Date()
-    const firstDay = dateToFormatString( new Date(thisMonth.setDate(1)), '%YYYY%-%MM%-%DD%')
-    const endDay = dateToFormatString( new Date(thisMonth.setDate(33)), '%YYYY%-%MM%-%DD%')
-    console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
-    return [firstDay, endDay]
-  }
-  db.transaction(tx => {
-    tx.executeSql(
-      'SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1', getThisMonth(),
-      (_, { rows: { _array } }) => {
-        console.log('getNotice success : ', _array)
-        if (callback) {
-          callback(_array)
+export async function getNotice() {
+  return new Promise(resolve => {
+    const getThisMonth = () => {
+      let thisMonth = new Date()
+      const firstDay = dateToFormatString( new Date(thisMonth.setDate(1)), '%YYYY%-%MM%-%DD%')
+      const endDay = dateToFormatString( new Date(thisMonth.setDate(35)), '%YYYY%-%MM%-%DD%')
+      console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
+      return [firstDay, endDay]
+    }
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1', getThisMonth(),
+        (_, { rows: { _array } }) => {
+          console.log('getNotice success : ', _array)
+          resolve(_array)
         }
-      }
-    )
+      )
+    })
   })
 }
 
