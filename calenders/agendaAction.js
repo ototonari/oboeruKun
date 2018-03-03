@@ -18,13 +18,15 @@ export async function initializeCalender(target) {
 
       console.log('setCalender title: ', title, ' page : ', page, ' memo : ', memo)
       const item = {
+        id: id,
+        noticeDate: day,
         title: title,
         page: page,
         memo: memo
       }
       items[day].push(item)
     }
-    self.setState({ items })
+    //self.setState({ items })
     console.log('items : ', items)
   }
   getNotice(setCalender)

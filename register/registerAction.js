@@ -88,7 +88,8 @@ export function arrangement(target) {
   // id登録後、callback処理にて各種データを登録、処理する
   insertMaster(title, register)
 
-  Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+  Actions.manager()
 }
 
 async function setNotification(id, notification) {

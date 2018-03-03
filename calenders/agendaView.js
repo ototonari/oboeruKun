@@ -2,22 +2,36 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  StyleSheet
+  TouchableHighlight,
+  Image,
+  StyleSheet,
 } from 'react-native';
-import {Agenda} from 'react-native-calendars';
+import { Agenda } from 'react-native-calendars';
+import { Actions, ActionConst } from "react-native-router-flux";
 import { getAllNoticeDate, getNotice } from "../database";
 import { initializeCalender } from "./agendaAction";
 import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
+import CellView from "./cellView";
+
+const rightButtons = [
+  <TouchableHighlight style={{
+    backgroundColor: 'white',
+    flex: 1,
+    padding: 10,
+    marginRight: 0,
+    marginTop: 17,
+    paddingLeft: 20,
+    alignContent: 'center',
+    justifyContent: 'center',
+  }} ><Image source={require('../assets/error.png')} style={{height: 30, width: 30}} /></TouchableHighlight>
+];
 
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: {
-        "2018-02-21": [{ name: 'hoge', height: 100 }, { name: 'nya', height: 50 }],
-        "2018-02-22": [{ name: 'huu', height: 200 }]
-      },
+      items: {},
       today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
     };
   }
@@ -26,7 +40,9 @@ export default class AgendaView extends Component {
     initializeCalender(this)
   }
 
+
   render() {
+    //console.log('Actions receive props : ', this.props)
     return (
       <Agenda
         items={this.state.items}
@@ -82,22 +98,8 @@ export default class AgendaView extends Component {
   }
 
   renderItem(item) {
-    const page = (item) => {
-      if (item !== null) {
-        return (<Text>Page: {item.startPage} ~ {item.endPage}</Text>)
-      }
-    }
-    const memo = (item) => {
-      if (item !== null) {
-        return (<Text>メモ: {item}</Text>)
-      }
-    }
     return (
-      <View style={[styles.item, {height: item.height}]}>
-        <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
-        { page(item.page) }
-        { memo(item.memo) }
-      </View>
+      <CellView item={item} />
     );
   }
 
@@ -109,7 +111,7 @@ export default class AgendaView extends Component {
   }
 
   rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
+    return r1.title !== r2.title;
   }
 
   timeToString(time) {
@@ -123,9 +125,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
     borderRadius: 5,
+    //borderTopLeftRadius: 5,
+    //borderBottomLeftRadius: 5,
     padding: 10,
     marginRight: 10,
-    marginTop: 17
+    marginTop: 10
   },
   emptyDate: {
     flex:1,

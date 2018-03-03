@@ -26,7 +26,7 @@ export function createDB() {
 export function initDB() {
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS master (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, alive INTEGER NOT NULL, title TEXT NOT NULL);',[],
+      'CREATE TABLE IF NOT EXISTS master (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL);',[],
       () => console.log('initDB, create master success') ,
       (error) => console.log('initDB, create master error: ', error)
     )
@@ -41,7 +41,7 @@ export function initDB() {
       (error) => console.log('initDB, create memo error: ', error)
     )
     tx.executeSql('SELECT * FROM memo', [], (_, { rows }) => console.log('select memo : ', rows));
-    // tx.executeSql( 'drop table memo' );
+    //tx.executeSql( 'drop table memo' );
 
   })
   db.transaction(tx => {
@@ -51,11 +51,11 @@ export function initDB() {
       (error) => console.log('initDB, create page error: ', error)
     )
     tx.executeSql('SELECT * FROM page', [], (_, { rows }) => console.log('select page : ', rows));
-    // tx.executeSql( 'drop table page' );
+    //tx.executeSql( 'drop table page' );
   })
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS notice (id INTEGER NOT NULL, notificationId TEXT, noticeDate BLOB);',[],
+      'CREATE TABLE IF NOT EXISTS notice (id INTEGER NOT NULL, notificationId TEXT, noticeDate BLOB, done INTEGER DEFAULT 1);',[],
       () => console.log('initDB, create notice success') ,
       (error) => console.log('initDB, create notice error: ', error)
     )
@@ -76,7 +76,7 @@ export function initDB() {
 export function insertMaster(title, callback) {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO master (alive, title) values (1, ?)', [title],
+      'INSERT INTO master (title) values (?)', [title],
       (_, { insertId }) => {
         console.log('insertMaster success : ', insertId)
         callback(insertId)
@@ -125,12 +125,12 @@ export async function getNotice(callback) {
     let thisMonth = new Date()
     const firstDay = dateToFormatString( new Date(thisMonth.setDate(1)), '%YYYY%-%MM%-%DD%')
     const endDay = dateToFormatString( new Date(thisMonth.setDate(33)), '%YYYY%-%MM%-%DD%')
+    console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
     return [firstDay, endDay]
   }
-  //console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
   db.transaction(tx => {
     tx.executeSql(
-      'SELECT * FROM notice WHERE noticeDate >= ?', getThisMonth(),
+      'SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1', getThisMonth(),
       (_, { rows: { _array } }) => {
         console.log('getNotice success : ', _array)
         if (callback) {
@@ -156,6 +156,17 @@ export async function getParams(column, tableName, id) {
       tx.executeSql(
         `SELECT ${column} FROM ${tableName} WHERE id = ?`, [id],
         (_, { rows: { _array } }) => resolve(_array)
+      )
+    })
+  })
+}
+
+export async function setNotice(value, noticeDate, id) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE notice SET done = ? WHERE id = ? AND noticeDate = ?', [value, id, noticeDate],
+
       )
     })
   })
