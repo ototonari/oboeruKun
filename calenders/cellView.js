@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Animated, Text, View, TouchableOpacity, TouchableHighlight, Image, TextInput, Switch, StyleSheet, Picker, Platform } from 'react-native';
+import { Animated, Alert, Text, View, TouchableOpacity, TouchableHighlight, Image, TextInput, Switch, StyleSheet, Picker, Platform } from 'react-native';
 import Swipeable from 'react-native-swipeable';
-import { setNotice } from "../database";
+import { setNotice, changeNotice } from "../database";
 import { Actions, ActionConst } from "react-native-router-flux";
-
+import { dateToFormatString } from "../dateToFormatString";
 
 
 export default class CellView extends Component {
@@ -44,19 +44,50 @@ export default class CellView extends Component {
       this.props.this.setState({ items })
     }
 
+    const error = () => {
+      const doAtTomorrow = () => {
+        let today = new Date(item.noticeDate)
+        today.setDate(today.getDate() + 1)
+        const nextDayString = dateToFormatString( today, '%YYYY%-%MM%-%DD%')
+        console.log('nextDayString: ', nextDayString)
+        changeNotice(nextDayString, item.noticeDate, item.id).then(() => {
+          let items = this.props.this.state.items
+          //console.log('start: ', items[item.noticeDate][0])
+          let spliceIndex
+          for(let i=0, j=items[item.noticeDate].length; i < j; i++) {
+            if(item.id == items[item.noticeDate][i].id) {
+              //console.log('hit obj : ', items[item.noticeDate][i])
+              spliceIndex = i
+              i = j
+            }
+          }
+          items[item.noticeDate].splice(spliceIndex, 1)
+          item.noticeDate = nextDayString      
+          items[nextDayString].push(item)
+  
+          this.props.this.setState({ items })
+        })
+      }
+      Alert.alert(
+        item.title,
+        'どうしますか？',
+        [
+          {text: '明日やる', onPress: () => doAtTomorrow(), style: 'cancel' },
+          {text: 'おいておく', onPress: () => console.log('Cancel Pressed'), style: 'default'},
+        ],
+        { cancelable: true }
+      )
+    }
+
     const rightButtons = [
-      <TouchableOpacity style={{
-        backgroundColor: 'white',
-        flex: 1,
-        padding: 10,
-        marginRight: 0,
-        marginTop: 17,
-        paddingLeft: 20,
-        alignContent: 'center',
-        justifyContent: 'center',
-      }}
-      onPress={() => success()}
-      ><Image source={require('../assets/success.png')} style={{height: 30, width: 30}} /></TouchableOpacity>
+      <TouchableOpacity style={styles.swipeButton}
+        onPress={() => success()} >
+        <Image source={require('../assets/success.png')} style={{height: 30, width: 30}} />
+      </TouchableOpacity>,
+      <TouchableOpacity style={styles.swipeButton}
+        onPress={() => error()} >
+        <Image source={require('../assets/error.png')} style={{height: 30, width: 30}} />
+      </TouchableOpacity>
     ];
 
 
@@ -90,5 +121,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 17,
     backgroundColor: 'white',
+  },
+  swipeButton: {
+    backgroundColor: 'white',
+    flex: 1,
+    padding: 10,
+    marginRight: 0,
+    marginTop: 17,
+    paddingLeft: 20,
+    alignContent: 'center',
+    justifyContent: 'center',
   }
 });

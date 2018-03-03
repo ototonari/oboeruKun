@@ -183,7 +183,17 @@ export async function setNotice(value, noticeDate, id) {
     db.transaction(tx => {
       tx.executeSql(
         'UPDATE notice SET done = ? WHERE id = ? AND noticeDate = ?', [value, id, noticeDate],
+      )
+    })
+  })
+}
 
+export async function changeNotice(nextNoticeDate, noticeDate, id) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE notice SET noticeDate = ? WHERE id = ? AND noticeDate = ?', [nextNoticeDate, id, noticeDate],
+        () => { resolve() }
       )
     })
   })

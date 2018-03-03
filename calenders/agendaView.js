@@ -12,7 +12,17 @@ import { getAllNoticeDate, getNotice } from "../database";
 import { initializeCalender } from "./agendaAction";
 import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
+import { Constants, Notifications, Permissions } from 'expo';
 import CellView from "./cellView";
+
+async function getiOSNotificationPermission() {
+  const { status } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  if (status !== 'granted') {
+    await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  }
+}
 
 
 export default class AgendaView extends Component {
@@ -24,9 +34,24 @@ export default class AgendaView extends Component {
     };
   }
 
+  componentWillMount() {
+    getiOSNotificationPermission();
+    this.listenForNotifications();
+  }
+
   componentDidMount() {
     initializeCalender(this)
   }
+
+  listenForNotifications = () => {
+    Notifications.addListener(notification => {
+      //console.log(notification.origin)
+      if (notification.origin === 'received' && Platform.OS === 'ios') {
+        //console.log(notification.data)
+        Alert.alert(notification.data.title, notification.data.body);
+      }
+    });
+  };
 
 
   render() {
