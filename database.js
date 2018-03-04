@@ -188,11 +188,22 @@ export async function setNotice(value, noticeDate, id) {
   })
 }
 
-export async function changeNotice(nextNoticeDate, noticeDate, id) {
+export async function getSpecificNotice(noticeDate, id) {
   return new Promise(resolve => {
     db.transaction(tx => {
       tx.executeSql(
-        'UPDATE notice SET noticeDate = ? WHERE id = ? AND noticeDate = ?', [nextNoticeDate, id, noticeDate],
+        'SELECT notificationId FROM notice WHERE id = ? AND noticeDate = ?', [id, noticeDate],
+        (_, { rows: { _array } }) => resolve(_array)
+      )
+    })
+  })
+}
+
+export async function changeNotice(nextNoticeDate, notificationId, noticeDate, id) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE notice SET noticeDate = ? notificationId = ? WHERE id = ? AND noticeDate = ?', [nextNoticeDate, notificationId, id, noticeDate],
         () => { resolve() }
       )
     })
