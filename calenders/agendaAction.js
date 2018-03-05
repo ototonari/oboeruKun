@@ -61,7 +61,8 @@ export async function changeNotification(item, registerdDate) {
     notification = await createNotificationObject(item)
     let notificationId
     notificationId = await registerNotification(notification, registerdDate, [1])
-    await changeNotice(item.noticeDate, notificationId, registerdDate, item.id)
+    console.log(notificationId)
+    // await changeNotice(item.noticeDate, notificationId, registerdDate, item.id)
   })
 }
 

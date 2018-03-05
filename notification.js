@@ -9,10 +9,13 @@ export async function cancelNotification(notificationId) {
 export async function registerNotification(notification, registerdDate, notificationDates) {
   return new Promise(resolve => {
     for (let i=0,j=notificationDates.length; i < j; i++) {
-      const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) }
+      //const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) }
+      const schedulingOptions = { time: new Date() }
       Notifications.scheduleLocalNotificationAsync(
         notification, schedulingOptions
-      ).then(notificationId => resolve(notificationId))
+      ).then((notificationId) => {
+        resolve(notificationId)
+      })
     }
   })
 }
@@ -30,10 +33,12 @@ async function changeDate(registerdDate, afterDay) {
 async function testChangeDate(registerdDate, afterDay) {
   let tmpDate = new Date(registerdDate)
   // 通知する日時をセットする
-  tmpDate.setDate(registerdDate.getDate())
+  tmpDate.setDate(tmpDate.getDate())
   //tmpDate.setHours(7)
-  tmpDate.setMinutes(registerdDate.getMinutes() + 1)
+  tmpDate.setMinutes(tmpDate.getMinutes() + 1)
   tmpDate.setSeconds(0)
+  tmpDate.setMilliseconds(0)
+  console.log(tmpDate)
   return tmpDate
 }
 
@@ -56,29 +61,29 @@ export async function createNotificationObject(dataObject) {
   return notification
 }
 
-// async function setNotification(id, notification) {
-//   const localnotification = notification
-//   const registerdDate = notification.registerd
-//   const notificationDates = [
-//     1,
-//     7,
-//     30
-//   ]
-//   for (let i = 0; i < notificationDates.length; i++) {
-//     const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) };
-//     Notifications.scheduleLocalNotificationAsync(
-//       localnotification,
-//       schedulingOptions
-//     ).then(async function (notificationId) {
-//       // 非同期処理成功
-//       //addNotice(localnotification, schedulingOptions.time, notificationId)
-//       const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
-//       //console.log('insert notice ::: ', registerdDate)
-//       insertNotice(id, notificationId, registerdDate)
-//     }).catch(function (error) {
-//       console.log(error)
-//     })
-//   }
-//   return
-// }
+async function sampleSetNotification(id, notification) {
+  const localnotification = notification
+  const registerdDate = notification.registerd
+  const notificationDates = [
+    1,
+    7,
+    30
+  ]
+  for (let i = 0; i < notificationDates.length; i++) {
+    const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) };
+    Notifications.scheduleLocalNotificationAsync(
+      localnotification,
+      schedulingOptions
+    ).then(async function (notificationId) {
+      // 非同期処理成功
+      //addNotice(localnotification, schedulingOptions.time, notificationId)
+      const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
+      //console.log('insert notice ::: ', registerdDate)
+      insertNotice(id, notificationId, registerdDate)
+    }).catch(function (error) {
+      console.log(error)
+    })
+  }
+  return
+}
 
