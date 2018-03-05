@@ -115,7 +115,10 @@ export async function arrangement(target) {
     //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
     Alert.alert(
       '登録しました','',
-      [{text: 'OK', onPress: () => Actions.manager() }]
+      [{text: 'OK', onPress: () => {
+        Actions.reset('tabbar')
+        
+      } }]
     )
   }
 }

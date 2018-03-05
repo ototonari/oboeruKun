@@ -6,7 +6,7 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import { Agenda } from 'react-native-calendars';
+import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { getAllNoticeDate, getNotice } from "../database";
 import { initializeCalender } from "./agendaAction";
@@ -14,6 +14,15 @@ import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
 import { Constants, Notifications, Permissions } from 'expo';
 import CellView from "./cellView";
+
+LocaleConfig.locales['jp'] = {
+  monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+  monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+  dayNames: ['日','月','火','水','木','金','土'],
+  dayNamesShort: ['日','月','火','水','木','金','土']
+};
+
+LocaleConfig.defaultLocale = 'jp';
 
 async function getiOSNotificationPermission() {
   const { status } = await Permissions.getAsync(
@@ -48,7 +57,7 @@ export default class AgendaView extends Component {
       //console.log(notification.origin)
       if (notification.origin === 'received' && Platform.OS === 'ios') {
         //console.log(notification.data)
-        Alert.alert(notification.data.title, notification.data.body);
+        //Alert.alert(notification.data.title, notification.data.body);
       }
     });
   };
@@ -56,15 +65,21 @@ export default class AgendaView extends Component {
 
   render() {
     //console.log('Actions receive props : ', this.props)
+    console.log('renderd')
     return (
       <Agenda
         items={this.state.items}
-        loadItemsForMonth={this.loadItems.bind(this)}
+        //loadItemsForMonth={this.loadItems.bind(this)}
+        // loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
+        // onDayPress={(day)=>{console.log('day pressed')}}
+        // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
         selected={this.state.today}
         renderItem={this.renderItem.bind(this)}
         renderEmptyDate={this.renderEmptyDate.bind(this)}
         rowHasChanged={this.rowHasChanged.bind(this)}
-        //maxDate={'2018-04-01'}
+        //maxDate={'2018-03-12'}
+        pastScrollRange={3}
+        futureScrollRange={3}
         //markingType={'interactive'}
         //markedDates={{
         //  '2017-05-08': [{textColor: '#666'}],

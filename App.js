@@ -8,6 +8,7 @@ import ConfigView from "./config/config";
 import Developers from "./config/developer"
 import { Step1, Step2, Step3 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
+import TitleList from "./config/titleList"
 
 export default class App extends React.Component {
   render() {
@@ -21,6 +22,7 @@ export default class App extends React.Component {
           </Scene>
           <Scene key="register" component={RegisterView} title={'登録画面'} />
           <Scene key="developers" component={Developers} title={'Developers'} />
+          <Scene key="titlelist" component={TitleList} title={'タイトル履歴'} />
           <Scene key="tutorial" hideNavBar >
             <Scene key="step1" component={Step1} title={'step1'} />
             <Scene key="step2" component={Step2} title={'step2'} />

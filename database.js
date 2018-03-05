@@ -433,6 +433,19 @@ export function getTitle(target) {
   })
 }
 
+export async function getAllTitle() {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM titleList', [],
+        (_, { rows: { _array } }) => {
+          resolve(_array)
+        }
+      )
+    })
+  })
+}
+
 export function deleteRow(target, id) {
   const self = target
   db.transaction(tx => {
