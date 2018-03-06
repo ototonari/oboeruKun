@@ -92,15 +92,7 @@ async function setNotification(id, notification) {
     30
   ]
   for (let i = 0; i < notificationDates.length; i++) {
-    function hogehoge(day) {
-      return new Promise(resolve => {
-        let tmpDate = new Date()
-        tmpDate.setDate(tmpDate.getDate() + day)
-        tmpDate.setHours(7,0,0,0)
-        resolve(tmpDate)
-      })
-    }
-    hogehoge(notificationDates[i]).then((date) => {
+    changeDate(notificationDates[i]).then((date) => {
       const schedulingOptions = { time: date }
       Notifications.scheduleLocalNotificationAsync(
         localnotification,
@@ -119,25 +111,15 @@ async function setNotification(id, notification) {
   return
 }
 
-async function changeDate(registerdDate, date) {
-  let tmpDate = new Date()
-  // 通知する日時をセットする
-  // tmpDate.setDate(tmpDate.getDate() + date)
-  // tmpDate.setHours(7)
-  // tmpDate.setMinutes(0)
-  // tmpDate.setSeconds(0)
-  return tmpDate
+function changeDate(day) {
+  return new Promise(resolve => {
+    let tmpDate = new Date()
+    tmpDate.setDate(tmpDate.getDate() + day)
+    tmpDate.setHours(7,0,0,0)
+    resolve(tmpDate)
+  })
 }
 
-function testChangeDate(registerdDate, date) {
-  let tmpDate = new Date(registerdDate)
-  // 通知する日時をセットする
-  tmpDate.setDate(registerdDate.getDate() + date)
-  //tmpDate.setHours(7)
-  tmpDate.setMinutes(registerdDate.getMinutes() + 1)
-  tmpDate.setSeconds(0)
-  return tmpDate
-}
 
 export function renderPageModalContent(target) {
   const self = target
