@@ -233,6 +233,16 @@ export function addNotice(taskData, noticeDate, notificationId) {
   })
 }
 
+export function deleteList(id) {
+  return new Promise(resolve =>{
+    db.transaction(tx => {
+      tx.executeSql(
+        'DELETE FROM titleList where id = ?', [id],
+        () => resolve()
+      )
+    })
+  })
+}
 
 export function createUpdateTable(callback) {
   db.transaction(tx => {
