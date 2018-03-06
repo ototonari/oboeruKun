@@ -10,9 +10,7 @@ export async function initializeCalender(target) {
   noticeArray =  await getNotice()
   let itemsObj = {}
   itemsObj = await makeItems(items, noticeArray)
-  //console.log('hogehgoehgoeeogh', items, noticeArray, itemsObj)
   self.setState({ items: itemsObj })
-    
 }
 
 

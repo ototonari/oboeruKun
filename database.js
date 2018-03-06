@@ -142,7 +142,7 @@ export async function getNotice() {
     const getThisMonth = () => {
       let thisMonth = new Date()
       const firstDay = dateToFormatString( new Date(thisMonth.setDate(1)), '%YYYY%-%MM%-%DD%')
-      const endDay = dateToFormatString( new Date(thisMonth.setDate(35)), '%YYYY%-%MM%-%DD%')
+      const endDay = dateToFormatString( new Date(thisMonth.setDate(thisMonth.getDate() + 35)), '%YYYY%-%MM%-%DD%')
       console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
       return [firstDay, endDay]
     }
