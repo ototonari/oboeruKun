@@ -5,6 +5,7 @@ import { Actions, ActionConst } from "react-native-router-flux";
 import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, insertPage, insertMemo, insertMaster, insertNotice } from "../database";
 import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
+import { registerNotification } from "../notification";
 
 export function validation(target, callback) {
   const self = target
@@ -31,8 +32,6 @@ export async function arrangement(target) {
   const title = self.state.title
   // ボディ
   let body = ''
-  // 登録日時
-  const registerdDate = new Date()
   
   // 通知API用のパラメータ
   let notification = {
@@ -42,7 +41,6 @@ export async function arrangement(target) {
     ios: {
       sound: true,
     },
-    registerd: registerdDate,
   }
   
   // タイトル履歴に保存
@@ -88,72 +86,40 @@ export async function arrangement(target) {
 
 async function setNotification(id, notification) {
   const localnotification = notification
-  const registerdDate = notification.registerd
   const notificationDates = [
     1,
     7,
     30
   ]
   for (let i = 0; i < notificationDates.length; i++) {
-    const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) };
-    Notifications.scheduleLocalNotificationAsync(
-      localnotification,
-      schedulingOptions
-    ).then(async function (notificationId) {
-      // 非同期処理成功
-      //addNotice(localnotification, schedulingOptions.time, notificationId)
-      const registerdDate = dateToFormatString(schedulingOptions.time, '%YYYY%-%MM%-%DD%')
-      //console.log('insert notice ::: ', registerdDate)
-      insertNotice(id, notificationId, registerdDate)
-    }).catch(function (error) {
-      console.log(error)
+    changeDate(notificationDates[i]).then((date) => {
+      const schedulingOptions = { time: date }
+      Notifications.scheduleLocalNotificationAsync(
+        localnotification,
+        schedulingOptions
+      ).then(async function (notificationId) {
+        // 非同期処理成功
+        const registerdDate = dateToFormatString(date, '%YYYY%-%MM%-%DD%')
+        //console.log('insert notice ::: ', registerdDate)
+        await insertNotice(id, notificationId, registerdDate)
+        console.log('notification added')
+      }).catch(function (error) {
+        console.log(error)
+      })
     })
   }
   return
 }
 
-async function notificationBasedOnForgettingCurve(notification) {
-  const localnotification = notification
-  const registerdDate = notification.registerd
-  const notificationDates = [
-    1,
-    7,
-    30
-  ]
-  for (let i = 0; i < notificationDates.length; i++) {
-    const schedulingOptions = { time: changeDate(registerdDate, notificationDates[i]) };
-    Notifications.scheduleLocalNotificationAsync(
-      localnotification,
-      schedulingOptions
-    ).then(function (notificationId) {
-      // 非同期処理成功
-      addNotice(localnotification, schedulingOptions.time, notificationId)
-    }).catch(function (error) {
-      console.log(error)
-    })
-  }
+function changeDate(day) {
+  return new Promise(resolve => {
+    let tmpDate = new Date()
+    tmpDate.setDate(tmpDate.getDate() + day)
+    tmpDate.setHours(7,0,0,0)
+    resolve(tmpDate)
+  })
 }
 
-
-function changeDate(registerdDate, date) {
-  let tmpDate = new Date(registerdDate)
-  // 通知する日時をセットする
-  tmpDate.setDate(registerdDate.getDate() + date)
-  tmpDate.setHours(7)
-  tmpDate.setMinutes(0)
-  tmpDate.setSeconds(0)
-  return tmpDate
-}
-
-function testChangeDate(registerdDate, date) {
-  let tmpDate = new Date(registerdDate)
-  // 通知する日時をセットする
-  tmpDate.setDate(registerdDate.getDate() + date)
-  //tmpDate.setHours(7)
-  tmpDate.setMinutes(registerdDate.getMinutes() + 1)
-  tmpDate.setSeconds(0)
-  return tmpDate
-}
 
 export function renderPageModalContent(target) {
   const self = target

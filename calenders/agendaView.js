@@ -5,6 +5,7 @@ import {
   TouchableHighlight,
   Image,
   StyleSheet,
+  Platform
 } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { Actions, ActionConst } from "react-native-router-flux";
@@ -56,7 +57,7 @@ export default class AgendaView extends Component {
     Notifications.addListener(notification => {
       //console.log(notification.origin)
       if (notification.origin === 'received' && Platform.OS === 'ios') {
-        //console.log(notification.data)
+        console.log('notification receaved', notification.data)
         //Alert.alert(notification.data.title, notification.data.body);
       }
     });
