@@ -48,43 +48,6 @@ export async function arrangement(target) {
   // タイトル履歴に保存
   checkTitle(title)
   
-  // // master への追加後,該当するアクションを行う
-  // const register = (insertId) => {
-  //   // master id
-  //   const id = insertId
-  //   // notification用データ
-  //   let data = { title: title }
-  //   if (self.state.page == true) {
-  //     // ページ範囲
-  //     const page = JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage })
-  //     console.log(page)
-  //     // dbに保存
-  //     insertPage(id, page)
-      
-  //     data['page'] = page
-
-  //     body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
-  //   }
-  
-  //   if (self.state.memo == true) {
-  //     // memo Text
-  //     const memo = self.state.memoValue
-  //     // dbに保存
-  //     insertMemo(id, memo)
-
-  //     data['memo'] = memo
-  //   }
-
-  //   if (self.state.notice == true) {
-  //     notification['title'] = title
-  //     notification['body'] = body
-  //     notification['data'] = data
-  //     setNotification(id, notification)
-  //   }
-    
-  //   Alert.alert('登録しました')
-  // }
-
   let id = 0
   // id登録後、callback処理にて各種データを登録、処理する
   id = await insertMaster(title)
@@ -147,55 +110,6 @@ async function setNotification(id, notification) {
     })
   }
   return
-}
-
-
-export function registerTask(target) {
-  const self = target
-
-  const title = self.state.title
-  let body = self.state.title + '  p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + '\n'
-  body += '本日は「 ' + self.state.title + ' 」を復習しましょう。'
-
-  // dbの性質上、textで格納する
-  const page = self.state.page === true ? JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage }) : JSON.stringify(null)
-
-  const registerdDate = new Date()
-  // notification に投げるためのデータ作成
-  let taskData = {
-    title: title,
-    body: body,
-    page: page,
-    data: {
-      title: title,
-      body: body,
-      page: page,
-    },
-    android: {
-      sound: true,
-    },
-    ios: {
-      sound: true,
-    },
-    registerd: registerdDate,
-
-  }
-
-  // add to titleDB
-  checkTitle(title)
-
-  // add to masterDB and others
-
-  // Notification API に登録
-  notificationBasedOnForgettingCurve(taskData)
-
-  // ユーザーに通知
-  Alert.alert('登録しました')
-  //Actions.reset('tabbar', { reload: true})
-  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
-  //Actions.pop({reload: true})
-  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP });
-  //Actions.tabbar({ type: ActionConst.REFRESH });
 }
 
 async function notificationBasedOnForgettingCurve(notification) {
@@ -323,3 +237,53 @@ function testCallback() {
   testArray.push(<Picker.Item key={String(1)} label = {String(1)} value = {String(1)} />)
   return testArray
 }
+
+
+export function registerTask(target) {
+  const self = target
+
+  const title = self.state.title
+  let body = self.state.title + '  p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + '\n'
+  body += '本日は「 ' + self.state.title + ' 」を復習しましょう。'
+
+  // dbの性質上、textで格納する
+  const page = self.state.page === true ? JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage }) : JSON.stringify(null)
+
+  const registerdDate = new Date()
+  // notification に投げるためのデータ作成
+  let taskData = {
+    title: title,
+    body: body,
+    page: page,
+    data: {
+      title: title,
+      body: body,
+      page: page,
+    },
+    android: {
+      sound: true,
+    },
+    ios: {
+      sound: true,
+    },
+    registerd: registerdDate,
+
+  }
+
+  // add to titleDB
+  checkTitle(title)
+
+  // add to masterDB and others
+
+  // Notification API に登録
+  notificationBasedOnForgettingCurve(taskData)
+
+  // ユーザーに通知
+  Alert.alert('登録しました')
+  //Actions.reset('tabbar', { reload: true})
+  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+  //Actions.pop({reload: true})
+  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP });
+  //Actions.tabbar({ type: ActionConst.REFRESH });
+}
+

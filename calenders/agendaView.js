@@ -65,7 +65,6 @@ export default class AgendaView extends Component {
 
   render() {
     //console.log('Actions receive props : ', this.props)
-    console.log('renderd')
     return (
       <Agenda
         items={this.state.items}
