@@ -59,7 +59,7 @@ export function initDB() {
       () => console.log('initDB, create notice success') ,
       (error) => console.log('initDB, create notice error: ', error)
     )
-    //tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
+    tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
     //tx.executeSql( 'drop table notice' );
 
   })
