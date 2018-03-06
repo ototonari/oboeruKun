@@ -1,20 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MeinmenuView from "./meinmenu/meinmenuView";
 import RegisterView from "./register/registerView";
-import ManagerView from "./manager/managerView";
 import { Actions, Router, Scene } from "react-native-router-flux";
 import { initialize } from "./update";
 import tabIcon from "./dummy/tabIcon";
 import ConfigView from "./config/config";
 import Developers from "./config/developer"
 import { Step1, Step2, Step3 } from "./dummy/tutorial";
-import CalenderView from "./dummy/calender";
 import AgendaView from "./calenders/agendaView";
-
+import TitleList from "./config/titleList"
 
 export default class App extends React.Component {
-  
   render() {
     initialize()
     return (
@@ -26,7 +22,7 @@ export default class App extends React.Component {
           </Scene>
           <Scene key="register" component={RegisterView} title={'登録画面'} />
           <Scene key="developers" component={Developers} title={'Developers'} />
-          <Scene key="calender" component={CalenderView} title={'Calender'} />
+          <Scene key="titlelist" component={TitleList} title={'タイトル履歴'} />
           <Scene key="tutorial" hideNavBar >
             <Scene key="step1" component={Step1} title={'step1'} />
             <Scene key="step2" component={Step2} title={'step2'} />

@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
         color: 'blue',
     },
     imageIcon: {
-      width: 35,
-      height: 35
+      width: 30,
+      height: 30
     }
 });
 
