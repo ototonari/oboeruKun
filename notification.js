@@ -6,17 +6,20 @@ export async function cancelNotification(notificationId) {
   Notifications.cancelScheduledNotificationAsync(notificationId)
 }
 
+// notificationId の配列を返す
 export async function registerNotification(notification, registerdDate, notificationDates) {
   return new Promise(resolve => {
+    let notificationIdList = []
     for (let i=0,j=notificationDates.length; i < j; i++) {
       //const schedulingOptions = { time: testChangeDate(registerdDate, notificationDates[i]) }
-      const schedulingOptions = { time: new Date() }
+      const schedulingOptions = { time: changeDate(registerdDate, notificationDates[i]) }
       Notifications.scheduleLocalNotificationAsync(
         notification, schedulingOptions
       ).then((notificationId) => {
-        resolve(notificationId)
+        notificationIdList.push(notificationId)
       })
     }
+    return notificationIdList
   })
 }
 
