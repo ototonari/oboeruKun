@@ -141,8 +141,8 @@ export async function getNotice() {
   return new Promise(resolve => {
     const getThisMonth = () => {
       let thisMonth = new Date()
+      const endDay = dateToFormatString( new Date(thisMonth.setMonth(thisMonth.getMonth() + 1)), '%YYYY%-%MM%-%DD%')
       const firstDay = dateToFormatString( new Date(thisMonth.setDate(1)), '%YYYY%-%MM%-%DD%')
-      const endDay = dateToFormatString( new Date(thisMonth.setDate(thisMonth.getDate() + 35)), '%YYYY%-%MM%-%DD%')
       console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
       return [firstDay, endDay]
     }

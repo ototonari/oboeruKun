@@ -59,10 +59,11 @@ function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  //Actions.step1()
+  Actions.step1()
 }
 
 export function endTutorial() {
-  Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+  Actions.reset('tabbar')
 }
 

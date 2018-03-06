@@ -126,7 +126,6 @@ export default class AgendaView extends Component {
   }
 
   renderItem(item) {
-    console.log('item : ', item)
     return (
       <CellView item={item} this={this} />
     );
