@@ -31,7 +31,7 @@ export default class TitleList extends Component {
           console.log('hit : ', tmpItem)
           deleteList(id).then(() => {
             let newItems = this.state.items
-            if (newItems.length > 0) {
+            if (newItems.length > 1) {
               const spliceIndex = i
               newItems.splice(spliceIndex, 1)
             } else {

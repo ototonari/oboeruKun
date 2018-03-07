@@ -59,7 +59,7 @@ function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  Actions.step1()
+  //Actions.step1()
 }
 
 export function endTutorial() {

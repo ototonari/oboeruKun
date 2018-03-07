@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Image, TextInput, Switch, Picker, Platform } from 'react-native';
+import { Text, View, TouchableOpacity, Image, TextInput, Switch, ScrollView, Picker, Platform, Keyboard } from 'react-native';
 import styles from "./registerStyle";
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
@@ -22,6 +22,7 @@ export default class RegisterView extends Component {
       titleList: [],
       titleIndex: null,
       noticeMethod: 'forgetting',
+      keyboardHidden: true
     }
   }
 
@@ -47,7 +48,7 @@ export default class RegisterView extends Component {
           maxLength={200} />
         <View style={{position: 'relative', alignContent: 'flex-end'}} >
           <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
-            <Image source={require('../assets/titleList.png')} style={styles.styles.titleListIcom} />
+            <Image source={require('../assets/modalButton.png')} style={styles.styles.titleListIcom} />
           </TouchableOpacity>
         </View>
           
@@ -143,29 +144,58 @@ export default class RegisterView extends Component {
     )
   }
 
+  componentWillMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+  }
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+  
   componentDidMount() {
     createDB()
     getTitle(this)
   }
 
+  _keyboardDidShow () {
+    console.log('Keyboard Shown');
+    this.setState({ keyboardHidden: false })
+  }
+
+  _keyboardDidHide () {
+    console.log('Keyboard Hidden');
+    this.setState({ keyboardHidden: true })
+  }
+
+
   render () {
     return (
+      <TouchableOpacity style={styles.container.container}
+      disabled={this.state.keyboardHidden}
+      onPress={Keyboard.dismiss} accessible={false}
+      >
       <View style={styles.container.container} >
         <View style={styles.container.view} >
-          <View style={styles.params.title} >
-            { this._title() }
-          </View>
+          <ScrollView style={{ flex: 1 }} >
+            <View style={styles.params.title} >
+              { this._title() }
+            </View>
 
-          <View style={styles.params.param} >
-            { this._page() }
-          </View>
-          <View style={styles.params.param} >
-            { this._memo() }
-          </View>
-          <View style={styles.params.notice} >
-            { this._notice() }
-          </View>
-
+            <View style={styles.params.param} >
+              { this._page() }
+            </View>
+            <View style={styles.params.param} >
+              { this._memo() }
+            </View>
+            <View style={styles.params.notice} >
+              { this._notice() }
+            </View>
+            <View style={styles.container.blank} >
+              
+            </View>
+          </ScrollView>
         </View>
         <View style={styles.container.register} >
           { this._renderButton('登録',() => validation(this, arrangement) , styles.styles.registerButton) }
@@ -183,6 +213,7 @@ export default class RegisterView extends Component {
         
         
       </View>
+      </TouchableOpacity>
     )
   }
 }

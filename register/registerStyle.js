@@ -4,11 +4,12 @@ import { StyleSheet } from 'react-native';
 const container = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    
   },
   view: {
     flex: 9,
-    alignItems: 'center',
+    //alignItems: 'center',
   },
   register: {
     flex: 1,
@@ -54,6 +55,9 @@ const container = StyleSheet.create({
     padding: 10,
     borderWidth: 0,
     borderColor: 'blue'  
+  },
+  blank: {
+    height: 300
   }
 })
 
@@ -146,11 +150,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'whitesmoke'
   },
   titleListIcom: {
-    width: 18,
-    height: 18,
+    width: 25,
+    height: 25,
     position: 'absolute',
-    top: 6,
-    right: 8,
+    top: 3,
+    right: 5,
     overflow: 'visible'
   }
 })
