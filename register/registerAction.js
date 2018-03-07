@@ -65,7 +65,7 @@ export async function arrangement(target) {
     const memo = self.state.memoValue
     // dbに保存
     insertMemo(id, memo)
-
+    body += `\nメモ: ${memo}`
     data['memo'] = memo
   }
   if (self.state.notice == true) {
