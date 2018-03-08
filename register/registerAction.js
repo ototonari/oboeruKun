@@ -145,8 +145,39 @@ export function renderPageModalContent(target) {
   }
   return (
     <View style={styles.container.pageModal} >
-      <Picker onValueChange={ (value) => func(value)} selectedValue = {selected} style={{ width: '100%', height: 200 }} >
+      <Picker onValueChange={ (value) => func(value) } selectedValue = {selected} style={{ width: '100%', height: 200 }} >
         { _renderPickerItems(modalNumber) }
+      </Picker>
+      <TouchableOpacity onPress={() => self.setState({visibleModal: null})}>
+        <View style={styles.styles.modalButton}>
+          <Text style={styles.styles.registerText} >決定</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+export function testRenderPageModalContent(target) {
+  const self = target
+  const flug = self.state.visibleModal
+  let selected
+  let pageSelectFunction
+  // stargPage modal
+  if (flug === 1) {
+    selected = self.state.startPage
+    pageSelectFunction = (page) => {
+      self.setState({ startPage: selected})
+    }
+  } else if (flug === 2) {
+    selected = self.state.endPage
+    pageSelectFunction = (page) => {
+      self.setState({ endPage: selected})
+    }
+  }
+  return (
+    <View style={styles.container.pageModal} >
+      <Picker onValueChange={ (value) => pageSelectFunction(value) } selectedValue = {self.state.startPage} style={{ width: '100%', height: 200 }} >
+        { _renderPickerItems(flug) }
       </Picker>
       <TouchableOpacity onPress={() => self.setState({visibleModal: null})}>
         <View style={styles.styles.modalButton}>

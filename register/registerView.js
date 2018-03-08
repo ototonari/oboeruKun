@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, Image, TextInput, Switch, ScrollView, Pic
 import styles from "./registerStyle";
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
-import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement } from "./registerAction";
+import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement, testRenderPageModalContent } from "./registerAction";
 import { createDB, getTitle } from "../database";
 
 export default class RegisterView extends Component {
@@ -92,6 +92,47 @@ export default class RegisterView extends Component {
     }
   }
 
+  _renderPageModal = () => (
+    <TouchableOpacity style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignContent: 'center'
+    }}
+    disabled={(this.state.visibleModal === 1 || this.state.visibleModal === 2) ? false : true }
+    onPress={() => this.setState({ visibleModal: null })} accessible={false} >
+    <View style={styles.container.pageModal} >
+      <Picker onValueChange={(value, index) => {
+        if(this.state.visibleModal === 1) {
+          if (Number(value) > Number(this.state.endPage)) {
+          this.setState({startPage: value, endPage: value})
+          } else {
+            this.setState({ startPage: value })
+          }
+        }
+        if(this.state.visibleModal === 2) {
+          if (!(Number(value) < Number(this.state.startPage))) {
+            this.setState({ endPage: value })
+          }
+        }
+      } } 
+      selectedValue={ (this.state.visibleModal === 1) ? this.state.startPage : this.state.endPage } 
+      style={{ width: '100%', flex: 0.6 }} >
+        { this._renderPickerItems() }
+      </Picker>
+    </View>
+    </TouchableOpacity>
+  )  
+  
+
+  _renderPickerItems = (modalNumber) => {
+    const srvItems = []
+    for (let i = 1; i <= 500 ; i++){
+      srvItems.push(<Picker.Item key={String(i)} label = {String(i)} value = {String(i)} />)
+    }
+    return srvItems
+  }
+  
+
   _memo = () => (
     <View style={styles.container.page} >
       <View style={styles.container.switch} >
@@ -115,7 +156,7 @@ export default class RegisterView extends Component {
           <TextInput 
             style={styles.styles.inputBox}
             multiline={true}
-            maxLength={200}
+            maxLength={400}
             onChangeText={(text) => this.setState({memoValue: text})}
             value={this.state.memoValue}
               />
@@ -172,10 +213,11 @@ export default class RegisterView extends Component {
 
   render () {
     return (
-      <TouchableOpacity style={styles.container.container}
-      disabled={this.state.keyboardHidden}
-      onPress={Keyboard.dismiss} accessible={false}
-      >
+      // 画面全体に判定を持ち、条件に応じて処理する。
+      <TouchableOpacity style={styles.container.modalBackground}
+        disabled={this.state.keyboardHidden}
+        onPress={Keyboard.dismiss} accessible={false} >
+
       <View style={styles.container.container} >
         <View style={styles.container.view} >
           <ScrollView style={{ flex: 1 }} >
@@ -201,10 +243,10 @@ export default class RegisterView extends Component {
           { this._renderButton('登録',() => validation(this, arrangement) , styles.styles.registerButton) }
         </View>
         <Modal isVisible={this.state.visibleModal === 1}>
-          { renderPageModalContent(this) }
+          { this._renderPageModal() }
         </Modal>
         <Modal isVisible={this.state.visibleModal === 2}>
-          { renderPageModalContent(this) }
+          { this._renderPageModal() }
         </Modal>
         <Modal isVisible={this.state.visibleModal === 3}>
           { renderTitleModalContent(this) }

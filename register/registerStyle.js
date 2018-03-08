@@ -46,10 +46,14 @@ const container = StyleSheet.create({
   },
   pageModal: {
     backgroundColor: 'white', 
-    flex: 0.6 , 
+    flex: 0.4,
     justifyContent: 'space-between',
+    alignContent: 'center',
     borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalBackground: {
+    flex: 1,
   },
   boxContainer: {
     padding: 10,
@@ -143,7 +147,7 @@ const styles = StyleSheet.create({
     right: 5
   },
   inputBox: {
-    height: 60,
+    height: 80,
     borderWidth: 2,
     borderRadius: 5,
     borderColor: 'powderblue',
