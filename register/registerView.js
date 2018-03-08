@@ -56,6 +56,34 @@ export default class RegisterView extends Component {
     </View>
   )
 
+  _renderTitleModal = () => (
+    <TouchableOpacity style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignContent: 'center'
+    }}
+    disabled={(this.state.visibleModal === 3) ? false : true }
+    onPress={() => this.setState({ visibleModal: null })} accessible={false} >
+    <View style={styles.container.pageModal} >
+      <Picker onValueChange={(value, index) => this.setState({ title: value }) } 
+      selectedValue={ this.state.title } 
+      style={{ width: '100%', flex: 0.6 }} >
+        { this._renderTitlePickerItems(this.state.titleList) }
+      </Picker>
+    </View>
+    </TouchableOpacity>
+  )
+
+  _renderTitlePickerItems = (array) => {
+    const srvItems = []
+    srvItems.push(<Picker.Item key={-1} label = {'選択してください'} value = {''} />)
+    array.forEach( (value, index) => {
+      srvItems.push(<Picker.Item key={index} label = {String(value.title)} value = {String(value.title)} />)
+    })
+    return srvItems
+  }
+  
+
   _page = () => (
     <View style={styles.container.page} >
       <View style={styles.container.switch} >
@@ -196,7 +224,6 @@ export default class RegisterView extends Component {
   }
   
   componentDidMount() {
-    createDB()
     getTitle(this)
   }
 
@@ -249,7 +276,7 @@ export default class RegisterView extends Component {
           { this._renderPageModal() }
         </Modal>
         <Modal isVisible={this.state.visibleModal === 3}>
-          { renderTitleModalContent(this) }
+          { this._renderTitleModal() }
         </Modal>
         
         
