@@ -73,15 +73,17 @@ export async function arrangement(target) {
     notification['body'] = body
     notification['data'] = data
     await setNotification(id, notification)
-    //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
-    Alert.alert(
-      '登録しました','',
-      [{text: 'OK', onPress: () => {
-        Actions.reset('tabbar')
-        
-      } }]
-    )
+  } else if (self.state.notice == false) {
+    const today = dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
+    await insertNotice(id, null, today)
   }
+  Alert.alert(
+    '登録しました','',
+    [{text: 'OK', onPress: () => {
+      Actions.reset('tabbar')
+      
+    } }]
+  )
 }
 
 async function setNotification(id, notification) {

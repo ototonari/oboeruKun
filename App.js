@@ -9,7 +9,7 @@ import Developers from "./config/developer"
 import { Step1, Step2, Step3 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
-
+import { NoticeSetting, RegisterSetting} from "./config/noticeSetting"
 
 export default class App extends React.Component {
   render() {
@@ -41,6 +41,14 @@ export default class App extends React.Component {
           <Scene key="register" component={RegisterView} title={'登録画面'} />
           <Scene key="developers" component={Developers} title={'Developers'} />
           <Scene key="titlelist" component={TitleList} title={'タイトル履歴'} />
+          <Scene 
+            key="noticesetting" 
+            component={NoticeSetting} 
+            title={'通知間隔の設定'} 
+            rightButtonImage={require('./assets/plus.png')}
+            onRight={() => Actions.registersetting()}
+          />
+          <Scene key="registersetting" component={RegisterSetting} />
           <Scene key="tutorial" hideNavBar >
             <Scene key="step1" component={Step1} title={'step1'} />
             <Scene key="step2" component={Step2} title={'step2'} />

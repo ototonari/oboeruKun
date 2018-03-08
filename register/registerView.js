@@ -4,7 +4,7 @@ import styles from "./registerStyle";
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
 import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement, testRenderPageModalContent } from "./registerAction";
-import { createDB, getTitle } from "../database";
+import { createDB, getTitle, getAllParams } from "../database";
 
 export default class RegisterView extends Component {
   constructor(props) {
@@ -13,7 +13,6 @@ export default class RegisterView extends Component {
       page: true,
       memo: false,
       memoValue: '',
-      notice: true,
       visibleModal: null,
       startPage: '1',
       endPage: '1',
@@ -21,7 +20,10 @@ export default class RegisterView extends Component {
       titleError: '',
       titleList: [],
       titleIndex: null,
-      noticeMethod: 'forgetting',
+      notice: false,
+      noticeInterval: [],
+      noticeId: 1,
+      noticeName: '忘却曲線に基づいた通知',
       keyboardHidden: true
     }
   }
@@ -193,21 +195,42 @@ export default class RegisterView extends Component {
     }
   }
 
-  _notice = () => {
-    let data = [
-      {
-        value: '忘却曲線に基づいた通知',
-        key: 'forgetting',
-      }
-    ];
+  _notice = () => (
+    <View style={styles.container.page} >
+      <View style={styles.container.switch} >
+        <Text style={styles.styles.titleLabel} >通知</Text>
+        <Switch
+          onValueChange={() => this.setState({notice: !this.state.notice})}
+          value={this.state.notice}
+          
+        />
+      </View>
+      { this._renderNoticeList() }
+    </View>
+  )
+
+  _renderNoticeList = () => {
+    if (this.state.notice == false) return
+
+    let data = []
+    for (let i=0,j=this.state.intervalList.length; i < j; i++) {
+      const name = this.state.intervalList[i].name
+      const id = this.state.intervalList[i].id
+      data.push({
+        index: id,
+        value: name,
+      })
+    }
 
     return (
     <View  >
       <Dropdown
         label='通知方法'
         data={data}
-        value={data[0].value}
-        onChangeText={ (value, index, data) => {this.setState({noticeMethod: data[index].key}); console.log(value + index + data[index].key) }}
+        value={this.state.noticeName}
+        onChangeText={ (value, index, data) => {
+          this.setState({ noticeId: index, noticeName: value })
+        }}
       />
     </View>
     )
@@ -216,6 +239,13 @@ export default class RegisterView extends Component {
   componentWillMount () {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    const setInterval = async () => {
+      let intervalList
+      intervalList = await getAllParams('id, name', 'noticeInterval')
+      console.log('intervalList : ', intervalList)
+      this.setState({ intervalList, notice: true })
+    }
+    setInterval()
   }
 
   componentWillUnmount () {
@@ -258,7 +288,7 @@ export default class RegisterView extends Component {
             <View style={styles.params.param} >
               { this._memo() }
             </View>
-            <View style={styles.params.notice} >
+            <View style={styles.params.param} >
               { this._notice() }
             </View>
             <View style={styles.container.blank} >

@@ -5,6 +5,7 @@ import { setNotice, changeNotice } from "../database";
 import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from "../dateToFormatString";
 import { changeNotification } from "./agendaAction";
+import { cancelNotification } from "../notification";
 
 export default class CellView extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ export default class CellView extends Component {
     //let { fadeAnim, offsetX } = this.state
     const success = () => {
       //console.log('item param change : ', item)
+      if(item.notificationId !== null) cancelNotification(item.notificationId)
       setNotice(0, item.noticeDate, item.id)
       let items = this.props.this.state.items
       //console.log('start: ', items[item.noticeDate][0])
