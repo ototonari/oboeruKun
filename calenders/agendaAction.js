@@ -42,7 +42,7 @@ async function makeItems(items, array) {
       page: page,
       memo: memo
     }
-    console.log('setCalender obj: ', item)
+    //console.log('setCalender obj: ', item)
     items[day].push(item)
   }
   return items

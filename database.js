@@ -2,7 +2,6 @@ import { SQLite } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from './dateToFormatString';
 
-
 const db = SQLite.openDatabase('db.db');
 
 export function createDB() {
@@ -150,7 +149,7 @@ export async function getNotice() {
       tx.executeSql(
         'SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1', getThisMonth(),
         (_, { rows: { _array } }) => {
-          console.log('getNotice success : ', _array)
+          //console.log('getNotice success : ', _array)
           resolve(_array)
         }
       )
@@ -355,10 +354,6 @@ export function checkTitle(title) {
   })
 }
 
-function countLength() {
-
-}
-
 function sortTitle(count, title) {
   let i = count
   if (i > 0) {
@@ -470,4 +465,28 @@ function sortedNoticeDate(target, array, callback) {
     return (a.noticeDate > b.noticeDate ? 1 : -1)
   })
   callback(target, array)
+}
+
+export function showNotificationTable() {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'select * from notification', [],
+        (_, { rows: { _array } }) => {
+          resolve(_array)
+        },
+        resolve()
+      )
+    })
+  })
+}
+
+export function dropNotificationTable() {
+  return new Promise(resolve => {
+    tx.executeSql(
+      'drop table notification', [],
+      resolve(),
+      resolve()
+    )
+  })
 }
