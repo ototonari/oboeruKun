@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity, Image, FlatList, StyleSheet, ScrollView } from 'react-native';
 import Swipeable from 'react-native-swipeable';
 import { getAllParams, deleteList } from "../database";
-
+import styles from "../register/registerStyle";
 
 export class NoticeSetting extends Component {
   constructor (props) {
@@ -45,9 +45,9 @@ export class NoticeSetting extends Component {
     }
 
     const rightButtons = [
-      <TouchableOpacity style={styles.swipeButton}
+      <TouchableOpacity style={localStyles.swipeButton}
         onPress={() => deleteItem(item.id)} >
-        <Image source={require('../assets/error.png')} style={styles.image} />
+        <Image source={require('../assets/error.png')} style={localStyles.image} />
       </TouchableOpacity>,
     ];
 
@@ -60,7 +60,7 @@ export class NoticeSetting extends Component {
 
     return(
       <Swipeable rightButtons={rightButtons} rightButtonWidth={70}  >
-        <View style={styles.container} >
+        <View style={localStyles.container} >
           <Text style={{fontSize: 18, }} >{item.name}</Text>
           <Text style={{fontSize: 14,paddingLeft: 10 }} >{msg}</Text>
         </View>
@@ -70,7 +70,7 @@ export class NoticeSetting extends Component {
   
   render () {
     return (
-      <View style={styles.background} >
+      <View style={localStyles.background} >
         <FlatList
           data={this.state.items}
           keyExtractor={(item) => item.id}
@@ -86,16 +86,61 @@ export class NoticeSetting extends Component {
 export class RegisterSetting extends Component {
   constructor(props) {
     super(props)
-
+    this.state = {
+      title: ''
+    }
   }
+
+  _renderButton = (text, onPress, style) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={style}>
+        <Text style={styles.styles.registerText} >{text}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+
+
+  _title = () => (
+    <View style={styles.container.title} >
+      <View style={{ flex: 1 }} >
+        <Text style={styles.styles.titleLabel} >タイトル</Text>
+        <Text style={{ color: 'red' }} >{ this.state.titleError }</Text>
+      </View>
+      <View style={{ flex: 1 }} >
+        <TextInput
+          style={styles.styles.titleInputBox}
+          onChangeText={(text) => this.setState({title: text})}
+          value={this.state.title}
+          maxLength={200} />          
+      </View>
+    </View>
+  )
+
   render () {
     return (
-      <Text>hoge</Text>
+      <View style={styles.container.container} >
+        <View style={styles.container.view} >
+          <View style={styles.params.title} >
+            { this._title() }
+          </View>
+          <ScrollView style={{ flex: 1 }} >
+
+            <View style={styles.params.param} >
+            </View>
+            <View style={styles.container.blank} >
+              
+            </View>
+          </ScrollView>
+        </View>
+        <View style={styles.container.register} >
+          { this._renderButton('登録',() => console.log('registerButton pressed') , styles.styles.registerButton) }
+        </View>        
+      </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
     marginTop: 5,
     marginLeft: 10,
