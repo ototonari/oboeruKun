@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import RegisterView from "./register/registerView";
-import { Actions, Router, Scene } from "react-native-router-flux";
+import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
 import { initialize } from "./update";
-import tabIcon from "./dummy/tabIcon";
+import TabIcon from "./dummy/tabIcon";
 import ConfigView from "./config/config";
 import Developers from "./config/developer"
 import { Step1, Step2, Step3 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
+
 
 export default class App extends React.Component {
   render() {
@@ -16,10 +17,27 @@ export default class App extends React.Component {
     return (
       <Router>
         <Scene key="root"  >
-          <Scene key="tabbar" tabs >
-            <Scene key="manager" initial component={AgendaView} icon={tabIcon} onRight={() => Actions.register()} rightButtonImage={require('./assets/plus.png')} />
-            <Scene key="config" component={ConfigView} icon={tabIcon} />
-          </Scene>
+          <Tabs 
+            key="tabbar" 
+            swipeEnabled={ false }
+           >
+            <Scene 
+              key="manager"
+              iconName="agenda"
+              title="タスク一覧"
+              initial={true}
+              component={AgendaView} 
+              icon={TabIcon} 
+              onRight={() => Actions.register()} 
+              rightButtonImage={require('./assets/plus.png')} 
+            />
+            <Scene 
+              key="config" 
+              title="設定"
+              component={ConfigView} 
+              icon={TabIcon} 
+            />
+          </Tabs>
           <Scene key="register" component={RegisterView} title={'登録画面'} />
           <Scene key="developers" component={Developers} title={'Developers'} />
           <Scene key="titlelist" component={TitleList} title={'タイトル履歴'} />
@@ -34,11 +52,3 @@ export default class App extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

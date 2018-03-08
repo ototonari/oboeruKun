@@ -12,7 +12,7 @@ const container = StyleSheet.create({
     //alignItems: 'center',
   },
   register: {
-    flex: 1,
+    height: 70
   },
   title: {
     width: '100%',
