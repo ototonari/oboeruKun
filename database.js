@@ -155,8 +155,9 @@ export async function insertNotice(id, notificationId, noticeDate) {
   })
 }
 
-export function insertNoticeInterval(intervalList, name) {
+export function insertNoticeInterval(list, name) {
   return new Promise(resolve => {
+    const intervalList = JSON.stringify(list)
     db.transaction(tx => {
       tx.executeSql(
         'INSERT INTO noticeInterval (interval, name) values (?, ?)', [intervalList, name],
@@ -220,6 +221,17 @@ export function getAllParams(column, tableName) {
       tx.executeSql(
         `SELECT ${column} FROM ${tableName}`, [],
         (_, { rows: { _array } }) => resolve(_array)
+      )
+    })
+  })
+}
+
+export function deleteParams(tableName, id) {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `DELETE FROM ${tableName} WHERE id = ?`, [id],
+        () => resolve()
       )
     })
   })

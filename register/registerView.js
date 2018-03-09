@@ -217,7 +217,7 @@ export default class RegisterView extends Component {
       const name = this.state.intervalList[i].name
       const id = this.state.intervalList[i].id
       data.push({
-        index: id,
+        id: id,
         value: name,
       })
     }
@@ -229,7 +229,8 @@ export default class RegisterView extends Component {
         data={data}
         value={this.state.noticeName}
         onChangeText={ (value, index, data) => {
-          this.setState({ noticeId: index, noticeName: value })
+          this.setState({ noticeId: data[index].id, noticeName: value })
+          //console.log(`id: ${data[index].id}  value: ${value}`)
         }}
       />
     </View>

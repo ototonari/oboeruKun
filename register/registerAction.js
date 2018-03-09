@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Alert, View, Picker, TouchableOpacity, Text } from 'react-native';
 import { Constants, Notifications, Permissions } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
-import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, insertPage, insertMemo, insertMaster, insertNotice } from "../database";
+import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, insertPage, insertMemo, insertMaster, insertNotice, getParams } from "../database";
 import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
 import { registerNotification } from "../notification";
@@ -72,7 +72,13 @@ export async function arrangement(target) {
     notification['title'] = title
     notification['body'] = body
     notification['data'] = data
-    await setNotification(id, notification)
+    const noticeId = self.state.noticeId
+    let notificationDates
+    notificationDates = await getParams('interval', 'noticeInterval', noticeId)
+    notificationDates = JSON.parse(notificationDates[0].interval)
+
+    console.log(notificationDates)
+    await setNotification(id, notification, notificationDates)
   } else if (self.state.notice == false) {
     const today = dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
     await insertNotice(id, null, today)
@@ -86,15 +92,11 @@ export async function arrangement(target) {
   )
 }
 
-async function setNotification(id, notification) {
+async function setNotification(id, notification, list) {
   const localnotification = notification
-  const notificationDates = [
-    1,
-    7,
-    30
-  ]
+  const notificationDates = list
   for (let i = 0; i < notificationDates.length; i++) {
-    changeDate(notificationDates[i]).then((date) => {
+    changeDate(Number(notificationDates[i])).then((date) => {
       const schedulingOptions = { time: date }
       Notifications.scheduleLocalNotificationAsync(
         localnotification,

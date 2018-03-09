@@ -24,7 +24,7 @@ export default class App extends React.Component {
             <Scene 
               key="manager"
               iconName="agenda"
-              title="タスク一覧"
+              title="カレンダー"
               initial={true}
               component={AgendaView} 
               icon={TabIcon} 
