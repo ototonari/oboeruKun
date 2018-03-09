@@ -223,7 +223,7 @@ function addItem(target) {
     day: intervalDay
   }
   items.push(item)
-  target.setState({ items, intervalDay: 1, selected: target.state.selected++ })
+  target.setState({ items, selected: target.state.selected++ })
 }
 
 function deleteItem(target, id) {
@@ -265,7 +265,7 @@ async function addNoticeInterval(list, name) {
     Alert.alert(
       '登録しました','',
       [{text: 'OK', onPress: () => {
-        Actions.reset('noticesetting')
+        Actions.reset('tabbar')
       } }]
     )  
   })
