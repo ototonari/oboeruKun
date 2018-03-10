@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: '100%',
     fontSize: 20,
+    paddingLeft: 5,
     borderRadius: 5,
     borderColor: 'powderblue',
     borderWidth: 2,
@@ -150,6 +151,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderWidth: 2,
     borderRadius: 5,
+    paddingLeft: 5,
     borderColor: 'powderblue',
     backgroundColor: 'whitesmoke'
   },

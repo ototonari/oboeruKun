@@ -53,19 +53,21 @@ export async function arrangement(target) {
   let data = { title: title }
   if (self.state.page == true) {
     // ページ範囲
-    const page = JSON.stringify({ startPage: self.state.startPage, endPage: self.state.endPage })
+    const { startPage, endPage } = self.state
+    const page = JSON.stringify({ startPage: startPage, endPage: endPage })
     console.log(page)
     // dbに保存
     insertPage(id, page)
     data['page'] = page
-    body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
+    body += `範囲: p.${startPage} ~ p.${endPage}\n`
+    //body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
   }
   if (self.state.memo == true) {
     // memo Text
     const memo = self.state.memoValue
     // dbに保存
     insertMemo(id, memo)
-    body += `\nメモ: ${memo}`
+    body += `メモ: ${memo}`
     data['memo'] = memo
   }
   if (self.state.notice == true) {
@@ -120,6 +122,15 @@ function changeDate(day) {
     let tmpDate = new Date()
     tmpDate.setDate(tmpDate.getDate() + day)
     tmpDate.setHours(7,0,0,0)
+    resolve(tmpDate)
+  })
+}
+
+function testChangeDate(day) {
+  return new Promise(resolve => {
+    let tmpDate = new Date()
+    tmpDate.setDate(tmpDate.getDate())
+    tmpDate.setMinutes(tmpDate.getMinutes() + 1)
     resolve(tmpDate)
   })
 }
