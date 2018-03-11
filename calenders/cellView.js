@@ -140,6 +140,12 @@ export default class CellView extends Component {
       
     ];
 
+    let hoge
+    if(Platform.OS === 'ios') {
+      hoge = () => (<Text>ios</Text>)
+    } else if (Platform.OS === 'android') {
+      hoge = () => (<Text>android</Text>)
+    }
 
     return (
       <Swipeable rightButtons={rightButtons} rightButtonWidth={70}  >
@@ -147,6 +153,7 @@ export default class CellView extends Component {
           <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
           { page(item.page) }
           { memo(item.memo) }
+          { hoge() }
         </View>
       </Swipeable>
     )

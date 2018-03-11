@@ -58,7 +58,7 @@ export function initDB() {
       () => console.log('initDB, create notice success') ,
       (error) => console.log('initDB, create notice error: ', error)
     )
-    tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
+    //tx.executeSql('SELECT * FROM notice', [], (_, { rows }) => console.log('select notice : ', rows));
     //tx.executeSql( 'drop table notice' );
 
   })
@@ -78,7 +78,7 @@ export function initDB() {
     tx.executeSql(
       'SELECT * FROM noticeInterval', [],
       (_, { rows: { _array } }) => {
-        console.log('noticeInterval : ', _array)
+        //console.log('noticeInterval : ', _array)
         if (_array.length > 0) return
 
         const sampleInterval = JSON.stringify([1, 7, 30])

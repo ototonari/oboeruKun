@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Platform } from 'react-native';
 import RegisterView from "./register/registerView";
 import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
 import { initialize } from "./update";
@@ -15,11 +15,12 @@ export default class App extends React.Component {
   render() {
     initialize()
     return (
-      <Router>
-        <Scene key="root"  >
+      <Router sceneStyle={styles.header} >
+        <Scene key="root" >
           <Tabs 
             key="tabbar" 
             swipeEnabled={ false }
+            tabBarPosition={'bottom'}
            >
             <Scene 
               key="manager"
@@ -30,6 +31,7 @@ export default class App extends React.Component {
               icon={TabIcon} 
               onRight={() => Actions.register()} 
               rightButtonImage={require('./assets/plus.png')} 
+
             />
             <Scene 
               key="config" 
@@ -60,3 +62,15 @@ export default class App extends React.Component {
   }
 }
 
+const styles = StyleSheet.create({
+  header: {
+    ...Platform.select({
+      ios: {
+        paddingTop: 0,
+      },
+      android: {
+        paddingTop: 10,
+      },
+    }),
+  },
+});

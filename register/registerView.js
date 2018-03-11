@@ -42,13 +42,15 @@ export default class RegisterView extends Component {
         <Text style={styles.styles.titleLabel} >タイトル</Text>
         <Text style={{ color: 'red' }} >{ this.state.titleError }</Text>
       </View>
-      <View style={{ flex: 1 }} >
+      <View style={{ flex: 1, borderColor: 'pink', borderWidth: 0 }} >
         <TextInput
           style={styles.styles.titleInputBox}
           onChangeText={(text) => this.setState({title: text})}
           value={this.state.title}
-          maxLength={200} />
-        <View style={{position: 'relative', alignContent: 'flex-end'}} >
+          maxLength={200}
+          underlineColorAndroid={'white'}
+           />
+        <View style={{ position: 'absolute', top: 3, right: 5, overflow: 'visible' }} >
           <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
             <Image source={require('../assets/modalButton.png')} style={styles.styles.titleListIcom} />
           </TouchableOpacity>

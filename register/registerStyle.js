@@ -158,10 +158,6 @@ const styles = StyleSheet.create({
   titleListIcom: {
     width: 25,
     height: 25,
-    position: 'absolute',
-    top: 3,
-    right: 5,
-    overflow: 'visible'
   }
 })
 
