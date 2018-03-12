@@ -174,9 +174,12 @@ export function insertNoticeInterval(list, name) {
 // notice table から where 句でどこまで絞り込めるかの検証を行った。
 // 結論としては、年月日に加え、時間情報を持った文字列を含む情報から任意の日時を検索することができた。これは大きい。
 // 本日を基準にして、初回ロードは前後1月分をロードさせるように調節する。数字一つのパラメーターでロードする月をシフトするように設計する。
-export async function getNotice() {
+export async function getNotice(rangeList) {
   return new Promise(resolve => {
     const getThisMonth = () => {
+      if (rangeList !== null) {
+        return rangeList
+      }
       let thisMonth = new Date()
       const endDay = dateToFormatString( new Date(thisMonth.setMonth(thisMonth.getMonth() + 1)), '%YYYY%-%MM%-%DD%')
       const firstDay = dateToFormatString( new Date(thisMonth.setMonth(thisMonth.getMonth() - 1, 1)), '%YYYY%-%MM%-%DD%')

@@ -69,9 +69,9 @@ export default class AgendaView extends Component {
     return (
       <Agenda
         items={this.state.items}
-        loadItemsForMonth={this.loadItems.bind(this)}
-        loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
-        onDayPress={(day)=>{console.log('day pressed')}}
+        //loadItemsForMonth={this.loadItems.bind(this)}
+        //loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
+        onDayPress={this.selectLoadItems.bind(this)}
         // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
         selected={this.state.today}
         renderItem={this.renderItem.bind(this)}
@@ -95,6 +95,10 @@ export default class AgendaView extends Component {
         //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
       />
     );
+  }
+
+  selectLoadItems(day) {
+    initializeCalender(this, day)
   }
 
   loadItems(day) {
