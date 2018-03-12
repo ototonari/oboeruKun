@@ -61,7 +61,7 @@ function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  //Actions.step1()
+  Actions.swipeable()
 }
 
 export function endTutorial() {

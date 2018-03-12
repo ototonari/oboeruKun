@@ -15,6 +15,9 @@ import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
 import { Constants, Notifications, Permissions } from 'expo';
 import CellView from "./cellView";
+import { cancelNotification } from "../notification";
+import { setNotice } from "../database";
+
 
 LocaleConfig.locales['jp'] = {
   monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
@@ -40,7 +43,8 @@ export default class AgendaView extends Component {
     super(props);
     this.state = {
       items: {},
-      today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
+      today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%'),
+      currentlyOpenSwipeable: null,
     };
   }
 
@@ -63,9 +67,28 @@ export default class AgendaView extends Component {
     });
   };
 
+  onOpen = (event, gestureState, swipeable) => {
+    const {currentlyOpenSwipeable} = this.state;
+    if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
+
+    this.setState({currentlyOpenSwipeable: swipeable});
+  }
+
+  onClose = () => this.setState({currentlyOpenSwipeable: null})
+
+  onSuccess = (items) => {
+    let {currentlyOpenSwipeable} = this.state;
+    currentlyOpenSwipeable.recenter();
+    this.onClose()
+    
+    this.setState({ items })
+  }
 
   render() {
     //console.log('Actions receive props : ', this.props)
+
     return (
       <Agenda
         items={this.state.items}
@@ -130,8 +153,9 @@ export default class AgendaView extends Component {
   }
 
   renderItem(item) {
+    
     return (
-      <CellView item={item} this={this}  />
+      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} />
     );
   }
 

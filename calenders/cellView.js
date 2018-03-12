@@ -7,13 +7,11 @@ import { cancelNotification } from "../notification";
 export default class CellView extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-    }
-    
   }
   
   render() {
     let item = this.props.item
+    console.log('item : ', item)
     const page = (item) => {
       if (item.page !== null) {
         return (<Text>Page: {item.page.startPage} ~ {item.page.endPage}</Text>)
@@ -39,7 +37,7 @@ export default class CellView extends Component {
           }
         }
         items[item.noticeDate].splice(thisItem, 1)
-        this.props.this.setState({ items })
+        this.props.onSuccess(items)
       })
     }
 
@@ -52,8 +50,13 @@ export default class CellView extends Component {
     ];
 
     return (
-      <Swipeable rightButtons={rightButtons} rightButtonWidth={70}  >
-        <View style={[styles.item, {height: item.height}]}>
+      <Swipeable 
+        onRightButtonsOpenRelease={this.props.onOpen}
+        onRightButtonsCloseRelease={this.props.onClose} 
+        rightButtons={rightButtons} 
+        rightButtonWidth={70}  
+      >
+        <View style={[styles.item]}>
           <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
           { page(item) }
           { memo(item) }
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     alignContent: 'center',
     justifyContent: 'center',
-  }
+  },
 });
 
     // const error = () => {

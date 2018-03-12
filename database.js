@@ -80,7 +80,7 @@ export function initDB() {
       (_, { rows: { _array } }) => {
         //console.log('noticeInterval : ', _array)
         if (_array.length > 0) return
-
+        // 初期サンプルの挿入
         const sampleInterval = JSON.stringify([1, 7, 30])
         const name = '忘却曲線に基づいた通知'
         tx.executeSql(
