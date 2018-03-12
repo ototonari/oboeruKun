@@ -5,11 +5,13 @@ import { registerNotification, cancelNotification, createNotificationObject } fr
 export async function initializeCalender(target) {
   const self = target
   let items = {}
-  items = await createEmptyCalender()
+  let rangeList
+  rangeList = await getThisMonth()
+  items = await rangeEmptyCalender(rangeList)
   let noticeArray = []
   noticeArray =  await getNotice()
   let itemsObj = {}
-  itemsObj = await makeItems(items, noticeArray)
+  //itemsObj = await makeItems(items, noticeArray)
   self.setState({ items: itemsObj })
 }
 
@@ -23,6 +25,32 @@ async function createEmptyCalender() {
   }
   return loadedMonth
 }
+
+async function rangeEmptyCalender(rangeList) {
+  let loadedMonth = {}
+  let makeDay = new Date(rangeList[0].replace(/-/g, '/'))
+  let endDay = new Date(rangeList[1].replace(/-/g, '/'))
+  console.log(makeDay, endDay)
+  const addItem = async (date) => {
+    console.log('add item : ', dateToFormatString(date, '%YYYY%-%MM%-%DD%'))
+    loadedMonth[dateToFormatString(date, '%YYYY%-%MM%-%DD%')] = []
+  }
+  // while (makeDay !== endDay) {
+  //   addItem(makeDay).then(() => {
+  //     makeDay.setDate(makeDay() + 1)
+  //   })
+  // }
+  return loadedMonth
+}
+
+async function getThisMonth () {
+  let thisMonth = new Date()
+  const endDay = dateToFormatString( new Date(thisMonth.setMonth(thisMonth.getMonth() + 1)), '%YYYY%-%MM%-%DD%')
+  const firstDay = dateToFormatString( new Date(thisMonth.setMonth(thisMonth.getMonth() - 1, 1)), '%YYYY%-%MM%-%DD%')
+  console.log('first Day ; ', firstDay, 'end Day ; ', endDay)
+  return [firstDay, endDay]
+}
+
 
 async function makeItems(items, array) {
   for (let i = 0; i < array.length; i++) {
