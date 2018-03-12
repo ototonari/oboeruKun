@@ -69,9 +69,9 @@ export default class AgendaView extends Component {
     return (
       <Agenda
         items={this.state.items}
-        //loadItemsForMonth={this.loadItems.bind(this)}
-        // loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
-        // onDayPress={(day)=>{console.log('day pressed')}}
+        loadItemsForMonth={this.loadItems.bind(this)}
+        loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
+        onDayPress={(day)=>{console.log('day pressed')}}
         // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
         selected={this.state.today}
         renderItem={this.renderItem.bind(this)}
@@ -98,7 +98,7 @@ export default class AgendaView extends Component {
   }
 
   loadItems(day) {
-    //console.log('called loadItems , day: ', day)
+    console.log('called loadItems , day: ', day)
     // setTimeout(() => {
     //   for (let i = -15; i < 15; i++) {
     //     const time = day.timestamp + i * 24 * 60 * 60 * 1000;
@@ -127,7 +127,7 @@ export default class AgendaView extends Component {
 
   renderItem(item) {
     return (
-      <CellView item={item} this={this} />
+      <CellView item={item} this={this}  />
     );
   }
 
@@ -140,6 +140,10 @@ export default class AgendaView extends Component {
 
   rowHasChanged(r1, r2) {
     return r1.title !== r2.title;
+  }
+
+  testRowHasChanged() {
+    
   }
 
   timeToString(time) {

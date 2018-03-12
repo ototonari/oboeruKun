@@ -1,9 +1,15 @@
+import React, { Component } from 'react';
+import { Platform } from 'react-native';
 import { Constants, Notifications, Permissions } from 'expo';
 import { insertNotice } from "./database";
 import { dateToFormatString } from "./dateToFormatString";
 
+
 export async function cancelNotification(notificationId) {
-  Notifications.cancelScheduledNotificationAsync(notificationId)
+  Platform.select({
+    ios: () => Notifications.cancelScheduledNotificationAsync(item.notificationId),
+    android: () => Notifications.dismissNotificationAsync(item.notificationId)
+  })
 }
 
 // notificationId の配列を返す

@@ -242,6 +242,7 @@ export async function setNotice(value, noticeDate, id) {
     db.transaction(tx => {
       tx.executeSql(
         'UPDATE notice SET done = ? WHERE id = ? AND noticeDate = ?', [value, id, noticeDate],
+        () => resolve()
       )
     })
   })
