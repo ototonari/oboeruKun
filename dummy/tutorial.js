@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     right: 0, 
     width: width / 4, 
     height: height / 14, 
-    borderWidth: 1, borderColor: 'pink',
+    borderWidth: 0, borderColor: 'pink',
     zIndex: 1
   },
   prevButton: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     left: 0, 
     width: width / 4, 
     height: height / 14, 
-    borderWidth: 1, borderColor: 'pink',
+    borderWidth: 0, borderColor: 'pink',
     zIndex: 2
   },
   startButton: {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     left: (width / 10) * 2, 
     width: (width / 10) * 6, 
     height: height / 12, 
-    borderWidth: 1, borderColor: 'pink',
+    borderWidth: 0, borderColor: 'pink',
     zIndex: 3
   }
 })
