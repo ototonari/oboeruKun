@@ -7,9 +7,25 @@ const {height, width} = Dimensions.get('window')
 console.log(`height : ${height}, width : ${width}`)
 
 const styles = StyleSheet.create({
+  container : {
+    flex: 1,
+    backgroundColor: '#8d8d8d',
+    borderWidth: 0,
+    borderColor: 'blue'
+  },
   backgroundImage : {
-    width: '100%',
-    height: '100%',
+    ...Platform.select({
+      ios: {
+        flex: 1,
+        width: null,
+        height: null,
+      },
+      android: {
+        flex: 1,
+        width: null,
+        height: null,
+      },
+    }),
     zIndex: 0
   },
   nextButton: {
@@ -18,7 +34,7 @@ const styles = StyleSheet.create({
     right: 0, 
     width: width / 4, 
     height: height / 14, 
-    borderWidth: 0, borderColor: 'pink',
+    borderWidth: 1, borderColor: 'pink',
     zIndex: 1
   },
   prevButton: {
@@ -27,7 +43,7 @@ const styles = StyleSheet.create({
     left: 0, 
     width: width / 4, 
     height: height / 14, 
-    borderWidth: 0, borderColor: 'pink',
+    borderWidth: 1, borderColor: 'pink',
     zIndex: 2
   },
   startButton: {
@@ -36,16 +52,23 @@ const styles = StyleSheet.create({
     left: (width / 10) * 2, 
     width: (width / 10) * 6, 
     height: height / 12, 
-    borderWidth: 0, borderColor: 'pink',
+    borderWidth: 1, borderColor: 'pink',
     zIndex: 3
   }
 })
+
+const imageProps = {
+  resizeMode : Platform.select({
+    ios: null,
+    android: 'stretch',
+  }),
+}
 
 export class Step0 extends Component {
 
   render() {
     return(
-      <View style={{ flex: 1,}} >
+      <View style={styles.container} >
         <TouchableOpacity 
           style={styles.nextButton} 
           onPressOut={() => Actions.step1()}
@@ -53,6 +76,7 @@ export class Step0 extends Component {
         <Image
           source={require('../assets/tutorial/STEP0.png')}
           style={styles.backgroundImage}
+          resizeMode={imageProps.resizeMode}
         />
       </View>
     )
@@ -62,7 +86,7 @@ export class Step0 extends Component {
 export class Step1 extends Component {
   render() {
     return(
-      <View style={{ flex: 1,}} >
+      <View style={styles.container} >
         <TouchableOpacity 
           style={styles.nextButton} 
           onPressOut={() => Actions.step2()}
@@ -74,6 +98,7 @@ export class Step1 extends Component {
         <Image
           source={require('../assets/tutorial/STEP1.png')}
           style={styles.backgroundImage}
+          resizeMode={imageProps.resizeMode}
         />
       </View>
     )
@@ -84,7 +109,7 @@ export class Step1 extends Component {
 export class Step2 extends Component {
   render() {
     return(
-      <View style={{ flex: 1,}} >
+      <View style={styles.container} >
         <TouchableOpacity 
           style={styles.nextButton} 
           onPressOut={() => Actions.step3()}
@@ -96,6 +121,7 @@ export class Step2 extends Component {
         <Image
           source={require('../assets/tutorial/STEP2.png')}
           style={styles.backgroundImage}
+          resizeMode={imageProps.resizeMode}
         />
       </View>
     )
@@ -105,7 +131,7 @@ export class Step2 extends Component {
 export class Step3 extends Component {
   render() {
     return(
-      <View style={{ flex: 1,}} >
+      <View style={styles.container} >
         <TouchableOpacity 
           style={styles.nextButton} 
           onPressOut={() => Actions.step4()}
@@ -117,6 +143,7 @@ export class Step3 extends Component {
         <Image
           source={require('../assets/tutorial/STEP3.png')}
           style={styles.backgroundImage}
+          resizeMode={imageProps.resizeMode}
         />
       </View>
     )
@@ -126,7 +153,7 @@ export class Step3 extends Component {
 export class Step4 extends Component {
   render() {
     return(
-      <View style={{ flex: 1,}} >
+      <View style={styles.container} >
         <TouchableOpacity 
           style={styles.startButton} 
           onPressOut={() => endTutorial()}
@@ -134,6 +161,7 @@ export class Step4 extends Component {
         <Image
           source={require('../assets/tutorial/STEP4.png')}
           style={styles.backgroundImage}
+          resizeMode={imageProps.resizeMode}
         />
       </View>
     )
