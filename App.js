@@ -6,7 +6,7 @@ import { initialize } from "./update";
 import TabIcon from "./dummy/tabIcon";
 import ConfigView from "./config/config";
 import Developers from "./config/developer"
-import { Step1, Step2, Step3 } from "./dummy/tutorial";
+import { Step0, Step1, Step2, Step3, Step4 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting} from "./config/noticeSetting"
@@ -52,9 +52,11 @@ export default class App extends React.Component {
           />
           <Scene key="registersetting" component={RegisterSetting} />
           <Scene key="tutorial" hideNavBar >
+            <Scene key="step0" component={Step0} title={'step0'} />
             <Scene key="step1" component={Step1} title={'step1'} />
             <Scene key="step2" component={Step2} title={'step2'} />
             <Scene key="step3" component={Step3} title={'step3'} />
+            <Scene key="step4" component={Step4} title={'step4'} />
           </Scene>
         </Scene>
       </Router>
