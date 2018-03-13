@@ -48,6 +48,14 @@ export default class AgendaView extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { items } = this.state
+    let flug = false
+    if (items !== nextState.items) flug = true
+
+    return flug
+  }
+
   componentWillMount() {
     getiOSNotificationPermission();
     this.listenForNotifications();
@@ -72,7 +80,7 @@ export default class AgendaView extends Component {
     if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
       currentlyOpenSwipeable.recenter();
     }
-
+    
     this.setState({currentlyOpenSwipeable: swipeable});
   }
 
@@ -82,7 +90,7 @@ export default class AgendaView extends Component {
     let {currentlyOpenSwipeable} = this.state;
     currentlyOpenSwipeable.recenter();
     this.onClose()
-    
+
     this.setState({ items })
   }
 
