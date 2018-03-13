@@ -31,7 +31,7 @@ function updateChecker(buildNumber) {
   if (buildNumber == currentBuildNumber) {
     // 最新版
     console.log('this is current version.')
-    //versionChange('1.0.3')
+    versionChange('1.0.3')
     return
 
   } else {
@@ -51,7 +51,7 @@ async function update() {
   console.log('update process.')
   startTutorial()
   await transferDataToNewTable()
-  versionChange(currentBuildNumber)
+  //versionChange(currentBuildNumber)
 }
 
 function versionChange(versionNumber) {
@@ -61,7 +61,7 @@ function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  Actions.swipeable()
+  Actions.tutorial()
 }
 
 export function endTutorial() {

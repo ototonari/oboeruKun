@@ -11,7 +11,6 @@ export default class CellView extends Component {
   
   render() {
     let item = this.props.item
-    console.log('item : ', item)
     const page = (item) => {
       if (item.page !== null) {
         return (<Text>Page: {item.page.startPage} ~ {item.page.endPage}</Text>)
