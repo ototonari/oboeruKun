@@ -347,7 +347,7 @@ export function initializeUpdateTable(callback) {
       "insert into updateTable (id, buildNumber) values (0, '1.0.0')", [],
       () => {
         console.log('updateTable initialized success')
-        callback()
+        callback('1.0.0')
       },
       () => console.log('updateTable initialized raise error')
     )
