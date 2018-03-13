@@ -6,9 +6,6 @@ import Modal from 'react-native-modal';
 import SmartPicker from 'react-native-smart-picker'
 import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement, testRenderPageModalContent } from "./registerAction";
 import { createDB, getTitle, getAllParams } from "../database";
-import PickerAndroid from 'react-native-picker-android';
-
-let Pickers = Platform.OS === 'ios' ? Picker : PickerAndroid;
 
 export default class RegisterView extends Component {
   constructor(props) {
