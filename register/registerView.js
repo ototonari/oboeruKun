@@ -3,8 +3,12 @@ import { Text, View, TouchableOpacity, Image, TextInput, Switch, ScrollView, Pic
 import styles from "./registerStyle";
 import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
+import SmartPicker from 'react-native-smart-picker'
 import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement, testRenderPageModalContent } from "./registerAction";
 import { createDB, getTitle, getAllParams } from "../database";
+import PickerAndroid from 'react-native-picker-android';
+
+let Pickers = Platform.OS === 'ios' ? Picker : PickerAndroid;
 
 export default class RegisterView extends Component {
   constructor(props) {
@@ -24,7 +28,8 @@ export default class RegisterView extends Component {
       noticeInterval: [],
       noticeId: 1,
       noticeName: '忘却曲線に基づいた通知',
-      keyboardHidden: true
+      keyboardHidden: true,
+      displayed: true
     }
   }
 
@@ -51,7 +56,10 @@ export default class RegisterView extends Component {
           underlineColorAndroid={'white'}
            />
         <View style={{ position: 'absolute', top: 3, right: 5, overflow: 'visible' }} >
-          <TouchableOpacity onPress={() => this.setState({visibleModal: 3})} >
+          <TouchableOpacity 
+            onPress={() => this.setState({visibleModal: 3})}
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+          >
             <Image source={require('../assets/modalButton.png')} style={styles.styles.titleListIcom} />
           </TouchableOpacity>
         </View>
@@ -64,16 +72,33 @@ export default class RegisterView extends Component {
     <TouchableOpacity style={{
       flex: 1,
       justifyContent: 'center',
-      alignContent: 'center'
+      alignContent: 'center',
+      zIndex: 0,
     }}
     disabled={(this.state.visibleModal === 3) ? false : true }
-    onPress={() => this.setState({ visibleModal: null })} accessible={false} >
-    <View style={styles.container.pageModal} >
-      <Picker onValueChange={(value, index) => this.setState({ title: value }) } 
-      selectedValue={ this.state.title } 
-      style={{ width: '100%', flex: 0.6 }} >
-        { this._renderTitlePickerItems(this.state.titleList) }
-      </Picker>
+    onPress={() => this.setState({ visibleModal: null })} accessible={false}
+     >
+    <View style={[styles.container.pageModal, ]} >
+    <TouchableOpacity style={[styles.container.pageModal, {zIndex: 1, flex: 1}]} >
+    { Platform.select({
+        ios: (
+          <Picker onValueChange={(value, index) => this.setState({ title: value }) } 
+            selectedValue={ this.state.title } 
+            style={{ width: '100%', flex: 0.6 }} >
+              { this._renderTitlePickerItems(this.state.titleList) }
+          </Picker>
+        ),
+        android: (
+          <Picker onValueChange={(value, index) => this.setState({ title: value }) } 
+            selectedValue={ this.state.title } 
+            style={{ width: '100%', flex: 0.6, zIndex: 10 }} 
+            hitSlop={{top: 100, bottom: 100, left: 100, right: 100}}
+          >
+              { this._renderTitlePickerItems(this.state.titleList) }
+          </Picker>
+        ),
+      })}
+      </TouchableOpacity>
     </View>
     </TouchableOpacity>
   )
@@ -128,11 +153,13 @@ export default class RegisterView extends Component {
     <TouchableOpacity style={{
       flex: 1,
       justifyContent: 'center',
-      alignContent: 'center'
+      alignContent: 'center',
+      zIndex: 0
     }}
     disabled={(this.state.visibleModal === 1 || this.state.visibleModal === 2) ? false : true }
     onPress={() => this.setState({ visibleModal: null })} accessible={false} >
     <View style={styles.container.pageModal} >
+    <TouchableOpacity style={[styles.container.pageModal, {zIndex: 1, flex: 1}]} >
       <Picker onValueChange={(value, index) => {
         if(this.state.visibleModal === 1) {
           if (Number(value) > Number(this.state.endPage)) {
@@ -148,9 +175,12 @@ export default class RegisterView extends Component {
         }
       } } 
       selectedValue={ (this.state.visibleModal === 1) ? this.state.startPage : this.state.endPage } 
-      style={{ width: '100%', flex: 0.6 }} >
+      style={{ width: '100%', flex: 0.6 }} 
+      hitSlop={{top: 100, bottom: 100, left: 100, right: 100}}
+      >
         { this._renderPickerItems() }
       </Picker>
+      </TouchableOpacity>
     </View>
     </TouchableOpacity>
   )  

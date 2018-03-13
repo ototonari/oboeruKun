@@ -49,7 +49,7 @@ function checkBuildNumber() {
 
 async function update() {
   console.log('update process.')
-  startTutorial()
+  //startTutorial()
   await transferDataToNewTable()
   //versionChange(currentBuildNumber)
 }
