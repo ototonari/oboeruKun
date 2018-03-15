@@ -30,11 +30,28 @@ const container = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
     borderColor: 'gray',
     borderBottomWidth: 1,
     borderTopWidth: 1,
     width: '100%'
+  },
+  subContents: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderColor: 'gray',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    width: '100%',
+    backgroundColor: 'whitesmoke'
   },
   pageSet: {
     flexDirection: 'row',
@@ -110,7 +127,10 @@ const styles = StyleSheet.create({
   },
   titleLabel: {
     fontSize: 20,
-    
+  },
+  subTitleLabel: {
+    fontSize: 16,
+    paddingLeft: 14
   },
   titleInputBox: {
     height: 30,

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
+import { isEqual } from "lodash";
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { getAllNoticeDate, getNotice } from "../database";
@@ -49,13 +50,12 @@ export default class AgendaView extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { items } = this.state
-    let flug = false
-    if (items !== nextState.items) flug = true
-
-    return flug
+    return !(
+      this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable &&
+      isEqual(nextState.items, this.state.items)
+    )
   }
-
+  
   componentWillMount() {
     getiOSNotificationPermission();
     this.listenForNotifications();

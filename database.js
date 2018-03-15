@@ -30,7 +30,7 @@ export function initDB() {
       (error) => console.log('initDB, create master error: ', error)
     )
     //tx.executeSql('DELETE FROM master WHERE id = 2')
-    //tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
+    tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
     //tx.executeSql( 'drop table master' );
   })
   db.transaction(tx => {
@@ -68,6 +68,7 @@ export function initDB() {
       () => console.log('initDB, create titleList success') ,
       (error) => console.log('initDB, create titleList error: ', error)
     )
+    //tx.executeSql( 'drop table titleList' );
   })
   db.transaction(tx => {
     tx.executeSql(
@@ -82,7 +83,7 @@ export function initDB() {
         if (_array.length > 0) return
         // 初期サンプルの挿入
         const sampleInterval = JSON.stringify([1, 7, 30])
-        const name = '忘却曲線に基づいた通知'
+        const name = '忘却曲線に基づいた復習'
         tx.executeSql(
           'INSERT INTO noticeInterval (interval, name) values (?, ?)', [sampleInterval, name],
           () => console.log('initDB, insert into noticeInterval success'),
@@ -176,6 +177,7 @@ export function insertNoticeInterval(list, name) {
 // 本日を基準にして、初回ロードは前後1月分をロードさせるように調節する。数字一つのパラメーターでロードする月をシフトするように設計する。
 export async function getNotice(rangeList) {
   return new Promise(resolve => {
+    // rangeList がからの場合、こちらで範囲を生成する
     const getThisMonth = () => {
       if (rangeList !== null) {
         return rangeList
@@ -190,7 +192,7 @@ export async function getNotice(rangeList) {
       tx.executeSql(
         'SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1', getThisMonth(),
         (_, { rows: { _array } }) => {
-          //console.log('getNotice success : ', _array)
+          console.log('getNotice success : ', _array)
           resolve(_array)
         }
       )

@@ -26,10 +26,11 @@ export function validation(target, callback) {
 
 export async function arrangement(target) {
   const self = target
+  // 登録情報
+  const {title, page, memo, repeat, notice, repeatId} = self.state
+  // タイトル履歴に保存
+  checkTitle(title)  
 
-  // 各種パラメーターの定義
-  // タイトル
-  const title = self.state.title
   // ボディ
   let body = ''
   
@@ -43,47 +44,58 @@ export async function arrangement(target) {
     },
   }
   
-  // タイトル履歴に保存
-  checkTitle(title)
-  
   let id = 0
   // id登録後、callback処理にて各種データを登録、処理する
   id = await insertMaster(title)
   // notification用データ
   let data = { title: title }
-  if (self.state.page == true) {
+  if (page == true) {
     // ページ範囲
     const { startPage, endPage } = self.state
-    const page = JSON.stringify({ startPage: startPage, endPage: endPage })
-    console.log(page)
+    const pageInfo = JSON.stringify({ startPage: startPage, endPage: endPage })
+    console.log(pageInfo)
     // dbに保存
-    insertPage(id, page)
-    data['page'] = page
+    insertPage(id, pageInfo)
+    data['page'] = pageInfo
     body += `範囲: p.${startPage} ~ p.${endPage}\n`
     //body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
   }
-  if (self.state.memo == true) {
+  if (memo == true) {
     // memo Text
-    const memo = self.state.memoValue
+    const { memoValue } = self.state
     // dbに保存
-    insertMemo(id, memo)
-    body += `メモ: ${memo}`
-    data['memo'] = memo
+    insertMemo(id, memoValue)
+    body += `メモ: ${memoValue}`
+    data['memo'] = memoValue
   }
-  if (self.state.notice == true) {
+
+  // 通知がONの場合、通知APIを先に叩いてからDBに登録するので、条件分けを行う
+  // repeat == true and (notice == true or notice == false) が成り立つ 
+  // notice == true の時点で repeat == true が成り立つ
+  // notice == false で repeat == true or repeat == false が成り立つ
+  if (notice == true) {
+    // 通知APIに必要なパラメタの指定(不十分な場合はエラー)
+    if (body == '') body += title
     notification['title'] = title
     notification['body'] = body
     notification['data'] = data
-    const noticeId = self.state.noticeId
-    let notificationDates
-    notificationDates = await getParams('interval', 'noticeInterval', noticeId)
-    notificationDates = JSON.parse(notificationDates[0].interval)
 
-    console.log(notificationDates)
-    await setNotification(id, notification, notificationDates)
-  } else if (self.state.notice == false) {
-    const today = dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%')
-    await insertNotice(id, null, today)
+    // 反復が有り無しで判定する
+    let intervalList
+    intervalList = await getParams('interval', 'noticeInterval', repeatId)
+    intervalList = JSON.parse(intervalList[0].interval)
+    console.log('intervalList: ',intervalList)
+    // 通知登録　=> insertNotice へ
+    await setNotification(id, notification, intervalList)
+
+  } else if (notice == false) {
+    let intervalList = [0]
+    if (repeat == true) {
+      intervalList = await getParams('interval', 'noticeInterval', repeatId)
+      intervalList = JSON.parse(intervalList[0].interval)
+      console.log('intervalList: ',intervalList)
+    }
+    await setSchedule(id, intervalList)
   }
   Alert.alert(
     '登録しました','',
@@ -94,11 +106,14 @@ export async function arrangement(target) {
   )
 }
 
+// 各登録データのフラグによって処理を分岐させるための処理を列挙し、arrangementで使い分ける
+
+
 async function setNotification(id, notification, list) {
   const localnotification = notification
-  const notificationDates = list
-  for (let i = 0; i < notificationDates.length; i++) {
-    changeDate(Number(notificationDates[i])).then((date) => {
+  const intervalList = list
+  for (let i = 0; i < intervalList.length; i++) {
+    changeDate(Number(intervalList[i])).then((date) => {
       const schedulingOptions = { time: date }
       Notifications.scheduleLocalNotificationAsync(
         localnotification,
@@ -112,6 +127,19 @@ async function setNotification(id, notification, list) {
       }).catch(function (error) {
         console.log(error)
       })
+    })
+  }
+  return
+}
+
+async function setSchedule(id, intervalList) {
+  for (let i=0, j=intervalList.length; i < j; i++) {
+    changeDate(Number(intervalList[i])).then(async(date) => {
+      const registerdDate = dateToFormatString(date, '%YYYY%-%MM%-%DD%')
+      await insertNotice(id, null, registerdDate)
+      console.log('schedule added(insertNotice success)')
+    }).catch(function (error) {
+      console.log(error)
     })
   }
   return

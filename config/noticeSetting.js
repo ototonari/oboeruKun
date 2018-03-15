@@ -59,7 +59,7 @@ export class NoticeSetting extends Component {
     for (let i=0,j=array.length; i < j; i++) {
       msg += `${array[i]}日後, `
     }
-    msg += 'に通知する'
+    msg += 'に復習する'
 
     return(
       <Swipeable rightButtons={rightButtons} rightButtonWidth={70}  >
