@@ -9,8 +9,7 @@ import Developers from "./config/developer"
 import { Step0, Step1, Step2, Step3, Step4 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
-import { NoticeSetting, RegisterSetting} from "./config/noticeSetting"
-import InitializeView from "./config/initialize";
+import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 
 export default class App extends React.Component {
   render() {
@@ -43,7 +42,6 @@ export default class App extends React.Component {
           </Tabs>
           <Scene key="register" component={RegisterView} title={'登録画面'} />
           <Scene key="developers" component={Developers} title={'Developers'} />
-          <Scene key="initializeview" component={InitializeView} title={'初期化画面'} />
           <Scene key="titlelist" component={TitleList} title={'タイトル履歴'} />
           <Scene 
             key="noticesetting" 
