@@ -27,7 +27,6 @@ export default class RegisterView extends Component {
       repeatId: 1,
       repeatName: '',
       keyboardHidden: true,
-      displayed: true
     }
   }
 

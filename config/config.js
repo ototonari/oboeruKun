@@ -18,6 +18,7 @@ export default class ConfigView extends Component {
         <FlatButton text={'復習間隔の設定'} function={() => Actions.noticesetting()} />
         <FlatButton text={'チュートリアル'} function={() => startTutorial()} />
         <FlatButton text={'開発者'} function={() => Actions.developers()} />
+        <FlatButton text={'初期化'} function={() => Actions.initializeview()} />
       </View>
     )
   }
