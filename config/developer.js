@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, Linking } from 'react-native';
 import { localStyles, devStyles } from "./configStyle";
+import { MailComposer } from "expo";
 
 // 必須フィールド
 // *job --- *name
@@ -14,11 +15,18 @@ const developer = {
       contacts: [
         {
           icon: require('../assets/facebookIcon58.png'),
-          link: ''
+          type: 'link',
+          link: 'https://www.facebook.com/profile.php?id=100004769313128'
         },
         {
           icon: require('../assets/email.png'),
-          link: ''
+          type: 'email',
+          // mail object
+          link: { 
+            recipients: ['sinnyo.tsubasa@gmail.com'],
+            subject: 'app name:おぼえる君',
+            body: '端末情報等を乗せて、バグ改善に役立てる'
+         }
         }
       ]
     }
@@ -56,10 +64,23 @@ export default class Developers extends Component {
           const renderContents = (contents) => {
             let contactList = []
             contents.forEach(function(v, i, a) {
+              let func
+              const type = contents[i].type
+              if (type == 'link') {
+                func = (url) => Linking.openURL(url).catch(err => console.error('An error occurred', err))
+              } else if (type =='email') {
+                func = (saveOptions) => MailComposer.composeAsync(saveOptions)
+              }
               contactList.push(
-                <View key={i} style={devStyles.contactItem} >
-                  <Image source={contents[i].icon} style={devStyles.imageIcon} />
-                </View>
+                <TouchableOpacity 
+                  key={i}
+                  onPress={ () => func(contents[i].link) }
+                  activeOpacity={0.1}
+                >
+                  <View style={devStyles.contactItem} >
+                    <Image source={contents[i].icon} style={devStyles.imageIcon} />
+                  </View>
+                </TouchableOpacity>
               )
             })
             return contactList
