@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, Linking } from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, Linking, Platform } from 'react-native';
 import { localStyles, devStyles } from "./configStyle";
 import { MailComposer } from "expo";
 
@@ -14,11 +14,6 @@ const developer = {
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
         {
-          icon: require('../assets/facebookIcon58.png'),
-          type: 'link',
-          link: 'https://www.facebook.com/profile.php?id=100004769313128'
-        },
-        {
           icon: require('../assets/email.png'),
           type: 'email',
           // mail object
@@ -27,6 +22,11 @@ const developer = {
             subject: 'app name:おぼえる君',
             body: ''
          }
+        },
+        {
+          icon: require('../assets/facebookIcon58.png'),
+          type: 'link',
+          link: 'https://www.facebook.com/profile.php?id=100004769313128'
         }
       ]
     }
@@ -35,7 +35,27 @@ const developer = {
     { name: 'Hibiki Shono',
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
-        
+        {
+          icon: require('../assets/email.png'),
+          type: 'email',
+          // mail object
+          link: { 
+            recipients: ['sharks.soccer02@gmail.com'],
+            subject: 'app name:おぼえる君',
+            body: ''
+         }
+        },
+        {
+          icon: require('../assets/facebookIcon58.png'),
+          type: 'link',
+          link: 'https://www.facebook.com/shonohibiki'
+        },
+        {
+          icon: require('../assets/twitterIcon400.png'),
+          type: 'link',
+          link: 'https://twitter.com/sherbet02/'
+        },
+
       ]
     }
   ]

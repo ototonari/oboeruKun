@@ -40,17 +40,18 @@ export default class App extends React.Component {
               icon={TabIcon} 
             />
           </Tabs>
-          <Scene key="register" component={RegisterView} title={'登録画面'} />
-          <Scene key="developers" component={Developers} title={'Developers'} />
-          <Scene key="titlelist" component={TitleList} title={'タイトル履歴'} />
+          <Scene sceneStyle={styles.oneCompHeader} key="register" component={RegisterView} title={'登録画面'} />
+          <Scene sceneStyle={styles.oneCompHeader} key="developers" component={Developers} title={'Developers'} />
+          <Scene sceneStyle={styles.oneCompHeader} key="titlelist" component={TitleList} title={'タイトル履歴'} />
           <Scene 
+            sceneStyle={styles.oneCompHeader}
             key="noticesetting" 
             component={NoticeSetting} 
             title={'通知間隔の設定'} 
             rightButtonImage={require('./assets/plus.png')}
             onRight={() => Actions.registersetting()}
           />
-          <Scene key="registersetting" component={RegisterSetting} />
+          <Scene sceneStyle={styles.oneCompHeader} key="registersetting" component={RegisterSetting} />
           <Scene key="tutorial" hideNavBar >
             <Scene key="step0" component={Step0} title={'step0'} />
             <Scene key="step1" component={Step1} title={'step1'} />
@@ -71,8 +72,19 @@ const styles = StyleSheet.create({
         paddingTop: 0,
       },
       android: {
-        paddingTop: 10,
+        paddingTop: 13,
       },
     }),
   },
+  oneCompHeader: {
+    ...Platform.select({
+      ios: {
+        paddingTop: 0,
+      },
+      android: {
+        position: 'absolute', 
+        top: 30,
+      },
+    }),
+  }
 });

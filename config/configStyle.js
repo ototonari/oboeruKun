@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
+
 
 const container = StyleSheet.create({
   container: {
@@ -108,7 +109,8 @@ const devStyles = StyleSheet.create({
     marginBottom: 5
   },
   contents: {
-    paddingLeft: 10
+    paddingLeft: 10,
+    marginBottom: 10,
   },
   name: {
     fontSize: 18,
@@ -117,7 +119,8 @@ const devStyles = StyleSheet.create({
   contacts: {
     padding: 5, 
     marginTop: 7, 
-    flexDirection: 'row', 
+    flexDirection: 'row',
+    zIndex: 0,
   },
   centering: {
     alignContent: 'center', 
@@ -130,11 +133,21 @@ const devStyles = StyleSheet.create({
   },
   contactsLabel: {
     position: 'absolute', 
-    top: -10, 
-    left: 7, 
+    
     backgroundColor: 'white', 
     paddingLeft: 3, 
-    paddingRight: 3
+    paddingRight: 3,
+    zIndex: 1,
+    ...Platform.select({
+      ios: {
+        top: -10, 
+        left: 7, 
+      },
+      android: {
+        top: -5,
+        left: 7,
+      },
+    }),
   },
   contactItem: {
     alignContent: 'center', 
