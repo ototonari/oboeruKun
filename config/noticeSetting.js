@@ -132,7 +132,7 @@ export class RegisterSetting extends Component {
               <Text style={styles.styles.pageText} >{ this.state.intervalDay }</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ fontSize: 16, marginLeft: 10 }} >日後に通知する</Text>
+          <Text style={{ fontSize: 16, marginLeft: 10 }} >日後に復習する</Text>
       </View>
       <TouchableOpacity 
         onPress={() => {addItem(this)} } >
@@ -145,7 +145,7 @@ export class RegisterSetting extends Component {
 
     return(
         <View style={[localStyles.rowItem, localStyles.container, {justifyContent: 'space-between'}]} >
-          <Text style={{fontSize: 18, }} >{item.day} 日後に通知する</Text>
+          <Text style={{fontSize: 18, }} >{item.day} 日後に復習する</Text>
           <TouchableOpacity
             onPress={() => {deleteItem(this, item.id)}} >
             <Image source={require('../assets/error.png')} style={[localStyles.image, {marginRight: 20}]} />
@@ -240,7 +240,7 @@ function validation(target) {
   const items = target.state.items
   let error = ''
   if (title == '') error += 'タイトルを入力してください。'
-  if (items.length == 0) error += '通知間隔を追加してください。'
+  if (items.length == 0) error += '復習間隔を追加してください。'
   if (error !== '') {
     // error
     target.setState({ titleError: error })
