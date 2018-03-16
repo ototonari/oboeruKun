@@ -10,8 +10,22 @@ import { Step0, Step1, Step2, Step3, Step4 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
+import { Asset, AppLoading } from "expo";
+
+const images = [
+  require('./assets/tutorial/STEP0.png'),
+  require('./assets/tutorial/STEP1.png'),
+  require('./assets/tutorial/STEP2.png'),
+  require('./assets/tutorial/STEP3.png'),
+  require('./assets/tutorial/STEP4.png'),
+]
 
 export default class App extends React.Component {
+
+  componentDidMount() {
+    // 画像をディスクにキャッシュする
+    Asset.loadAsync(images)
+  }
   render() {
     initialize()
     return (

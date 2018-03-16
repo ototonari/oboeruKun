@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, Linking, Platform } from 'react-native';
 import { localStyles, devStyles } from "./configStyle";
-import { MailComposer } from "expo";
+import { MailComposer, Asset, AppLoading } from "expo";
+
+const images = {
+  facebook: require('../assets/facebookIcon58.png'),
+  email: require('../assets/email.png'),
+  twitter: require('../assets/twitterIcon400.png'),
+}
 
 // 必須フィールド
 // *job --- *name
@@ -14,7 +20,7 @@ const developer = {
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
         {
-          icon: require('../assets/email.png'),
+          icon: images.email,
           type: 'email',
           // mail object
           link: { 
@@ -24,7 +30,7 @@ const developer = {
          }
         },
         {
-          icon: require('../assets/facebookIcon58.png'),
+          icon: images.facebook,
           type: 'link',
           link: 'https://www.facebook.com/profile.php?id=100004769313128'
         }
@@ -36,7 +42,7 @@ const developer = {
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
         {
-          icon: require('../assets/email.png'),
+          icon: images.email,
           type: 'email',
           // mail object
           link: { 
@@ -46,12 +52,12 @@ const developer = {
          }
         },
         {
-          icon: require('../assets/facebookIcon58.png'),
+          icon: images.facebook,
           type: 'link',
           link: 'https://www.facebook.com/shonohibiki'
         },
         {
-          icon: require('../assets/twitterIcon400.png'),
+          icon: images.twitter,
           type: 'link',
           link: 'https://twitter.com/sherbet02/'
         },
@@ -64,6 +70,19 @@ const developer = {
 export default class Developers extends Component {
   constructor (props) {
     super (props)
+    this.state = {
+      isReady: false,
+    }
+  }
+
+  async _cacheResourcesAsync() {
+    const cacheImages = Object.keys(images).map((value) => {
+      return Asset.fromModule(images[value]).downloadAsync()
+    })
+    // const cacheImages = images.map((image) => {
+    //   return Asset.fromModule(image).downloadAsync();
+    // });
+    return Promise.all(cacheImages)
   }
 
   _renderDevContents = (obj) => {
@@ -118,6 +137,16 @@ export default class Developers extends Component {
   }
   
   render () {
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={this._cacheResourcesAsync}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      );
+    }
+
     return (
       <View style={localStyles.background} >
         { this._renderDevContents(developer) }
