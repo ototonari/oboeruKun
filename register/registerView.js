@@ -302,13 +302,13 @@ export default class RegisterView extends Component {
   )}
 
   componentWillMount () {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     
   }
 
   componentWillUnmount () {
-    this.keyboardDidShowListener.remove();
+    this.keyboardWillHideListener.remove();
     this.keyboardDidHideListener.remove();
   }
   
@@ -323,8 +323,8 @@ export default class RegisterView extends Component {
     setInterval()
   }
 
-  _keyboardDidShow () {
-    console.log('Keyboard Shown');
+  _keyboardWillHide () {
+    console.log('Keyboard will show');
     this.setState({ keyboardHidden: false })
   }
 
@@ -339,7 +339,8 @@ export default class RegisterView extends Component {
       // 画面全体に判定を持ち、条件に応じて処理する。
       <TouchableOpacity style={styles.container.modalBackground}
         disabled={this.state.keyboardHidden}
-        onPress={Keyboard.dismiss} accessible={false} >
+        activeOpacity={0}
+        onPress={() => Keyboard.dismiss} accessible={false} >
 
       <View style={styles.container.container} >
         <View style={styles.container.view} >
