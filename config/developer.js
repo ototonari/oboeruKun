@@ -25,7 +25,7 @@ const developer = {
           link: { 
             recipients: ['sinnyo.tsubasa@gmail.com'],
             subject: 'app name:おぼえる君',
-            body: '端末情報等を乗せて、バグ改善に役立てる'
+            body: ''
          }
         }
       ]
@@ -35,14 +35,7 @@ const developer = {
     { name: 'Hibiki Shono',
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
-        {
-          icon: require('../assets/facebookIcon58.png'),
-          link: ''
-        },
-        {
-          icon: require('../assets/email.png'),
-          link: ''
-        }
+        
       ]
     }
   ]

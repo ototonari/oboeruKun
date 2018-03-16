@@ -30,7 +30,7 @@ export function initDB() {
       (error) => console.log('initDB, create master error: ', error)
     )
     //tx.executeSql('DELETE FROM master WHERE id = 2')
-    tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
+    //tx.executeSql('SELECT * FROM master', [], (_, { rows }) => console.log('select master : ', rows));
     //tx.executeSql( 'drop table master' );
   })
   db.transaction(tx => {

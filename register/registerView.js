@@ -317,7 +317,7 @@ export default class RegisterView extends Component {
     const setInterval = async () => {
       let intervalList
       intervalList = await getAllParams('id, name', 'noticeInterval')
-      console.log('intervalList : ', intervalList)
+      //console.log('intervalList : ', intervalList)
       this.setState({ intervalList, repeatName: intervalList[0].name, repeat: true })
     }
     setInterval()
