@@ -57,7 +57,7 @@ export default class AgendaView extends Component {
   }
   
   componentWillMount() {
-    getiOSNotificationPermission();
+    // getiOSNotificationPermission();
     this.listenForNotifications();
   }
 

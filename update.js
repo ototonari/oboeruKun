@@ -1,7 +1,7 @@
 // those actions need when this app was update.
 import { AsyncStorage } from 'react-native';
 import { createUpdateTable, updateBuildNumber, getBuildNumber, initializeUpdateTable, initDB, showNotificationTable, dropNotificationTable,insertMaster, insertPage, insertNotice } from "./database";
-import { Constants } from 'expo';
+import { Constants, Notifications, Permissions } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from "./dateToFormatString";
 
@@ -67,6 +67,7 @@ export function startTutorial() {
 export function endTutorial() {
   //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
   Actions.reset('tabbar')
+  getiOSNotificationPermission()
 }
 
 async function transferDataToNewTable() {
@@ -110,3 +111,13 @@ async function transferDataToNewTable() {
   }
 
 }
+
+async function getiOSNotificationPermission() {
+  const { status } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  if (status !== 'granted') {
+    await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  }
+}
+
