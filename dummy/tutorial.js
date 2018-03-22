@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 
 const imageProps = {
   resizeMode : Platform.select({
-    ios: null,
+    ios: 'stretch',
     android: 'stretch',
   }),
 }
@@ -157,6 +157,10 @@ export class Step4 extends Component {
         <TouchableOpacity 
           style={styles.startButton} 
           onPressOut={() => endTutorial()}
+        />
+        <TouchableOpacity 
+          style={styles.prevButton} 
+          onPressOut={() => Actions.pop()}
         />
         <Image
           source={require('../assets/tutorial/STEP4.png')}

@@ -6,7 +6,7 @@
     "privacy": "public",
     "sdkVersion": "25.0.0",
     "platforms": ["ios", "android"],
-    "version": "1.2.2",
+    "version": "1.2.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "jp.tsubasaNagata.oboeruKun",
-      "buildNumber": "1.2.2"
+      "buildNumber": "1.2.3"
     },
     "android": {
       "package": "org.reactjs.native.oboeruKun",
