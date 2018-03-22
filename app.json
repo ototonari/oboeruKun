@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "jp.tsubasaNagata.oboeruKun",
-      "buildNumber": "1.2.3"
+      "buildNumber": "1.2.4"
     },
     "android": {
       "package": "org.reactjs.native.oboeruKun",
