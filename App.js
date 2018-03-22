@@ -11,6 +11,7 @@ import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 import { Asset, AppLoading } from "expo";
+import { assetsLoad } from "./components";
 
 const images = [
   require('./assets/tutorial/STEP0.png'),
@@ -23,8 +24,7 @@ const images = [
 export default class App extends React.Component {
 
   componentDidMount() {
-    // 画像をディスクにキャッシュする
-    Asset.loadAsync(images)
+    assetsLoad()
   }
   render() {
     initialize()

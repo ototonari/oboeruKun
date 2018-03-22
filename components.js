@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Platform } from 'react-native';
+import { Asset } from "expo";
 
 
 export class Avatar extends Component {
@@ -62,4 +63,28 @@ export class FlatButton extends Component {
   
         )
     }
+}
+
+const smartPhoneSize = [
+    require('./assets/tutorial/STEP0.png'),
+    require('./assets/tutorial/STEP1.png'),
+    require('./assets/tutorial/STEP2.png'),
+    require('./assets/tutorial/STEP3.png'),
+    require('./assets/tutorial/STEP4.png'),
+]
+
+const tabletSize = [
+    require('./assets/tutorial/ipad/STEP0.png'),
+    require('./assets/tutorial/ipad/STEP1.png'),
+    require('./assets/tutorial/ipad/STEP2.png'),
+    require('./assets/tutorial/ipad/STEP3.png'),
+    require('./assets/tutorial/ipad/STEP4.png'),
+]
+
+export async function assetsLoad() {
+    // デバイスによってロードする画像を変更する
+    console.log(Platform.isPad)
+    images = Platform.isPad !== true ? smartPhoneSize : tabletSize;
+    // 画像をディスクにキャッシュする
+    Asset.loadAsync(images)
 }
