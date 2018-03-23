@@ -18,7 +18,7 @@ import { Constants, Notifications, Permissions } from 'expo';
 import CellView from "./cellView";
 import { cancelNotification } from "../notification";
 import { setNotice } from "../database";
-import { locale } from "../components";
+import { locale, loadLanguage } from "../components";
 
 
 async function getiOSNotificationPermission() {
@@ -33,6 +33,7 @@ async function getiOSNotificationPermission() {
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
+    this.language = loadLanguage('data')
     this.state = {
       items: {},
       today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%'),
@@ -130,7 +131,7 @@ export default class AgendaView extends Component {
   renderItem(item) {
     
     return (
-      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} />
+      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} language={this.language} />
     );
   }
 

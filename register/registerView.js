@@ -6,7 +6,7 @@ import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
 import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement, testRenderPageModalContent } from "./registerAction";
 import { createDB, getTitle, getAllParams } from "../database";
-import { locale, localeJSON } from "../components";
+import { loadLanguage } from "../components";
 
 
 export default class RegisterView extends Component {
@@ -41,19 +41,12 @@ export default class RegisterView extends Component {
         this.state.notice === nextState.notice &&
         this.state.visibleModal === nextState.visibleModal &&
         this.state.title === nextState.title &&
+        this.state.titleError === nextState.titleError &&
         this.state.startPage === nextState.startPage &&
         this.state.endPage === nextState.endPage &&
         isEqual(nextState.intervalList, this.state.intervalList) &&
         isEqual(nextProps, this.props)
       )
-    }
-
-    transfer = () => {
-      if (locale.country === 'US') {
-        return localeJSON.en.register
-      } else {
-        return localeJSON.jp.register
-      }
     }
 
   _renderButton = (text, onPress, style) => (
@@ -344,7 +337,7 @@ export default class RegisterView extends Component {
 
 
   render () {
-    const language = this.transfer()
+    const language = loadLanguage('register')
     return (
       // 画面全体に判定を持ち、条件に応じて処理する。
       <TouchableOpacity style={styles.container.modalBackground}

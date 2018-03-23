@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { getAllParams, deleteList, insertNoticeInterval, deleteParams } from "../database";
 import styles from "../register/registerStyle";
+import { locale, loadLanguage } from "../components";
 
 export class NoticeSetting extends Component {
   constructor (props) {
@@ -38,7 +39,7 @@ export class NoticeSetting extends Component {
               const spliceIndex = i
               newItems.splice(spliceIndex, 1)
             } else {
-              newItems = [{ title: '履歴はありません', id: 0 }]
+              newItems = [{ title: locale.country === "JP" ? '履歴はありません' : "No history", id: 0 }]
             }
             this.setState({ items: newItems })
           })
@@ -54,12 +55,12 @@ export class NoticeSetting extends Component {
       </TouchableOpacity>,
     ];
 
-    let msg = ''
+    let msg = locale.country === "JP" ? '' : "Notify after "
     const array = JSON.parse(item.interval)
     for (let i=0,j=array.length; i < j; i++) {
-      msg += `${array[i]}日後, `
+      msg += locale.country === "JP" ? `${array[i]}日後, ` : `${array[i]}, `
     }
-    msg += 'に復習する'
+    msg += locale.country === "JP" ? "に復習する" : "days"
 
     return(
       <Swipeable rightButtons={rightButtons} rightButtonWidth={70}  >
@@ -108,11 +109,11 @@ export class RegisterSetting extends Component {
   )
 
 
-  _title = () => (
+  _title = (language) => (
     <View style={styles.container.title} >
       <View style={{ flex: 1 }} >
-        <Text style={styles.styles.titleLabel} >タイトル</Text>
-        <Text style={{ color: 'red' }} >{ this.state.titleError }</Text>
+        <Text style={styles.styles.titleLabel} >{language.title}</Text>
+        <Text style={{ color: 'red', fontSize: 12 }} >{ this.state.titleError }</Text>
       </View>
       <View style={{ flex: 1 }} >
         <TextInput
@@ -124,7 +125,7 @@ export class RegisterSetting extends Component {
     </View>
   )
 
-  _addItem = () => (
+  _addItem = (language) => (
     <View style={localStyles.form} >
       <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center', marginLeft: 20 }} >
           <TouchableOpacity onPress={() => this.setState({ visibleModal: 1 }) }>
@@ -132,7 +133,7 @@ export class RegisterSetting extends Component {
               <Text style={styles.styles.pageText} >{ this.state.intervalDay }</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ fontSize: 16, marginLeft: 10 }} >日後に復習する</Text>
+          <Text style={{ fontSize: 16, marginLeft: 10 }} >{language.registerLabel}</Text>
       </View>
       <TouchableOpacity 
         onPress={() => {addItem(this)} } >
@@ -141,11 +142,11 @@ export class RegisterSetting extends Component {
     </View>
   )
 
-  _renderItems = (item) => {
+  _renderItems = (item, language) => {
 
     return(
         <View style={[localStyles.rowItem, localStyles.container, {justifyContent: 'space-between'}]} >
-          <Text style={{fontSize: 18, }} >{item.day} 日後に復習する</Text>
+          <Text style={{fontSize: 18, }} >{item.day} {language.registerLabel}</Text>
           <TouchableOpacity
             onPress={() => {deleteItem(this, item.id)}} >
             <Image source={require('../assets/error.png')} style={[localStyles.image, {marginRight: 20}]} />
@@ -184,26 +185,27 @@ export class RegisterSetting extends Component {
   }
 
   render () {
+    const language = loadLanguage('registerSetting')
     return (
       <View style={styles.container.container} >
         <View style={styles.container.view} >
           <View style={styles.params.title} >
-            { this._title() }
+            { this._title(language) }
           </View>
           <View style={styles.params.param} >
-            { this._addItem() }
+            { this._addItem(language) }
           </View>
           <View style={localStyles.background} >
             <FlatList
               data={this.state.items}
               extraData={this.state}
               keyExtractor={(item) => item.id}
-              renderItem={({item}) => this._renderItems(item) }
+              renderItem={({item}) => this._renderItems(item, language) }
             />
           </View>
           </View>
         <View style={styles.container.register} >
-          { this._renderButton('登録',() => validation(this) , styles.styles.registerButton) }
+          { this._renderButton(language.registerButton,() => validation(this, language) , styles.styles.registerButton) }
         </View>
         <Modal isVisible={this.state.visibleModal === 1}>
           { this._renderModal() }
@@ -235,23 +237,23 @@ function deleteItem(target, id) {
   target.setState({ items })
 }
 
-function validation(target) {
+function validation(target, language) {
   const title = target.state.title
   const items = target.state.items
   let error = ''
-  if (title == '') error += 'タイトルを入力してください。'
-  if (items.length == 0) error += '復習間隔を追加してください。'
+  if (title == '') error += language.errTitle
+  if (items.length == 0) error += language.errItem
   if (error !== '') {
     // error
     target.setState({ titleError: error })
     return
   } else {
     // success
-    addNoticeInterval(items, title)
+    addNoticeInterval(items, title, language)
   }
 }
 
-async function addNoticeInterval(list, name) {
+async function addNoticeInterval(list, name, language) {
   const items = list
   const makeIntervalList = async () => {
     let intervalList = []
@@ -263,7 +265,7 @@ async function addNoticeInterval(list, name) {
   makeIntervalList().then(async (intervalList) => {
     await insertNoticeInterval(intervalList, name)
     Alert.alert(
-      '登録しました','',
+      language.done,'',
       [{text: 'OK', onPress: () => {
         Actions.reset('tabbar')
       } }]

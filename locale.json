@@ -24,7 +24,22 @@
       "repeat": "反復学習",
       "repeatLabel": "反復方法",
       "notice": "通知する",
-      "registerButton": "登録"
+      "registerButton": "登録",
+      "done":"登録しました",
+      "errTitle": "タイトルを入力してください。"
+    },
+    "registerSetting": {
+      "title":"タイトル",
+      "registerButton":"登録",
+      "registerLabel":"日後に復習する",
+      "errTitle": "タイトルを入力してください。",
+      "errItem": "復習間隔を追加してください。",
+      "done": "登録しました"
+    },
+    "data": {
+      "page": "範囲",
+      "memo": "メモ",
+      "done":"登録しました"
     }
   },
   "en": {
@@ -44,7 +59,22 @@
       "repeat": "Repetitive learning",
       "repeatLabel": "Repetitive method",
       "notice": "Notification",
-      "registerButton":"Register"
+      "registerButton":"Register",
+      "done": "Register success.",
+      "errTitle":"Please input title."
+    },
+    "registerSetting": {
+      "title":"Title",
+      "registerButton":"Register",
+      "registerLabel":"day after, Do repeat.",
+      "errTitle":"Please input title.",
+      "errItem":"Please add repeat day.",
+      "done":"Register success."
+    },
+    "data":{
+      "page":"Range",
+      "memo":"Note",
+      "done":"Register success."
     }
   }
 }

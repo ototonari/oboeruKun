@@ -11,7 +11,7 @@ import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 import { Asset, AppLoading } from "expo";
-import { assetsLoad, localization, locale, localeJSON } from "./components";
+import { assetsLoad, localization, loadLanguage } from "./components";
 
 
 
@@ -29,14 +29,6 @@ export default class App extends React.Component {
     return Promise.all(asyncList)
   }
 
-  transter = () => {
-    if (locale.country === 'US') {
-      return localeJSON.en.scene
-    } else {
-      return localeJSON.jp.scene
-    }
-  }
-
   render() {
     if (!this.state.isReady) {
       return (
@@ -47,7 +39,7 @@ export default class App extends React.Component {
         />
       );
     }
-    const language = this.transter()
+    const language = loadLanguage('scene')
     console.log(language)
     return (
       <Router sceneStyle={styles.header} >

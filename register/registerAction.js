@@ -6,13 +6,14 @@ import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, in
 import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
 import { registerNotification } from "../notification";
+import { loadLanguage, locale } from "../components";
 
-export function validation(target, callback) {
+export function validation(target, callback, language) {
   const self = target
-  
   // エラー処理
   if (self.state.title === '') {
-    self.setState({titleError: 'タイトルを入力してください'})
+    const language = loadLanguage('register')
+    self.setState({titleError: language.errTitle})
     return;
 
   } else {
@@ -26,6 +27,7 @@ export function validation(target, callback) {
 
 export async function arrangement(target) {
   const self = target
+  const language = loadLanguage('data')
   // 登録情報
   const {title, page, memo, repeat, notice, repeatId} = self.state
   // タイトル履歴に保存
@@ -57,7 +59,7 @@ export async function arrangement(target) {
     // dbに保存
     insertPage(id, pageInfo)
     data['page'] = pageInfo
-    body += `範囲: p.${startPage} ~ p.${endPage}\n`
+    body += `${language.page}: p.${startPage} ~ p.${endPage}\n`
     //body += '本日は ' + 'p.' + self.state.startPage + '  ~  ' + 'p.' + self.state.endPage + ' を復習しましょう。'    
   }
   if (memo == true) {
@@ -65,7 +67,7 @@ export async function arrangement(target) {
     const { memoValue } = self.state
     // dbに保存
     insertMemo(id, memoValue)
-    body += `メモ: ${memoValue}`
+    body += `${language.memo}: ${memoValue}`
     data['memo'] = memoValue
   }
 
@@ -98,7 +100,7 @@ export async function arrangement(target) {
     await setSchedule(id, intervalList)
   }
   Alert.alert(
-    '登録しました','',
+    language.done,'',
     [{text: 'OK', onPress: () => {
       Actions.reset('tabbar')
       
