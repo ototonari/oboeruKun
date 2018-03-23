@@ -6,6 +6,8 @@ import { Dropdown } from 'react-native-material-dropdown';
 import Modal from 'react-native-modal';
 import { validation, registerTask, renderPageModalContent, renderTitleModalContent, arrangement, testRenderPageModalContent } from "./registerAction";
 import { createDB, getTitle, getAllParams } from "../database";
+import { locale, localeJSON } from "../components";
+
 
 export default class RegisterView extends Component {
   constructor(props) {
@@ -46,6 +48,13 @@ export default class RegisterView extends Component {
       )
     }
 
+    transfer = () => {
+      if (locale.country === 'US') {
+        return localeJSON.en.register
+      } else {
+        return localeJSON.jp.register
+      }
+    }
 
   _renderButton = (text, onPress, style) => (
     <TouchableOpacity onPress={onPress}>
@@ -55,10 +64,10 @@ export default class RegisterView extends Component {
     </TouchableOpacity>
   )
 
-  _title = () => (
+  _title = (language) => (
     <View style={styles.container.title} >
       <View style={{ flex: 1 }} >
-        <Text style={styles.styles.titleLabel} >タイトル</Text>
+        <Text style={styles.styles.titleLabel} >{language.title}</Text>
         <Text style={{ color: 'red' }} >{ this.state.titleError }</Text>
       </View>
       <View style={{ flex: 1, borderColor: 'pink', borderWidth: 0 }} >
@@ -127,10 +136,10 @@ export default class RegisterView extends Component {
   }
   
 
-  _page = () => (
+  _page = (language) => (
     <View style={styles.container.page} >
       <View style={styles.container.switch} >
-        <Text style={styles.styles.titleLabel} >ページ範囲</Text>
+        <Text style={styles.styles.titleLabel} >{language.page}</Text>
         <Switch
           onValueChange={() => this.setState({page: !this.state.page})}
           value={this.state.page}
@@ -209,10 +218,10 @@ export default class RegisterView extends Component {
   }
   
 
-  _memo = () => (
+  _memo = (language) => (
     <View style={styles.container.page} >
       <View style={styles.container.switch} >
-        <Text style={styles.styles.titleLabel} >メモ</Text>
+        <Text style={styles.styles.titleLabel} >{language.memo}</Text>
         <Switch
           onValueChange={() => this.setState({memo: !this.state.memo})}
           value={this.state.memo}
@@ -241,22 +250,22 @@ export default class RegisterView extends Component {
     }
   }
 
-  _repeat = () => (
+  _repeat = (language) => (
     <View style={styles.container.page} >
       <View style={styles.container.switch} >
-        <Text style={styles.styles.titleLabel} >反復学習</Text>
+        <Text style={styles.styles.titleLabel} >{language.repeat}</Text>
         <Switch
           onValueChange={() => this.setState({repeat: !this.state.repeat})}
           value={this.state.repeat}
           
         />
       </View>
-      { this._notice() }
-      { this._renderRepeatList() }
+      { this._notice(language) }
+      { this._renderRepeatList(language) }
     </View>
   )
 
-  _renderRepeatList = () => {
+  _renderRepeatList = (language) => {
     if (this.state.repeat == false) return
 
     let data = []
@@ -274,7 +283,7 @@ export default class RegisterView extends Component {
     return (
     <View  >
       <Dropdown
-        label='反復方法'
+        label={language.repeatLabel}
         data={data}
         value={this.state.repeatName}
         onChangeText={ (value, index, data) => {
@@ -286,12 +295,12 @@ export default class RegisterView extends Component {
     )
   }
 
-  _notice = () => {
+  _notice = (language) => {
     if (this.state.repeat === false) return
     return (
       <View style={styles.container.page} >
         <View style={styles.container.subContents} >
-          <Text style={styles.styles.subTitleLabel} >・通知する</Text>
+          <Text style={styles.styles.subTitleLabel} >・{language.notice}</Text>
           <Switch
             onValueChange={() => this.setState({notice: !this.state.notice})}
             style={{ transform: [{ scaleX: .9 }, { scaleY: .9 }] }}
@@ -335,6 +344,7 @@ export default class RegisterView extends Component {
 
 
   render () {
+    const language = this.transfer()
     return (
       // 画面全体に判定を持ち、条件に応じて処理する。
       <TouchableOpacity style={styles.container.modalBackground}
@@ -346,17 +356,17 @@ export default class RegisterView extends Component {
         <View style={styles.container.view} >
           <ScrollView style={{ flex: 1 }} >
             <View style={styles.params.title} >
-              { this._title() }
+              { this._title(language) }
             </View>
 
             <View style={styles.params.param} >
-              { this._page() }
+              { this._page(language) }
             </View>
             <View style={styles.params.param} >
-              { this._memo() }
+              { this._memo(language) }
             </View>
             <View style={styles.params.param} >
-              { this._repeat() }
+              { this._repeat(language) }
             </View>
 
             <View style={styles.container.blank} >
@@ -365,7 +375,7 @@ export default class RegisterView extends Component {
           </ScrollView>
         </View>
         <View style={styles.container.register} >
-          { this._renderButton('登録',() => validation(this, arrangement) , styles.styles.registerButton) }
+          { this._renderButton(language.registerButton,() => validation(this, arrangement) , styles.styles.registerButton) }
         </View>
         <Modal isVisible={this.state.visibleModal === 1}>
           { this._renderPageModal() }

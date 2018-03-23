@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Platform } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Platform, Alert } from 'react-native';
 import { Asset } from "expo";
 
+export let locale = {}
+export const localeJSON = require("./locale.json")
 
 export class Avatar extends Component {
   constructor(props) {
@@ -83,8 +85,33 @@ const tabletSize = [
 
 export async function assetsLoad() {
     // デバイスによってロードする画像を変更する
-    console.log(Platform.isPad)
-    images = Platform.isPad !== true ? smartPhoneSize : tabletSize;
+    let images = Platform.isPad !== true ? smartPhoneSize : tabletSize;
     // 画像をディスクにキャッシュする
-    Asset.loadAsync(images)
+    await Asset.loadAsync(images)
+}
+
+export async function localization() {
+    const country = await Expo.Util.getCurrentDeviceCountryAsync()
+    // Returns the current device country code.
+
+    const currentLocale = await Expo.Util.getCurrentLocaleAsync()
+    // Returns the current device locale as a string.
+
+    const timezone = await Expo.Util.getCurrentTimeZoneAsync()
+    // Returns the current device time zone name.
+    console.log(`country : ${country} , locale : ${locale} , timezone : ${timezone}`)
+    locale = {
+        'country': country,
+        'locale': currentLocale,
+        'timezone': timezone
+    }
+
+}
+
+export function loadLanguage(props) {
+    if (locale.country === "JP") {
+        return localeJSON.jp[props]
+    } else {
+        return localeJSON.en[props]
+    }
 }
