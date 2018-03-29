@@ -26,7 +26,9 @@
       "notice": "通知する",
       "registerButton": "登録",
       "done":"登録しました",
-      "errTitle": "タイトルを入力してください。"
+      "errTitle": "タイトルを入力してください。",
+      "pickerFirstItem": "選択して下さい",
+      "pickerNoItem": "履歴がありません"
     },
     "registerSetting": {
       "title":"タイトル",
@@ -54,14 +56,16 @@
     },
     "register": {
       "title": "Title",
-      "page": "Page Range",
+      "page": "Page number",
       "memo": "Note",
       "repeat": "Repetitive learning",
       "repeatLabel": "Repetitive method",
       "notice": "Notification",
       "registerButton":"Register",
       "done": "Register success.",
-      "errTitle":"Please input title."
+      "errTitle":"Please input title.",
+      "pickerFirstItem":"Please select.",
+      "pickerNoItem":"No history."
     },
     "registerSetting": {
       "title":"Title",

@@ -84,7 +84,7 @@ export default class RegisterView extends Component {
     </View>
   )
 
-  _renderTitleModal = () => (
+  _renderTitleModal = (language) => (
     <TouchableOpacity style={{
       flex: 1,
       justifyContent: 'center',
@@ -101,7 +101,7 @@ export default class RegisterView extends Component {
           <Picker onValueChange={(value, index) => this.setState({ title: value }) } 
             selectedValue={ this.state.title } 
             style={{ width: '100%', flex: 0.6 }} >
-              { this._renderTitlePickerItems(this.state.titleList) }
+              { this._renderTitlePickerItems(this.state.titleList, language) }
           </Picker>
         ),
         android: (
@@ -110,7 +110,7 @@ export default class RegisterView extends Component {
             style={{ width: '100%', flex: 0.6, zIndex: 10 }} 
             hitSlop={{top: 100, bottom: 100, left: 100, right: 100}}
           >
-              { this._renderTitlePickerItems(this.state.titleList) }
+              { this._renderTitlePickerItems(this.state.titleList, language) }
           </Picker>
         ),
       })}
@@ -119,12 +119,16 @@ export default class RegisterView extends Component {
     </TouchableOpacity>
   )
 
-  _renderTitlePickerItems = (array) => {
+  _renderTitlePickerItems = (array, language) => {
     const srvItems = []
-    srvItems.push(<Picker.Item key={-1} label = {'選択してください'} value = {''} />)
-    array.forEach( (value, index) => {
-      srvItems.push(<Picker.Item key={index} label = {String(value.title)} value = {String(value.title)} />)
-    })
+    if (array.length > 0) {
+      srvItems.push(<Picker.Item key={-1} label = {language.pickerFirstItem} value = {''} />)
+      array.forEach( (value, index) => {
+        srvItems.push(<Picker.Item key={index} label = {String(value.title)} value = {String(value.title)} />)
+      })
+    } else {
+      srvItems.push(<Picker.Item key={-1} label = {language.pickerNoItem} value = {''} />)
+    }
     return srvItems
   }
   
@@ -377,7 +381,7 @@ export default class RegisterView extends Component {
           { this._renderPageModal() }
         </Modal>
         <Modal isVisible={this.state.visibleModal === 3}>
-          { this._renderTitleModal() }
+          { this._renderTitleModal(language) }
         </Modal>
         
         
