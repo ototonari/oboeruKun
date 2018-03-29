@@ -8,22 +8,18 @@ import { dateToFormatString } from "./dateToFormatString";
 const currentBuildNumber = Constants.manifest.ios.buildNumber
 
 export async function initialize() {
-  initDB()
-  setup = (array) => {
-    const hitCount = array.length
-    // initialize
-    if (hitCount === 0) {
-      // データベースにヒットなし
-      console.log('no hit')
-      initializeUpdateTable(updateChecker)
-    } else if (hitCount > 0) {
-      // データベースにヒットあり
-      console.log('hit!')
-      const buildNumber = array[0].buildNumber
-      updateChecker(buildNumber)
-    }
+  await initDB()
+  let buildNumber = await getBuildNumber()
+  //console.log(buildNumber)
+  if (buildNumber.length > 0) {
+    buildNumber = buildNumber[0].buildNumber
+  } else {
+    // first run
+    buildNumber = '1.0.0'
+    // update管理用のrowを追加する
+    await testinitializeUpdateTable()
   }
-  createUpdateTable(setup)
+  updateChecker(buildNumber)
 }
 
 function updateChecker(buildNumber) {
@@ -72,7 +68,7 @@ export function endTutorial() {
 
 async function transferDataToNewTable() {
   let array = await showNotificationTable()
-  if (array == null || array.length == 0) { console.log('droped notification'); return }
+  if (array == null || array.length == 0) { console.log('exit notification'); return }
   console.log('start transfer data')
   //console.log('debugShowTable : ', array)
   for(let i=0, j=array.length; i < j; i++) {

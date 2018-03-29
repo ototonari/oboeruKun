@@ -23,10 +23,15 @@ export default class App extends React.Component {
   async _cacheResourcesAsync() {
     // load Async functions
     const asyncList = [
-      assetsLoad(), localization(), initialize()
+      assetsLoad(), localization()
     ]
 
     return Promise.all(asyncList)
+  }
+
+  componentWillMount() {
+    console.log(`called will mount`)
+    initialize()
   }
 
   render() {
@@ -40,7 +45,7 @@ export default class App extends React.Component {
       );
     }
     const language = loadLanguage('scene')
-    console.log(language)
+    //console.log(language)
     return (
       <Router sceneStyle={styles.header} >
         <Scene key="root" >

@@ -94,6 +94,16 @@ export function initDB() {
     )
     //tx.executeSql( 'drop table noticeInterval')
   })
+  db.transaction(tx => {
+    tx.executeSql(
+      "CREATE TABLE IF NOT EXISTS updateTable (id INTEGER NOT NULL PRIMARY KEY DEFAULT 0, buildNumber TEXT DEFAULT '1.0.0' NOT NULL);", [],
+      () => {
+        console.log('initDB, create updateTable success')
+      },
+      () => console.log('initDB, create updateTable error: ', error)
+    )
+    //tx.executeSql( 'drop table updateTable' )
+  })
 }
 
 export async function insertMaster(title) {
@@ -193,7 +203,7 @@ export async function getNotice(rangeList) {
       tx.executeSql(
         'SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1', getThisMonth(),
         (_, { rows: { _array } }) => {
-          console.log('getNotice success : ', _array)
+          //console.log('getNotice success : ', _array)
           resolve(_array)
         }
       )
@@ -335,25 +345,26 @@ export function updateBuildNumber(currentBuildNumber) {
   })
 }
 
-export function getBuildNumber(callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'select buildNumber from updateTable', [],
-      (_, { rows: { _array } }) => callback(_array)
-    )
+export function getBuildNumber() {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT buildNumber FROM updateTable', [],
+        (_, { rows: { _array } }) => resolve(_array)
+      )
+    })
   })
 }
 
-export function initializeUpdateTable(callback) {
-  db.transaction(tx => {
-    tx.executeSql(
-      "insert into updateTable (id, buildNumber) values (0, '1.0.0')", [],
-      () => {
-        console.log('updateTable initialized success')
-        callback('1.0.0')
-      },
-      () => console.log('updateTable initialized raise error')
-    )
+export function initializeUpdateTable() {
+  return new Promise(resolve => {
+    db.transaction(tx => {
+      tx.executeSql(
+        "INSERT INTO updateTable (id, buildNumber) values (0, '1.0.0')", [],
+        () => resolve(),
+        () => console.log('updateTable initialized raise error')
+      )
+    })
   })
 }
 
