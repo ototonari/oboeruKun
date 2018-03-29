@@ -1,6 +1,9 @@
 import { dateToFormatString } from "../dateToFormatString";
 import { getNotice, getMaster, getParams, testGetTitle, getSpecificNotice, changeNotice } from "../database";
 import { registerNotification, cancelNotification, createNotificationObject } from "../notification";
+import { LocaleConfig } from 'react-native-calendars';
+import { locale, localeJSON } from "../components";
+
 
 export async function initializeCalender(target, day) {
   const self = target
@@ -99,6 +102,17 @@ export async function changeNotification(item, registerdDate) {
     console.log(notificationId)
     // await changeNotice(item.noticeDate, notificationId, registerdDate, item.id)
   })
+}
+
+export function localization() {
+  console.log(`locale : ${locale.country}`)
+  if (locale.country === "JP"){
+    LocaleConfig.locales['jp'] = localeJSON.jp.agenda.localeConfig
+    LocaleConfig.defaultLocale = 'jp';
+  } else if (locale.country !== "JP") {
+
+  }
+  
 }
 
 // function changeDate(registerdDate, date) {

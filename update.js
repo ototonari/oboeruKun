@@ -7,7 +7,7 @@ import { dateToFormatString } from "./dateToFormatString";
 
 const currentBuildNumber = Constants.manifest.ios.buildNumber
 
-export function initialize() {
+export async function initialize() {
   initDB()
   setup = (array) => {
     const hitCount = array.length

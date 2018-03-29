@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
 import Swipeable from 'react-native-swipeable';
 import { getAllTitle, deleteList } from "../database";
-
+import { locale } from "../components";
 
 export default class TitleList extends Component {
   constructor (props) {
@@ -16,7 +16,9 @@ export default class TitleList extends Component {
     const setItems = async () => {
       let items = []
       items = await getAllTitle()
-      if (items.length == 0) { items = [{ title: '履歴はありません', id: 0 }] }
+      if (items.length == 0) {
+        items = [{ title: locale.country === "JP" ? '履歴はありません' : "No history", id: 0 }] 
+      }
       this.setState({ items })
       console.log(items)
     }
@@ -35,7 +37,7 @@ export default class TitleList extends Component {
               const spliceIndex = i
               newItems.splice(spliceIndex, 1)
             } else {
-              newItems = [{ title: '履歴はありません', id: 0 }]
+              newItems = [{ title: locale.country === "JP" ? '履歴はありません' : "No history", id: 0 }]
             }
             this.setState({ items: newItems })
           })

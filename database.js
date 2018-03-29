@@ -1,6 +1,7 @@
 import { SQLite } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from './dateToFormatString';
+import { locale } from "./components";
 
 const db = SQLite.openDatabase('db.db');
 
@@ -83,7 +84,7 @@ export function initDB() {
         if (_array.length > 0) return
         // 初期サンプルの挿入
         const sampleInterval = JSON.stringify([1, 7, 30])
-        const name = '忘却曲線に基づいた復習'
+        const name = locale.country === "JP" ? '忘却曲線に基づいた復習' : "Forgetting curve"
         tx.executeSql(
           'INSERT INTO noticeInterval (interval, name) values (?, ?)', [sampleInterval, name],
           () => console.log('initDB, insert into noticeInterval success'),

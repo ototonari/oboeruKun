@@ -11,23 +11,36 @@ import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 import { Asset, AppLoading } from "expo";
-import { assetsLoad } from "./components";
+import { assetsLoad, localization, loadLanguage } from "./components";
 
-const images = [
-  require('./assets/tutorial/STEP0.png'),
-  require('./assets/tutorial/STEP1.png'),
-  require('./assets/tutorial/STEP2.png'),
-  require('./assets/tutorial/STEP3.png'),
-  require('./assets/tutorial/STEP4.png'),
-]
+
 
 export default class App extends React.Component {
+  state = {
+    isReady: false,
+  };
 
-  componentDidMount() {
-    assetsLoad()
+  async _cacheResourcesAsync() {
+    // load Async functions
+    const asyncList = [
+      assetsLoad(), localization(), initialize()
+    ]
+
+    return Promise.all(asyncList)
   }
+
   render() {
-    initialize()
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={this._cacheResourcesAsync}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      );
+    }
+    const language = loadLanguage('scene')
+    console.log(language)
     return (
       <Router sceneStyle={styles.header} >
         <Scene key="root" >
@@ -39,7 +52,7 @@ export default class App extends React.Component {
             <Scene 
               key="manager"
               iconName="agenda"
-              title="カレンダー"
+              title={language.agenda}
               initial={true}
               component={AgendaView} 
               icon={TabIcon} 
@@ -49,19 +62,19 @@ export default class App extends React.Component {
             />
             <Scene 
               key="config" 
-              title="設定"
+              title={language.config}
               component={ConfigView} 
               icon={TabIcon} 
             />
           </Tabs>
-          <Scene sceneStyle={styles.oneCompHeader} key="register" component={RegisterView} title={'登録画面'} />
-          <Scene sceneStyle={styles.oneCompHeader} key="developers" component={Developers} title={'Developers'} />
-          <Scene sceneStyle={styles.oneCompHeader} key="titlelist" component={TitleList} title={'タイトル履歴'} />
+          <Scene sceneStyle={styles.oneCompHeader} key="register" component={RegisterView} title={language.register} />
+          <Scene sceneStyle={styles.oneCompHeader} key="developers" component={Developers} title={language.developer} />
+          <Scene sceneStyle={styles.oneCompHeader} key="titlelist" component={TitleList} title={language.titleList} />
           <Scene 
             sceneStyle={styles.oneCompHeader}
             key="noticesetting" 
             component={NoticeSetting} 
-            title={'通知間隔の設定'} 
+            title={language.noticeSetting} 
             rightButtonImage={require('./assets/plus.png')}
             onRight={() => Actions.registersetting()}
           />

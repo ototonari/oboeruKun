@@ -11,23 +11,15 @@ import { isEqual } from "lodash";
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { getAllNoticeDate, getNotice } from "../database";
-import { initializeCalender } from "./agendaAction";
+import { initializeCalender, localization } from "./agendaAction";
 import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
 import { Constants, Notifications, Permissions } from 'expo';
 import CellView from "./cellView";
 import { cancelNotification } from "../notification";
 import { setNotice } from "../database";
+import { locale, loadLanguage } from "../components";
 
-
-LocaleConfig.locales['jp'] = {
-  monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
-  monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
-  dayNames: ['日','月','火','水','木','金','土'],
-  dayNamesShort: ['日','月','火','水','木','金','土']
-};
-
-LocaleConfig.defaultLocale = 'jp';
 
 async function getiOSNotificationPermission() {
   const { status } = await Permissions.getAsync(
@@ -38,10 +30,10 @@ async function getiOSNotificationPermission() {
   }
 }
 
-
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
+    this.language = loadLanguage('data')
     this.state = {
       items: {},
       today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%'),
@@ -57,8 +49,8 @@ export default class AgendaView extends Component {
   }
   
   componentWillMount() {
-    // getiOSNotificationPermission();
     this.listenForNotifications();
+    localization()
   }
 
   componentDidMount() {
@@ -134,36 +126,12 @@ export default class AgendaView extends Component {
 
   loadItems(day) {
     console.log('called loadItems , day: ', day)
-    // setTimeout(() => {
-    //   for (let i = -15; i < 15; i++) {
-    //     const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-    //     const strTime = this.timeToString(time);
-    //     console.log('loadItems day: ', day, ' time: ', time, ' strTime: ', strTime)
-    //     if (!this.state.items[strTime]) {
-    //       this.state.items[strTime] = [];
-    //       const numItems = Math.floor(Math.random() * 5);
-    //       for (let j = 0; j < numItems; j++) {
-    //         this.state.items[strTime].push({
-    //           name: 'Item for ' + strTime,
-    //           height: Math.max(50, Math.floor(Math.random() * 150))
-    //         });
-    //       }
-    //     }
-    //   }
-    //   //console.log(this.state.items);
-    //   const newItems = {};
-    //   Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
-    //   this.setState({
-    //     items: newItems
-    //   });
-    // }, 1000);
-    // // console.log(`Load Items for ${day.year}-${day.month}`);
   }
 
   renderItem(item) {
     
     return (
-      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} />
+      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} language={this.language} />
     );
   }
 

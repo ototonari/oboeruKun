@@ -13,12 +13,12 @@ export default class CellView extends Component {
     let item = this.props.item
     const page = (item) => {
       if (item.page !== null) {
-        return (<Text>Page: {item.page.startPage} ~ {item.page.endPage}</Text>)
+        return (<Text>{this.props.language.page}: {item.page.startPage} ~ {item.page.endPage}</Text>)
       }
     }
     const memo = (item) => {
       if (item.memo !== null) {
-        return (<Text>メモ: {item.memo}</Text>)
+        return (<Text>{this.props.language.memo}: {item.memo}</Text>)
       }
     }
 
