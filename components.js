@@ -99,7 +99,7 @@ export async function localization() {
 
     const timezone = await Expo.Util.getCurrentTimeZoneAsync()
     // Returns the current device time zone name.
-    console.log(`country : ${country} , locale : ${locale} , timezone : ${timezone}`)
+    console.log(`country : ${country} , locale : ${currentLocale} , timezone : ${timezone}`)
     locale = {
         'country': country,
         'locale': currentLocale,
