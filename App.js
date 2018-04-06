@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Image, Platform } from 'react-native';
 import RegisterView from "./register/registerView";
 import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
 import { initialize } from "./update";
-import TabIcon from "./dummy/tabIcon";
 import ConfigView from "./config/config";
 import Developers from "./config/developer"
 import { Step0, Step1, Step2, Step3, Step4 } from "./dummy/tutorial";
@@ -11,7 +10,7 @@ import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 import { Asset, AppLoading } from "expo";
-import { assetsLoad, localization, loadLanguage } from "./components";
+import { assetsLoad, localization, loadLanguage, TabIcon } from "./components";
 
 
 
