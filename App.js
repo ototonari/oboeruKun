@@ -62,7 +62,6 @@ export default class App extends React.Component {
               icon={TabIcon} 
               onRight={() => Actions.register()} 
               rightButtonImage={require('./assets/plus.png')} 
-
             />
             <Scene 
               key="config" 
