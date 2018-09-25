@@ -7,7 +7,12 @@
       "developer": "開発者情報",
       "titleList": "タイトル履歴",
       "noticeSetting": "通知間隔の設定",
-      "tutorial": "チュートリアル"
+      "tutorial": "チュートリアル",
+      "privacyPolicy": {
+        "configText": "プライバシーポリシー",
+        "alertTitle": "プライバシーポリシーに移動します",
+        "alertText": ""
+      }
     },
     "agenda": {
       "localeConfig": {
@@ -52,7 +57,12 @@
       "developer": "Developers",
       "titleList": "Title history",
       "noticeSetting": "Repetitive Config",
-      "tutorial":"Tutorial"
+      "tutorial":"Tutorial",
+      "privacyPolicy": {
+        "configText": "Privacy Policy",
+        "alertTitle": "Jump to Web page of Privacy Policy.",
+        "alertText": ""
+      }
     },
     "register": {
       "title": "Title",

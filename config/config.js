@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Image, TextInput, Switch, Picker, Platform } from 'react-native';
+import { Text, View, Linking, Alert } from 'react-native';
 import styles from './configStyle'
 import { Actions } from "react-native-router-flux";
 import { FlatButton, loadLanguage } from "../components";
 import { startTutorial } from "../update";
+
+const privacyPolicy = "https://oboerukun.firebaseapp.com/"
 
 export default class ConfigView extends Component {
   constructor(props){
@@ -18,6 +20,11 @@ export default class ConfigView extends Component {
         <FlatButton text={language.noticeSetting} function={() => Actions.noticesetting()} />
         <FlatButton text={language.tutorial} function={() => startTutorial()} />
         <FlatButton text={language.developer} function={() => Actions.developers()} />
+        <FlatButton text={language.privacyPolicy.configText} 
+          function={() => { Alert.alert(
+            language.privacyPolicy.alertTitle,
+            language.privacyPolicy.alertText,
+            [{text: 'OK', onPress: () => { Linking.openURL(privacyPolicy) } }]) } } />
       </View>
     )
   }

@@ -17,7 +17,7 @@ export async function initialize() {
     // first run
     buildNumber = '1.0.0'
     // update管理用のrowを追加する
-    await testinitializeUpdateTable()
+    await initializeUpdateTable()
   }
   updateChecker(buildNumber)
 }
@@ -57,7 +57,8 @@ function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  Actions.tutorial()
+  // Actions.tutorial()
+  Actions.step0()
 }
 
 export function endTutorial() {
