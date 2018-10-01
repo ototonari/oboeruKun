@@ -80,15 +80,6 @@ const styles = StyleSheet.create({
     borderRightColor: '#16aef8', 
     borderRightWidth: 2,
   },
-  emptyDate: {
-    flex:1,
-    height: 10,
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-    marginTop: 17,
-    backgroundColor: 'white',
-  },
   swipeButton: {
     backgroundColor: 'white',
     flex: 1,
@@ -103,88 +94,3 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
-
-    // const error = () => {
-    //   const doAtTomorrow = () => {
-    //     // 当日のオブジェクト
-    //     let today = new Date()
-    //     const todayString = dateToFormatString( today, '%YYYY%-%MM%-%DD%')
-    //     today.setDate(today.getDate() + 1)
-    //     // 明日の日時の文字列
-    //     const nextDayString = dateToFormatString( today, '%YYYY%-%MM%-%DD%')
-    //     console.log('today : ', todayString, 'tomorrow : ', nextDayString)
-    //     // notice table と notificationAPI のリセット
-    //     changeNotification(item, todayString).then(() => {
-          
-    //       // 親component の items をリセット
-    //       let items = this.props.this.state.items
-    //       let spliceIndex
-    //       for(let i=0, j=items[item.noticeDate].length; i < j; i++) {
-    //         if(item.id == items[item.noticeDate][i].id) {
-    //           //console.log('hit obj : ', items[item.noticeDate][i])
-    //           spliceIndex = i
-    //           i = j
-    //         }
-    //       }
-    //       items[item.noticeDate].splice(spliceIndex, 1)
-    //       item.noticeDate = nextDayString      
-    //       items[nextDayString].push(item)
-  
-    //       this.props.this.setState({ items })
-    //     })
-        
-
-    //     // changeNotification(item, )
-    //     // changeNotice(nextDayString, item.noticeDate, item.id).then(() => {
-    //     //   let items = this.props.this.state.items
-    //     //   //console.log('start: ', items[item.noticeDate][0])
-    //     //   let spliceIndex
-    //     //   for(let i=0, j=items[item.noticeDate].length; i < j; i++) {
-    //     //     if(item.id == items[item.noticeDate][i].id) {
-    //     //       //console.log('hit obj : ', items[item.noticeDate][i])
-    //     //       spliceIndex = i
-    //     //       i = j
-    //     //     }
-    //     //   }
-    //     //   items[item.noticeDate].splice(spliceIndex, 1)
-    //     //   item.noticeDate = nextDayString      
-    //     //   items[nextDayString].push(item)
-  
-    //     //   this.props.this.setState({ items })
-    //     // })
-    //   }
-
-    //   // 受け取ったdateが当日より古いか判定する。古い = true, 新しい = false
-    //   const isOld = (date) => {
-    //     const day = new Date(date)
-    //     let today = new Date()
-    //     today.setDate(today.getDate() + 2)
-    //     today.setHours(0, 0, 0, 0)
-    //     if(day.getTime() < today.getTime()) {
-    //       return true
-    //     } else {
-    //       return false
-    //     }
-    //   }
-
-    //   const alertParams = (date) => {
-    //     if (isOld(date) == true) {
-    //       return [
-    //         {text: '明日やる', onPress: () => doAtTomorrow(), style: 'cancel' },
-    //         {text: 'おいておく', onPress: () => console.log('Cancel Pressed'), style: 'default'}
-    //       ]
-    //     } else {
-    //       return [
-    //         {text: 'そのまま', onPress: () => console.log('Cancel Pressed'), style: 'default'},
-    //         {text: 'やめる', onPress: () => console.log('Cancel Pressed'), style: 'default'}
-    //       ]
-    //     }
-    //   }
-
-    //   Alert.alert(
-    //     item.title,
-    //     'どうしますか？',
-    //     alertParams(item.noticeDate),
-    //     { cancelable: true }
-    //   )
-    // }
