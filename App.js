@@ -29,7 +29,6 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    console.log(`called will mount`)
     initialize()
   }
 
