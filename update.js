@@ -46,14 +46,14 @@ function checkBuildNumber() {
 async function update() {
   console.log('update process.')
   await transferDataToNewTable()
-  versionChange(currentBuildNumber)
+  await versionChange(currentBuildNumber)
   startTutorial()
 }
 
-function versionChange(versionNumber) {
+async function versionChange(versionNumber) {
   let buildNumber = '1.0.0'
   if (versionNumber !== null) buildNumber = versionNumber
-  updateBuildNumber(buildNumber)
+  await updateBuildNumber(buildNumber)
 }
 
 export function startTutorial() {
