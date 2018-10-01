@@ -144,6 +144,7 @@ const smartPhoneSize = [
     require('./assets/tutorial/STEP2.png'),
     require('./assets/tutorial/STEP3.png'),
     require('./assets/tutorial/STEP4.png'),
+    require('./assets/tutorial/STEP5.png'),
 ]
 
 const tabletSize = [

@@ -5,7 +5,7 @@ import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
 import { initialize } from "./update";
 import ConfigView from "./config/config";
 import Developers from "./config/developer"
-import { Step0, Step1, Step2, Step3, Step4 } from "./dummy/tutorial";
+import { Step0, Step1, Step2, Step3, Step4, Step5 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
@@ -88,6 +88,7 @@ export default class App extends React.Component {
             <Scene key="step2" component={Step2} title={'step2'} />
             <Scene key="step3" component={Step3} title={'step3'} />
             <Scene key="step4" component={Step4} title={'step4'} />
+            <Scene key="step5" component={Step5} title={'step5'} />
           </Scene>
         </Scene>
       </Router>
