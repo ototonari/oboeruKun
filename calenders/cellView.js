@@ -42,42 +42,43 @@ export default class CellView extends Component {
 
 
     const rightButtons = [
-      <TouchableOpacity style={styles.swipeButton}
-        onPress={() => success() } >
+      <TouchableOpacity style={[styles.swipeButton]}
+      onPress={() => success() } >
         <Image source={require('../assets/success.png')} style={{height: 30, width: 30}} />
       </TouchableOpacity>,
     ];
 
     return (
-      <Swipeable 
-        onRightButtonsOpenRelease={this.props.onOpen}
-        onRightButtonsCloseRelease={this.props.onClose} 
-        rightButtons={rightButtons} 
-        rightButtonWidth={70}  
-      >
-        <View style={[styles.item, styles.sidebar]}>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
-          { page(item) }
-          { memo(item) }
-        </View>
-      </Swipeable>
+      <View style={[{ flex:1 }, styles.cellPosition]}>
+        <Swipeable 
+          onRightButtonsOpenRelease={this.props.onOpen}
+          onRightButtonsCloseRelease={this.props.onClose} 
+          rightButtons={rightButtons} 
+          rightButtonWidth={70}
+        >
+          <View style={[{ flex:1 }, styles.sidebar]}>
+            <View style={[ { flex:1 }, styles.item ]}>
+              <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
+              { page(item) }
+              { memo(item) }
+            </View>
+          </View>
+        </Swipeable>
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: 'white',
-    flex: 1,
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
-    padding: 10,
-    marginRight: 0,
-    marginTop: 17,
+    backgroundColor:'white', 
+    borderTopLeftRadius: 5, 
+    borderBottomLeftRadius: 5, 
+    padding: 10
   },
   sidebar: {
+    borderRightColor: '#16aef8', 
     borderRightWidth: 2,
-    borderRightColor: 'blue'
   },
   emptyDate: {
     flex:1,
@@ -91,13 +92,16 @@ const styles = StyleSheet.create({
   swipeButton: {
     backgroundColor: 'white',
     flex: 1,
-    padding: 10,
-    marginRight: 0,
-    marginTop: 17,
     paddingLeft: 20,
     alignContent: 'center',
     justifyContent: 'center',
   },
+  cellPosition: {
+    position: 'relative', 
+    top: 10,
+    marginTop: 10,
+    marginBottom: 10
+  }
 });
 
     // const error = () => {
