@@ -55,7 +55,7 @@ export default class CellView extends Component {
         rightButtons={rightButtons} 
         rightButtonWidth={70}  
       >
-        <View style={[styles.item]}>
+        <View style={[styles.item, styles.sidebar]}>
           <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{item.title}</Text>
           { page(item) }
           { memo(item) }
@@ -73,7 +73,11 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     padding: 10,
     marginRight: 0,
-    marginTop: 17
+    marginTop: 17,
+  },
+  sidebar: {
+    borderRightWidth: 2,
+    borderRightColor: 'blue'
   },
   emptyDate: {
     flex:1,

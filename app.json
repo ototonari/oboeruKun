@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "org.reactjs.native.oboeruKun",
-      "versionCode": 7,
+      "versionCode": 8,
       "permissions": []
     }
   }
