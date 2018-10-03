@@ -24,7 +24,10 @@ export default class ConfigView extends Component {
           function={() => { Alert.alert(
             language.privacyPolicy.alertTitle,
             language.privacyPolicy.alertText,
-            [{text: 'OK', onPress: () => { Linking.openURL(privacyPolicy) } }]) } } />
+            [{text: 'OK', onPress: () => { Linking.openURL(privacyPolicy) } }, 
+            {text: 'Cancel', onPress: () => {}, style: 'cancel'} ],
+            { cancelable: true }
+            ) } } />
       </View>
     )
   }

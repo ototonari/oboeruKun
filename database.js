@@ -334,14 +334,20 @@ export function createUpdateTable(callback) {
 }
 
 export function updateBuildNumber(currentBuildNumber) {
-  db.transaction(tx => {
-    tx.executeSql(
-      'update updateTable set buildNumber = ? where id = 0', [String(currentBuildNumber)],
-      () => {
-        console.log('updateBuildNumber: success')
-      },
-      () => console.log('updateBuildNumber: raise error')
-    )
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'update updateTable set buildNumber = ? where id = 0', [String(currentBuildNumber)],
+        () => {
+          console.log('updateBuildNumber: success')
+          resolve()
+        },
+        () => {
+          console.log('updateBuildNumber: raise error')
+          reject()
+        }
+      )
+    })
   })
 }
 

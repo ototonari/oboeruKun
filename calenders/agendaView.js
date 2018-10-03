@@ -156,24 +156,3 @@ export default class AgendaView extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  item: {
-    backgroundColor: 'white',
-    flex: 1,
-    borderRadius: 5,
-    //borderTopLeftRadius: 5,
-    //borderBottomLeftRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 10
-  },
-  emptyDate: {
-    flex:1,
-    height: 10,
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-    marginTop: 17,
-    backgroundColor: 'white',
-  }
-});

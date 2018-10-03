@@ -12,6 +12,7 @@ const smartPhoneSize = [
   require('../assets/tutorial/STEP2.png'),
   require('../assets/tutorial/STEP3.png'),
   require('../assets/tutorial/STEP4.png'),
+  require('../assets/tutorial/STEP5.png'),
 ]
 
 const tabletSize = [
@@ -46,32 +47,65 @@ const styles = StyleSheet.create({
     }),
     zIndex: 0
   },
-  nextButton: {
+  nextButton: Platform.isPad !== true ? {
     position: 'absolute', 
-    bottom: Platform.isPad !== true ? height / 12 : height / 17, 
+    bottom: (height / 30) * 5,
+    left: (width / 10) * 2, 
+    width: (width / 10) * 6,
+    height: height / 12, 
+    borderWidth: 1, borderColor: 'pink',
+    zIndex: 2
+    } : {
+    position: 'absolute', 
+    bottom: height / 17, 
     right: 0, 
     width: width / 4, 
     height: height / 14, 
-    borderWidth: 0, borderColor: 'pink',
+    borderWidth: 1, borderColor: 'pink',
     zIndex: 1
-  },
-  prevButton: {
+    },
+  prevButton: Platform.isPad !== true ? {
     position: 'absolute', 
-    bottom: Platform.isPad !== true ? height / 12 : height / 17, 
+    bottom: height / 12, 
     left: 0, 
     width: width / 4, 
     height: height / 14, 
-    borderWidth: 0, borderColor: 'pink',
+    borderWidth: 1, borderColor: 'pink',
+    zIndex: 2
+  } : {
+    position: 'absolute', 
+    bottom: height / 17, 
+    left: 0, 
+    width: width / 4, 
+    height: height / 14, 
+    borderWidth: 1, borderColor: 'pink',
     zIndex: 2
   },
-  startButton: {
+  startButton: Platform.isPad !== true ? {
+    position: 'absolute', 
+    bottom: height / 17,
+    left: (width / 10) * 2, 
+    width: (width / 10) * 6,
+    height: height / 12, 
+    borderWidth: 1, borderColor: 'pink',
+    zIndex: 1
+  } : {
     position: 'absolute', 
     bottom: height / 6,
     left: (width / 10) * 2, 
     width: (width / 10) * 6, 
-    height: height / 12, 
-    borderWidth: 0, borderColor: 'pink',
+    height: height / 12,
+    borderWidth: 1, borderColor: 'pink',
     zIndex: 3
+  },
+  skipButton: {
+    position: 'absolute', 
+    bottom: 0, 
+    right: 0, 
+    width: width / 5, 
+    height: height / 14, 
+    borderWidth: 1, borderColor: 'pink',
+    zIndex: 4
   }
 })
 
@@ -82,111 +116,268 @@ const imageProps = {
   }),
 }
 
+// export class Tutorials extends Component {
+//   constructor(props) {
+//     super(props)
+//     this.state = {
+//       showedImage: 0
+//     }
+//     this.isPad = Platform.isPad
+//   }
+
+//   render() {
+//     if (this.isPad === true) {
+
+//     } else {
+
+//     }
+//     return(
+//       <View style={styles.container} >
+//         <TouchableOpacity 
+//           style={styles.nextButton} 
+//           onPressOut={() => Actions.step1()}
+//         />
+//         <Image
+//           source={images[0]}
+//           style={styles.backgroundImage}
+//           resizeMode={imageProps.resizeMode}
+//         />
+//       </View>
+//     )
+//   }
+// }
+
 export class Step0 extends Component {
+  constructor(props) {
+    super(props)
+    this.isPad = Platform.isPad
+  }
 
   render() {
-    return(
-      <View style={styles.container} >
-        <TouchableOpacity 
-          style={styles.nextButton} 
-          onPressOut={() => Actions.step1()}
-        />
-        <Image
-          source={images[0]}
-          style={styles.backgroundImage}
-          resizeMode={imageProps.resizeMode}
-        />
-      </View>
-    )
+    if (this.isPad === true) {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton } 
+            onPressOut={() => Actions.step1()}
+          />
+          <Image
+            source={images[0]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.startButton}
+            onPressOut={() => Actions.step1()}
+          />
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPressOut={() => endTutorial()}
+          />
+          <Image
+            source={images[0]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    }
   }
 }
 
 export class Step1 extends Component {
   render() {
-    return(
-      <View style={styles.container} >
-        <TouchableOpacity 
-          style={styles.nextButton} 
-          onPressOut={() => Actions.step2()}
-        />
-        <TouchableOpacity 
-          style={styles.prevButton} 
-          onPressOut={() => Actions.pop()}
-        />
-        <Image
-          source={images[1]}
-          style={styles.backgroundImage}
-          resizeMode={imageProps.resizeMode}
-        />
-      </View>
-    )
+    if(Platform.isPad === true) {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step2()}
+          />
+          <TouchableOpacity 
+            style={styles.prevButton} 
+            onPressOut={() => Actions.pop()}
+          />
+          <Image
+            source={images[1]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    } else {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step2()}
+          />
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPressOut={() => endTutorial()}
+          />
+          <Image
+            source={images[1]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    }
   }
 }
 
 
 export class Step2 extends Component {
   render() {
-    return(
-      <View style={styles.container} >
-        <TouchableOpacity 
-          style={styles.nextButton} 
-          onPressOut={() => Actions.step3()}
-        />
-        <TouchableOpacity 
-          style={styles.prevButton} 
-          onPressOut={() => Actions.pop()}
-        />
-        <Image
-          source={images[2]}
-          style={styles.backgroundImage}
-          resizeMode={imageProps.resizeMode}
-        />
-      </View>
-    )
+    if (Platform.isPad === true) {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step3()}
+          />
+          <TouchableOpacity 
+            style={styles.prevButton} 
+            onPressOut={() => Actions.pop()}
+          />
+          <Image
+            source={images[2]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    } else {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step3()}
+          />
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPressOut={() => endTutorial()}
+          />
+          <Image
+            source={images[2]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    }
   }
 }
 
 export class Step3 extends Component {
   render() {
-    return(
-      <View style={styles.container} >
-        <TouchableOpacity 
-          style={styles.nextButton} 
-          onPressOut={() => Actions.step4()}
-        />
-        <TouchableOpacity 
-          style={styles.prevButton} 
-          onPressOut={() => Actions.pop()}
-        />
-        <Image
-          source={images[3]}
-          style={styles.backgroundImage}
-          resizeMode={imageProps.resizeMode}
-        />
-      </View>
-    )
+    if(Platform.isPad === true) {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step4()}
+          />
+          <TouchableOpacity 
+            style={styles.prevButton} 
+            onPressOut={() => Actions.pop()}
+          />
+          <Image
+            source={images[3]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    } else {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step4()}
+          />
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPressOut={() => endTutorial()}
+          />
+          <Image
+            source={images[3]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    }
   }
 }
 
 export class Step4 extends Component {
   render() {
+    if( Platform.isPad === true) {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.startButton} 
+            onPressOut={() => endTutorial()}
+          />
+          <TouchableOpacity 
+            style={styles.prevButton} 
+            onPressOut={() => Actions.pop()}
+          />
+          <Image
+            source={images[4]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    } else {
+      return(
+        <View style={styles.container} >
+          <TouchableOpacity 
+            style={styles.nextButton} 
+            onPressOut={() => Actions.step5()}
+          />
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPressOut={() => endTutorial()}
+          />
+          <Image
+            source={images[4]}
+            style={styles.backgroundImage}
+            resizeMode={imageProps.resizeMode}
+          />
+        </View>
+      )
+    }
+  }
+}
+
+export class Step5 extends Component {
+  render() {
     return(
       <View style={styles.container} >
         <TouchableOpacity 
-          style={styles.startButton} 
+          style={styles.nextButton} 
           onPressOut={() => endTutorial()}
         />
         <TouchableOpacity 
-          style={styles.prevButton} 
-          onPressOut={() => Actions.pop()}
+          style={styles.skipButton} 
+          onPressOut={() => endTutorial()}
         />
         <Image
-          source={images[4]}
+          source={images[5]}
           style={styles.backgroundImage}
           resizeMode={imageProps.resizeMode}
         />
       </View>
     )
-  }
+}
 }
 
