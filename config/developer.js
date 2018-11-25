@@ -33,7 +33,13 @@ const developer = {
           icon: images.facebook,
           type: 'link',
           link: 'https://www.facebook.com/profile.php?id=100004769313128'
+        },
+        {
+          icon: images.twitter,
+          type: 'link',
+          link: 'https://twitter.com/TsubasaNagata'
         }
+
       ]
     }
   ],
@@ -56,12 +62,6 @@ const developer = {
           type: 'link',
           link: 'https://www.facebook.com/shonohibiki'
         },
-        {
-          icon: images.twitter,
-          type: 'link',
-          link: 'https://twitter.com/sherbet02/'
-        },
-
       ]
     }
   ]
