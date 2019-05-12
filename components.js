@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Platform, Alert } from 'react-native';
-import { Asset } from "expo";
+import { Asset, Localization } from "expo";
 
-export let locale = {}
+export let locale = {
+    country: "JP",
+}
 export const localeJSON = require("./locale.json")
 
 export class Avatar extends Component {
@@ -171,27 +173,30 @@ export async function assetsLoad() {
 }
 
 export async function localization() {
-    const country = await Expo.Util.getCurrentDeviceCountryAsync()
+    // const country = await Expo.Util.getCurrentDeviceCountryAsync()
     // Returns the current device country code.
 
-    const currentLocale = await Expo.Util.getCurrentLocaleAsync()
+    // const currentLocale = await Expo.Util.getCurrentLocaleAsync()
     // Returns the current device locale as a string.
 
-    const timezone = await Expo.Util.getCurrentTimeZoneAsync()
+    // const timezone = await Expo.Util.getCurrentTimeZoneAsync()
     // Returns the current device time zone name.
-    console.log(`country : ${country} , locale : ${currentLocale} , timezone : ${timezone}`)
+    // console.log(`country : ${country} , locale : ${currentLocale} , timezone : ${timezone}`)
+    console.log("localization: ", Localization.locale)
     locale = {
-        'country': country,
-        'locale': currentLocale,
-        'timezone': timezone
+        'country': "JP",
+        // 'locale': currentLocale,
+        // 'locale': "JP",
+        // 'timezone': timezone
     }
 
 }
 
 export function loadLanguage(props) {
-    if (locale.country === "JP") {
-        return localeJSON.jp[props]
-    } else {
-        return localeJSON.en[props]
-    }
+    return localeJSON.jp[props]
+    // if (locale.country === "JP") {
+    //     return localeJSON.jp[props]
+    // } else {
+    //     return localeJSON.en[props]
+    // }
 }
