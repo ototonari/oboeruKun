@@ -12,8 +12,6 @@ import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 import { Asset, AppLoading } from "expo";
 import { assetsLoad, localization, loadLanguage, TabIcon } from "./components";
 
-
-
 export default class App extends React.Component {
   state = {
     isReady: false,
@@ -22,7 +20,7 @@ export default class App extends React.Component {
   async _cacheResourcesAsync() {
     // load Async functions
     const asyncList = [
-      assetsLoad(), localization()
+      assetsLoad
     ]
 
     return Promise.all(asyncList)
@@ -43,7 +41,7 @@ export default class App extends React.Component {
       );
     }
     const language = loadLanguage('scene')
-    //console.log(language)
+    // console.log(language)
     return (
       <Router sceneStyle={styles.header} >
         <Scene key="root" >
