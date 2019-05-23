@@ -9,8 +9,10 @@ import { Step0, Step1, Step2, Step3, Step4, Step5 } from "./dummy/tutorial";
 import AgendaView from "./calenders/agendaView";
 import TitleList from "./config/titleList"
 import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
-import { Asset, AppLoading } from "expo";
+import { Asset, AppLoading, Constants } from "expo";
 import { assetsLoad, localization, loadLanguage, TabIcon } from "./components";
+
+console.log("model: ", Constants.platform.ios)
 
 export default class App extends React.Component {
   state = {
