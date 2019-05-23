@@ -173,23 +173,6 @@ export async function assetsLoad() {
 }
 
 export async function localization() {
-    // const country = await Expo.Util.getCurrentDeviceCountryAsync()
-    // Returns the current device country code.
-
-    // const currentLocale = await Expo.Util.getCurrentLocaleAsync()
-    // Returns the current device locale as a string.
-
-    // const timezone = await Expo.Util.getCurrentTimeZoneAsync()
-    // Returns the current device time zone name.
-    // console.log(`country : ${country} , locale : ${currentLocale} , timezone : ${timezone}`)
-    console.log("localization: ", Localization.locale)
-    locale = {
-        'country': "JP",
-        // 'locale': currentLocale,
-        // 'locale': "JP",
-        // 'timezone': timezone
-    }
-
 }
 
 export function loadLanguage(props) {

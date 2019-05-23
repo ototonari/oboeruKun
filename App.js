@@ -12,6 +12,7 @@ import { NoticeSetting, RegisterSetting } from "./config/noticeSetting"
 import { Asset, AppLoading } from "expo";
 import { assetsLoad, localization, loadLanguage, TabIcon } from "./components";
 
+
 export default class App extends React.Component {
   state = {
     isReady: false,
