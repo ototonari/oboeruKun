@@ -1,41 +1,19 @@
-import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  TouchableHighlight,
-  Image,
-  StyleSheet,
-  Platform
-} from 'react-native';
-import { Agenda, LocaleConfig } from 'react-native-calendars';
-import { Actions, ActionConst } from "react-native-router-flux";
-import { getAllNoticeDate, getNotice } from "../database";
+import React, { Component } from "react";
+import { View, Platform } from "react-native";
+import { Agenda } from "react-native-calendars";
 import { initializeCalender, localization } from "./agendaAction";
-import { dateToFormatString } from '../dateToFormatString';
-import Swipeable from 'react-native-swipeable';
-import { Notifications, Permissions } from 'expo';
+import { dateToFormatString } from "../dateToFormatString";
+import { Notifications } from "expo";
 import CellView from "./cellView";
-import { cancelNotification } from "../notification";
-import { setNotice } from "../database";
-import { locale, loadLanguage } from "../components";
-
-
-async function getiOSNotificationPermission() {
-  const { status } = await Permissions.getAsync(
-    Permissions.NOTIFICATIONS
-  );
-  if (status !== 'granted') {
-    await Permissions.askAsync(Permissions.NOTIFICATIONS);
-  }
-}
+import { loadLanguage } from "../components";
 
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
-    this.language = loadLanguage('data')
+    this.language = loadLanguage("data");
     this.state = {
       items: {},
-      today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%'),
+      today: dateToFormatString(new Date(), "%YYYY%-%MM%-%DD%"),
       currentlyOpenSwipeable: null,
     };
   }
@@ -43,46 +21,46 @@ export default class AgendaView extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !(
       this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable
-    )
+    );
   }
-  
+
   UNSAFE_componentWillMount() {
     this.listenForNotifications();
-    localization()
+    localization();
   }
 
   componentDidMount() {
-    initializeCalender(this)
+    initializeCalender(this);
   }
 
   listenForNotifications = () => {
-    Notifications.addListener(notification => {
+    Notifications.addListener((notification) => {
       //console.log(notification.origin)
-      if (notification.origin === 'received' && Platform.OS === 'ios') {
-        console.log('notification receaved', notification.data)
+      if (notification.origin === "received" && Platform.OS === "ios") {
+        console.log("notification receaved", notification.data);
         //Alert.alert(notification.data.title, notification.data.body);
       }
     });
   };
 
   onOpen = (event, gestureState, swipeable) => {
-    const {currentlyOpenSwipeable} = this.state;
+    const { currentlyOpenSwipeable } = this.state;
     if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
       currentlyOpenSwipeable.recenter();
     }
-    
-    this.setState({currentlyOpenSwipeable: swipeable});
-  }
 
-  onClose = () => this.setState({currentlyOpenSwipeable: null})
+    this.setState({ currentlyOpenSwipeable: swipeable });
+  };
+
+  onClose = () => this.setState({ currentlyOpenSwipeable: null });
 
   onSuccess = (items) => {
-    let {currentlyOpenSwipeable} = this.state;
+    let { currentlyOpenSwipeable } = this.state;
     currentlyOpenSwipeable.recenter();
-    this.onClose()
+    this.onClose();
 
-    this.setState({ items })
-  }
+    this.setState({ items });
+  };
 
   render() {
     //console.log('Actions receive props : ', this.props)
@@ -119,17 +97,23 @@ export default class AgendaView extends Component {
   }
 
   selectLoadItems(day) {
-    initializeCalender(this, day)
+    initializeCalender(this, day);
   }
 
   loadItems(day) {
-    console.log('called loadItems , day: ', day)
+    console.log("called loadItems , day: ", day);
   }
 
   renderItem(item) {
-    
     return (
-      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} language={this.language} />
+      <CellView
+        item={item}
+        this={this}
+        onOpen={this.onOpen}
+        onClose={this.onClose}
+        onSuccess={this.onSuccess}
+        language={this.language}
+      />
     );
   }
 
@@ -144,13 +128,10 @@ export default class AgendaView extends Component {
     return r1.title !== r2.title;
   }
 
-  testRowHasChanged() {
-    
-  }
+  testRowHasChanged() {}
 
   timeToString(time) {
     const date = new Date(time);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   }
 }
-
