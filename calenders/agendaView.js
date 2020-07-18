@@ -18,11 +18,11 @@ export default class AgendaView extends Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !(
-      this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable
-    );
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return !(
+  //     this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable
+  //   );
+  // }
 
   UNSAFE_componentWillMount() {
     this.listenForNotifications();
@@ -70,14 +70,14 @@ export default class AgendaView extends Component {
         items={this.state.items}
         //loadItemsForMonth={this.loadItems.bind(this)}
         //loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
-        onDayPress={this.selectLoadItems.bind(this)}
+        onDayPress={this.selectLoadItems}
         // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
         selected={this.state.today}
-        renderItem={this.renderItem.bind(this)}
-        renderEmptyDate={this.renderEmptyDate.bind(this)}
-        rowHasChanged={this.rowHasChanged.bind(this)}
+        renderItem={this.renderItem}
+        renderEmptyDate={this.renderEmptyDate}
+        rowHasChanged={this.rowHasChanged}
         //maxDate={'2018-03-12'}
-        pastScrollRange={3}
+        // pastScrollRange={3}
         futureScrollRange={3}
         //markingType={'interactive'}
         //markedDates={{
@@ -96,15 +96,15 @@ export default class AgendaView extends Component {
     );
   }
 
-  selectLoadItems(day) {
+  selectLoadItems = (day) => {
     initializeCalender(this, day);
-  }
+  };
 
   loadItems(day) {
     console.log("called loadItems , day: ", day);
   }
 
-  renderItem(item) {
+  renderItem = (item) => {
     return (
       <CellView
         item={item}
@@ -115,18 +115,18 @@ export default class AgendaView extends Component {
         language={this.language}
       />
     );
-  }
+  };
 
-  renderEmptyDate() {
+  renderEmptyDate = () => {
     return (
       //<View style={styles.emptyDate}></View>
       <View />
     );
-  }
+  };
 
-  rowHasChanged(r1, r2) {
+  rowHasChanged = (r1, r2) => {
     return r1.title !== r2.title;
-  }
+  };
 
   testRowHasChanged() {}
 
