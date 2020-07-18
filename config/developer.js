@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity, Image, Linking } from "react-native";
 import { localStyles, devStyles } from "./configStyle";
-import { MailComposer, Asset, AppLoading } from "expo";
+import { MailComposer, AppLoading } from "expo";
+import { Asset } from "expo-asset";
 
 const images = {
   // eslint-disable-next-line no-undef

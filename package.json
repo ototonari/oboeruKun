@@ -14,7 +14,8 @@
     "react-native-screens": "^2.9.0",
     "react-native-swipeable": "^0.6.0",
     "expo-sqlite": "~8.2.1",
-    "expo-constants": "~9.1.1"
+    "expo-constants": "~9.1.1",
+    "expo-asset": "~8.1.7"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
