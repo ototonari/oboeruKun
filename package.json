@@ -3,8 +3,8 @@
   "private": true,
   "dependencies": {
     "lodash": "^4.17.5",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
-    "expo": "^33.0.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.2.tar.gz",
+    "expo": "^34.0.0",
     "react": "16.8.3",
     "react-native-calendars": "^1.17.1",
     "react-native-material-dropdown": "^0.7.1",

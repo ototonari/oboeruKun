@@ -4,8 +4,10 @@
     "description": "記憶定着を支援するアプリ。資格取得や試験対策についての学習を登録すると、忘却曲線に基づいた日に復習するように通知します。",
     "slug": "oboeruKun",
     "privacy": "public",
-    "sdkVersion": "32.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.3.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
