@@ -1,80 +1,99 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
-import Swipeable from 'react-native-swipeable';
+import React, { Component } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  StyleSheet,
+} from "react-native";
+import Swipeable from "react-native-swipeable";
 import { getAllTitle, deleteList } from "../database";
 import { locale } from "../components";
 
 export default class TitleList extends Component {
-  constructor (props) {
-    super (props)
+  constructor(props) {
+    super(props);
     this.state = {
-      items: []
-    }
+      items: [],
+    };
   }
 
   componentDidMount() {
     const setItems = async () => {
-      let items = []
-      items = await getAllTitle()
+      let items = [];
+      items = await getAllTitle();
       if (items.length == 0) {
-        items = [{ title: locale.country === "JP" ? '履歴はありません' : "No history", id: 0 }] 
+        items = [
+          {
+            title: locale.country === "JP" ? "履歴はありません" : "No history",
+            id: 0,
+          },
+        ];
       }
-      this.setState({ items })
-      console.log(items)
-    }
-    setItems()
+      this.setState({ items });
+      console.log(items);
+    };
+    setItems();
   }
 
   _renderItems = (item) => {
     const deleteItem = (id) => {
-      for (let i=0,j=this.state.items.length; i < j; i++) {
-        const tmpItem = this.state.items[i]
+      for (let i = 0, j = this.state.items.length; i < j; i++) {
+        const tmpItem = this.state.items[i];
         if (tmpItem.id == id) {
-          console.log('hit : ', tmpItem)
+          console.log("hit : ", tmpItem);
           deleteList(id).then(() => {
-            let newItems = this.state.items
+            let newItems = this.state.items;
             if (newItems.length > 1) {
-              const spliceIndex = i
-              newItems.splice(spliceIndex, 1)
+              const spliceIndex = i;
+              newItems.splice(spliceIndex, 1);
             } else {
-              newItems = [{ title: locale.country === "JP" ? '履歴はありません' : "No history", id: 0 }]
+              newItems = [
+                {
+                  title:
+                    locale.country === "JP" ? "履歴はありません" : "No history",
+                  id: 0,
+                },
+              ];
             }
-            this.setState({ items: newItems })
-          })
+            this.setState({ items: newItems });
+          });
           break;
         }
       }
-    }
+    };
     const rightButtons = [
-      <TouchableOpacity style={styles.swipeButton}
-        onPress={() => deleteItem(item.id)} >
-        <Image source={require('../assets/error.png')} style={styles.image} />
+      // eslint-disable-next-line react/jsx-key
+      <TouchableOpacity
+        style={styles.swipeButton}
+        onPress={() => deleteItem(item.id)}
+      >
+        <Image source={require("../assets/error.png")} style={styles.image} />
       </TouchableOpacity>,
-      
     ];
 
-    return(
-      <Swipeable rightButtons={rightButtons} rightButtonWidth={70}  >
-        <View style={styles.container} >
-          <Text style={{fontSize: 18, }} >{item.title}</Text>
+    return (
+      <Swipeable rightButtons={rightButtons} rightButtonWidth={70}>
+        <View style={styles.container}>
+          <Text style={{ fontSize: 18 }}>{item.title}</Text>
         </View>
       </Swipeable>
-    )
-  }
-  
-  render () {
+    );
+  };
+
+  render() {
     return (
-      <View style={styles.background} >
+      <View style={styles.background}>
         <FlatList
           data={this.state.items}
           keyExtractor={(item) => item.id}
-          renderItem={({item}) => this._renderItems(item) }
+          renderItem={({ item }) => this._renderItems(item)}
           bounces={false}
         />
       </View>
-    )
+    );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -86,13 +105,13 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingRight: 20,
     paddingBottom: 7,
-    backgroundColor: 'white',
-    justifyContent: 'center',
+    backgroundColor: "white",
+    justifyContent: "center",
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
   background: {
-    backgroundColor: '#f1f1f1',
+    backgroundColor: "#f1f1f1",
     flex: 1,
     paddingBottom: 10,
   },
@@ -101,13 +120,13 @@ const styles = StyleSheet.create({
     height: 22,
   },
   swipeButton: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginTop: 5,
     flex: 1,
     paddingTop: 7,
     paddingBottom: 7,
     paddingLeft: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
-  }
-})
+    alignContent: "center",
+    justifyContent: "center",
+  },
+});

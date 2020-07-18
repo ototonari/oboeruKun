@@ -11,19 +11,11 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import { isEqual } from "lodash";
 import styles from "./registerStyle";
 import { Dropdown } from "react-native-material-dropdown";
 import Modal from "react-native-modal";
-import {
-  validation,
-  registerTask,
-  renderPageModalContent,
-  renderTitleModalContent,
-  arrangement,
-  testRenderPageModalContent,
-} from "./registerAction";
-import { createDB, getTitle, getAllParams } from "../database";
+import { validation, arrangement } from "./registerAction";
+import { getTitle, getAllParams } from "../database";
 import { loadLanguage } from "../components";
 
 export default class RegisterView extends Component {
@@ -99,6 +91,7 @@ export default class RegisterView extends Component {
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Image
+              // eslint-disable-next-line no-undef
               source={require("../assets/modalButton.png")}
               style={styles.styles.titleListIcom}
             />
@@ -127,9 +120,7 @@ export default class RegisterView extends Component {
           {Platform.select({
             ios: (
               <Picker
-                onValueChange={(value, index) =>
-                  this.setState({ title: value })
-                }
+                onValueChange={(value) => this.setState({ title: value })}
                 selectedValue={this.state.title}
                 style={{ width: "100%", flex: 0.6 }}
               >
@@ -138,9 +129,7 @@ export default class RegisterView extends Component {
             ),
             android: (
               <Picker
-                onValueChange={(value, index) =>
-                  this.setState({ title: value })
-                }
+                onValueChange={(value) => this.setState({ title: value })}
                 selectedValue={this.state.title}
                 style={{ width: "100%", flex: 0.6, zIndex: 10 }}
                 hitSlop={{ top: 100, bottom: 100, left: 100, right: 100 }}
@@ -249,7 +238,7 @@ export default class RegisterView extends Component {
           style={[styles.container.pageModal, { zIndex: 1, flex: 1 }]}
         >
           <Picker
-            onValueChange={(value, index) => {
+            onValueChange={(value) => {
               if (this.state.visibleModal === 1) {
                 if (Number(value) > Number(this.state.endPage)) {
                   this.setState({ startPage: value, endPage: value });
@@ -278,7 +267,7 @@ export default class RegisterView extends Component {
     </TouchableOpacity>
   );
 
-  _renderPickerItems = (modalNumber) => {
+  _renderPickerItems = () => {
     const srvItems = [];
     for (let i = 1; i <= 500; i++) {
       srvItems.push(
