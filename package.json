@@ -3,9 +3,9 @@
   "private": true,
   "dependencies": {
     "lodash": "^4.17.5",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
-    "expo": "^32.0.0",
-    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "expo": "^33.0.0",
+    "react": "16.8.3",
     "react-native-calendars": "^1.17.1",
     "react-native-material-dropdown": "^0.7.1",
     "react-native-modal": "^4.1.1",
