@@ -1,4 +1,4 @@
-import { SQLite } from 'expo';
+import * as SQLite from 'expo-sqlite';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from './dateToFormatString';
 import { locale } from "./components";

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, View, Picker, TouchableOpacity, Text } from 'react-native';
-import { Constants, Notifications, Permissions } from 'expo';
+import { Notifications } from 'expo';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { selectAll, insertInto, addTaskData, addNotice, checkTitle, getTitle, insertPage, insertMemo, insertMaster, insertNotice, getParams } from "../database";
 import styles from "./registerStyle";

@@ -7,14 +7,13 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
-import { isEqual } from "lodash";
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { getAllNoticeDate, getNotice } from "../database";
 import { initializeCalender, localization } from "./agendaAction";
 import { dateToFormatString } from '../dateToFormatString';
 import Swipeable from 'react-native-swipeable';
-import { Constants, Notifications, Permissions } from 'expo';
+import { Notifications, Permissions } from 'expo';
 import CellView from "./cellView";
 import { cancelNotification } from "../notification";
 import { setNotice } from "../database";
@@ -43,12 +42,11 @@ export default class AgendaView extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return !(
-      this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable &&
-      isEqual(nextState.items, this.state.items)
+      this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable
     )
   }
   
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.listenForNotifications();
     localization()
   }

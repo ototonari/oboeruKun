@@ -1,7 +1,8 @@
 // those actions need when this app was update.
 import { AsyncStorage } from 'react-native';
 import { createUpdateTable, updateBuildNumber, getBuildNumber, initializeUpdateTable, initDB, showNotificationTable, dropNotificationTable,insertMaster, insertPage, insertNotice } from "./database";
-import { Constants, Notifications, Permissions } from 'expo';
+import { Permissions } from 'expo';
+import Constants from 'expo-constants';
 import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from "./dateToFormatString";
 

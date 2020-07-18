@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
-import { Constants, Notifications, Permissions } from 'expo';
+import { Notifications } from 'expo';
 import { insertNotice } from "./database";
 import { dateToFormatString } from "./dateToFormatString";
 
