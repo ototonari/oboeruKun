@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, Alert, FlatList, Text, View, TouchableOpacity, Image, TextInput, Picker, Platform } from 'react-native';
-import Expo, { SQLite } from 'expo';
+import { SQLite } from 'expo';
 import { getAllItems, selectAll, deleteRow, getAllNoticeDate, dropDB } from "../database";
 import { cancel } from "./managerAction";
 import styles from "./managerStyle";
