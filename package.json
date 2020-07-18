@@ -2,14 +2,22 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "dependencies": {
-    "lodash": "^4.17.5",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "expo": "^38.0.0",
     "react": "16.11.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-calendars": "^1.17.1",
-    "react-native-material-dropdown": "^0.7.1",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-material-dropdown": "^0.11.1",
     "react-native-modal": "^4.1.1",
-    "react-native-router-flux": "^4.0.0-beta.28",
-    "react-native-swipeable": "^0.6.0"
+    "react-native-reanimated": "^1.9.0",
+    "react-native-router-flux": "^4.0.0",
+    "react-native-screens": "^2.9.0",
+    "react-native-swipeable": "^0.6.0",
+    "expo-sqlite": "~8.2.1",
+    "expo-constants": "~9.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-plugin-react": "^7.20.3"
   }
 }
