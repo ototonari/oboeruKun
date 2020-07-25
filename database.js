@@ -225,7 +225,7 @@ export async function getNotice(rangeList) {
         "SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1",
         getThisMonth(),
         (_, { rows: { _array } }) => {
-          //console.log('getNotice success : ', _array)
+          // console.log("getNotice success : ", _array);
           resolve(_array);
         }
       );

@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import { View, Platform } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { initializeCalender, localization } from "./agendaAction";
+// import { initializeCalender, localization } from "./agendaAction";
+import {
+  initializeCalender,
+  localization,
+} from "../src/Component/Calender/Action";
 import { dateToFormatString } from "../dateToFormatString";
 import { Notifications } from "expo";
-import CellView from "./cellView";
 import { loadLanguage } from "../components";
+import Cell from "../src/Component/Calender/Cell";
 
 export default class AgendaView extends Component {
   constructor(props) {
@@ -24,7 +28,7 @@ export default class AgendaView extends Component {
   }
 
   componentDidMount() {
-    initializeCalender(this);
+    initializeCalender().then((items) => this.setState({ items }));
   }
 
   listenForNotifications = () => {
@@ -91,7 +95,7 @@ export default class AgendaView extends Component {
   }
 
   selectLoadItems = (day) => {
-    initializeCalender(this, day);
+    initializeCalender(day).then((items) => this.setState({ items }));
   };
 
   loadItems(day) {
@@ -99,16 +103,7 @@ export default class AgendaView extends Component {
   }
 
   renderItem = (item) => {
-    return (
-      <CellView
-        item={item}
-        this={this}
-        onOpen={this.onOpen}
-        onClose={this.onClose}
-        onSuccess={this.onSuccess}
-        language={this.language}
-      />
-    );
+    return <Cell item={item} language={this.language} />;
   };
 
   renderEmptyDate = () => {

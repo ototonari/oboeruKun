@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, Image, StyleSheet } from "react-native";
-import Swipeable from "react-native-swipeable";
+import { Text, View, StyleSheet } from "react-native";
 import { setNotice } from "../database";
 import { cancelNotification } from "../notification";
 
@@ -49,33 +48,17 @@ export default class CellView extends Component {
       });
     };
 
-    const rightButtons = [
-      <TouchableOpacity style={[styles.swipeButton]} onPress={() => success()}>
-        <Image
-          source={require("../assets/success.png")}
-          style={{ height: 30, width: 30 }}
-        />
-      </TouchableOpacity>,
-    ];
-
     return (
       <View style={[{ flex: 1 }, styles.cellPosition]}>
-        <Swipeable
-          onRightButtonsOpenRelease={this.props.onOpen}
-          onRightButtonsCloseRelease={this.props.onClose}
-          rightButtons={rightButtons}
-          rightButtonWidth={70}
-        >
-          <View style={[{ flex: 1 }, styles.sidebar]}>
-            <View style={[{ flex: 1 }, styles.item]}>
-              <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                {item.title}
-              </Text>
-              {page(item)}
-              {memo(item)}
-            </View>
+        <View style={[{ flex: 1 }, styles.sidebar]}>
+          <View style={[{ flex: 1 }, styles.item]}>
+            <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+              {item.title}
+            </Text>
+            {page(item)}
+            {memo(item)}
           </View>
-        </Swipeable>
+        </View>
       </View>
     );
   }
