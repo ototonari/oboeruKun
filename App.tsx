@@ -42,11 +42,16 @@ export default class App extends React.Component {
       );
     }
     const language = loadLanguage("scene");
-    // console.log(language)
+    console.log(language);
     return (
-      <Router sceneStyle={styles.header}>
+      <Router>
         <Scene key="root">
-          <Tabs key="tabbar" swipeEnabled={false} tabBarPosition={"bottom"}>
+          <Tabs
+            key="tabbar"
+            hideNavBar
+            swipeEnabled={false}
+            tabBarPosition={"bottom"}
+          >
             <Scene
               key="manager"
               iconName="agenda"
@@ -54,7 +59,7 @@ export default class App extends React.Component {
               initial={true}
               component={AgendaView}
               icon={TabIcon}
-              onRight={() => Actions.register()}
+              onRight={() => Actions.push("register")}
               // eslint-disable-next-line no-undef
               rightButtonImage={require("./assets/plus.png")}
             />
