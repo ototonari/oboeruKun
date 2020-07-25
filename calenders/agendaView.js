@@ -18,12 +18,6 @@ export default class AgendaView extends Component {
     };
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return !(
-  //     this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable
-  //   );
-  // }
-
   UNSAFE_componentWillMount() {
     this.listenForNotifications();
     localization();
