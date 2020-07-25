@@ -3,6 +3,9 @@
   "private": true,
   "dependencies": {
     "expo": "^38.0.0",
+    "expo-asset": "~8.1.7",
+    "expo-constants": "~9.1.1",
+    "expo-sqlite": "~8.2.1",
     "react": "16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-calendars": "^1.17.1",
@@ -12,10 +15,7 @@
     "react-native-reanimated": "^1.9.0",
     "react-native-router-flux": "^4.0.0",
     "react-native-screens": "^2.9.0",
-    "react-native-swipeable": "^0.6.0",
-    "expo-sqlite": "~8.2.1",
-    "expo-constants": "~9.1.1",
-    "expo-asset": "~8.1.7"
+    "react-native-swipeable": "^0.6.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.43",
@@ -24,6 +24,10 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.4.0",
     "eslint-plugin-react": "^7.20.3",
+    "patch-package": "^6.2.2",
     "typescript": "^3.9.7"
+  },
+  "scripts": {
+    "postinstall": "patch-package"
   }
 }
