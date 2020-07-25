@@ -2,6 +2,8 @@
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "dependencies": {
+    "@eva-design/eva": "^2.0.0",
+    "@ui-kitten/components": "^5.0.0",
     "expo": "^38.0.0",
     "expo-asset": "~8.1.7",
     "expo-constants": "~9.1.1",
@@ -15,6 +17,7 @@
     "react-native-reanimated": "^1.9.0",
     "react-native-router-flux": "^4.0.0",
     "react-native-screens": "^2.9.0",
+    "react-native-svg": "12.1.0",
     "react-native-swipeable": "^0.6.0"
   },
   "devDependencies": {
