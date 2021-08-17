@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { Agenda } from "react-native-calendars";
 // import { initializeCalender, localization } from "./agendaAction";
 import {
@@ -7,9 +7,9 @@ import {
   localization,
 } from "../src/Component/Calender/Action";
 import { dateToFormatString } from "../dateToFormatString";
-import { Notifications } from "expo";
 import { loadLanguage } from "../components";
 import Cell from "../src/Component/Calender/Cell";
+import * as Notifications from "expo-notifications";
 
 export default class AgendaView extends Component {
   constructor(props) {
@@ -32,12 +32,12 @@ export default class AgendaView extends Component {
   }
 
   listenForNotifications = () => {
-    Notifications.addListener((notification) => {
-      //console.log(notification.origin)
-      if (notification.origin === "received" && Platform.OS === "ios") {
-        console.log("notification receaved", notification.data);
-        //Alert.alert(notification.data.title, notification.data.body);
-      }
+    Notifications.addNotificationReceivedListener((notification) => {
+      console.log("addNotificationReceivedListener", notification);
+    });
+
+    Notifications.addNotificationResponseReceivedListener((notification) => {
+      console.log("addNotificationResponseReceivedListener", notification);
     });
   };
 

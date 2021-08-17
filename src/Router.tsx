@@ -9,6 +9,7 @@ import AgendaView from "../calenders/agendaView";
 import TitleList from "../config/titleList";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
 import { loadLanguage, TabIcon } from "../components";
+import LocalNotification from "../dummy/localNotification";
 
 const language = loadLanguage("scene");
 
@@ -26,7 +27,7 @@ function AppRouter() {
             key="manager"
             iconName="agenda"
             title={language.agenda}
-            initial={true}
+            // initial={true}
             component={AgendaView}
             icon={TabIcon}
             onRight={() => Actions.push("register")}
@@ -71,6 +72,12 @@ function AppRouter() {
           sceneStyle={styles.oneCompHeader}
           key="registersetting"
           component={RegisterSetting}
+        />
+        <Scene
+          sceneStyle={styles.oneCompHeader}
+          key="localNotification"
+          component={LocalNotification}
+          initial={true}
         />
         <Scene key="tutorial" hideNavBar>
           <Scene key="step0" component={Step0} title={"step0"} />
