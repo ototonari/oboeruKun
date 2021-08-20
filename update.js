@@ -13,6 +13,7 @@ import {
 import Constants from "expo-constants";
 import { Actions } from "react-native-router-flux";
 import { dateToFormatString } from "./dateToFormatString";
+import {requestNotificationPermission} from "./notification";
 
 const currentBuildNumber = Constants.manifest.ios.buildNumber;
 
@@ -65,12 +66,11 @@ async function versionChange(versionNumber) {
 }
 
 export function startTutorial() {
-  // Actions.tutorial()
-  Actions.step0();
+  Actions.tutorial();
 }
 
-export function endTutorial() {
-  //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
+export async function endTutorial() {
+  await requestNotificationPermission();
   Actions.reset("tabbar");
 }
 

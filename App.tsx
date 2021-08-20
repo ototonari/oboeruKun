@@ -4,20 +4,33 @@ import { AppLoading } from "expo";
 import { assetsLoad } from "./components";
 import AppRouter from "./src/Router";
 
-function App() {
-  const [isReady, setReady] = useState(false);
+enum USER_STATUS {
+  LOADING,
+  // GETTING_STARTED,
+  PLAY
+}
 
-  if (isReady === false) {
-    return (
-      <AppLoading
+function App() {
+  const [userStatus, setUserStatus] = useState(USER_STATUS.LOADING);
+
+  // TODO: チュートリアルを表示済かみたい。
+
+  switch (userStatus) {
+    case USER_STATUS.LOADING:
+      return (
+        <AppLoading
         startAsync={assetsLoad}
-        onFinish={() => setReady(true)}
+        onFinish={() => setUserStatus(USER_STATUS.PLAY)}
         onError={console.warn}
       />
-    );
-  } else {
-    initialize();
-    return <AppRouter />;
+      );
+
+    // case USER_STATUS.GETTING_STARTED:
+    //   return null;
+
+    case USER_STATUS.PLAY:
+      initialize();
+      return (<AppRouter />);
   }
 }
 

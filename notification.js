@@ -33,7 +33,7 @@ export async function registerNotification(
         trigger: changeDate(registerdDate, notificationDates[i]),
       };
 
-      Notifications.scheduleNotificationAsync(notificationRequestInput).then(
+      schedulePushNotification(notificationRequestInput).then(
         (notificationId) => notificationIdList.push(notificationId)
       );
     }
@@ -111,13 +111,13 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here" },
-    },
-    trigger: { seconds: 2 },
-  });
+export async function schedulePushNotification(notificationRequestInput) {
+  return await Notifications.scheduleNotificationAsync(notificationRequestInput);
+}
+
+export async function requestNotificationPermission() {
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  if (existingStatus !== "granted") {
+    await Notifications.requestPermissionsAsync();
+  }
 }

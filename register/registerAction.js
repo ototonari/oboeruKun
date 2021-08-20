@@ -12,7 +12,7 @@ import {
 import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
 import { loadLanguage } from "../components";
-import * as Notifications from "expo-notifications";
+import {schedulePushNotification} from "../notification";
 
 // eslint-disable-next-line no-unused-vars
 export function validation(target, callback, language) {
@@ -122,17 +122,11 @@ async function setNotification(id, notification, list) {
   const intervalList = list;
   for (let i = 0; i < intervalList.length; i++) {
     changeDate(Number(intervalList[i])).then((date) => {
-      // const schedulingOptions = { time: date };
-      // Notifications.scheduleLocalNotificationAsync(
-      //   localnotification,
-      //   schedulingOptions
-      // )
       const notificationRequestInput = {
         content: localnotification,
-        trigger: null,
-        // trigger: date,
+        trigger: date,
       };
-      Notifications.scheduleNotificationAsync(notificationRequestInput)
+      schedulePushNotification(notificationRequestInput)
         .then(async function (notificationId) {
           // 非同期処理成功
           const registerdDate = dateToFormatString(date, "%YYYY%-%MM%-%DD%");
@@ -304,71 +298,3 @@ function _renderTitlePickerItems(array) {
   });
   return srvItems;
 }
-
-// function testCallback() {
-//   const testArray = [];
-//   testArray.push(
-//     <Picker.Item key={String(1)} label={String(1)} value={String(1)} />
-//   );
-//   return testArray;
-// }
-
-// export function registerTask(target) {
-//   const self = target;
-
-//   const title = self.state.title;
-//   let body =
-//     self.state.title +
-//     "  p." +
-//     self.state.startPage +
-//     "  ~  " +
-//     "p." +
-//     self.state.endPage +
-//     "\n";
-//   body += "本日は「 " + self.state.title + " 」を復習しましょう。";
-
-//   // dbの性質上、textで格納する
-//   const page =
-//     self.state.page === true
-//       ? JSON.stringify({
-//           startPage: self.state.startPage,
-//           endPage: self.state.endPage,
-//         })
-//       : JSON.stringify(null);
-
-//   const registerdDate = new Date();
-//   // notification に投げるためのデータ作成
-//   let taskData = {
-//     title: title,
-//     body: body,
-//     page: page,
-//     data: {
-//       title: title,
-//       body: body,
-//       page: page,
-//     },
-//     android: {
-//       sound: true,
-//     },
-//     ios: {
-//       sound: true,
-//     },
-//     registerd: registerdDate,
-//   };
-
-//   // add to titleDB
-//   checkTitle(title);
-
-//   // add to masterDB and others
-
-//   // Notification API に登録
-//   notificationBasedOnForgettingCurve(taskData);
-
-//   // ユーザーに通知
-//   Alert.alert("登録しました");
-//   //Actions.reset('tabbar', { reload: true})
-//   //Actions.tabbar({ type: ActionConst.PUSH_OR_POP })
-//   //Actions.pop({reload: true})
-//   //Actions.tabbar({ type: ActionConst.PUSH_OR_POP });
-//   //Actions.tabbar({ type: ActionConst.REFRESH });
-// }

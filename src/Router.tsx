@@ -4,12 +4,11 @@ import RegisterView from "../register/registerView";
 import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
 import ConfigView from "../config/config";
 import Developers from "../config/developer";
-import { Step0, Step1, Step2, Step3, Step4, Step5 } from "../dummy/tutorial";
 import AgendaView from "../calenders/agendaView";
 import TitleList from "../config/titleList";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
 import { loadLanguage, TabIcon } from "../components";
-import LocalNotification from "../dummy/localNotification";
+import {Tutorial} from "./Tutorial/Tutorial";
 
 const language = loadLanguage("scene");
 
@@ -27,7 +26,7 @@ function AppRouter() {
             key="manager"
             iconName="agenda"
             title={language.agenda}
-            // initial={true}
+            initial={true}
             component={AgendaView}
             icon={TabIcon}
             onRight={() => Actions.push("register")}
@@ -73,20 +72,13 @@ function AppRouter() {
           key="registersetting"
           component={RegisterSetting}
         />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="localNotification"
-          component={LocalNotification}
-          initial={true}
-        />
-        <Scene key="tutorial" hideNavBar>
-          <Scene key="step0" component={Step0} title={"step0"} />
-          <Scene key="step1" component={Step1} title={"step1"} />
-          <Scene key="step2" component={Step2} title={"step2"} />
-          <Scene key="step3" component={Step3} title={"step3"} />
-          <Scene key="step4" component={Step4} title={"step4"} />
-          <Scene key="step5" component={Step5} title={"step5"} />
-        </Scene>
+        <Scene hideNavBar key="tutorial" component={Tutorial} title={"Tutorial"} />
+        {/*<Scene*/}
+        {/*  sceneStyle={styles.oneCompHeader}*/}
+        {/*  key="localNotification"*/}
+        {/*  component={LocalNotification}*/}
+        {/*  initial={true}*/}
+        {/*/>*/}
       </Scene>
     </Router>
   );

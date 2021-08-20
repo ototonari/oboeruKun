@@ -33,11 +33,12 @@ export default class AgendaView extends Component {
 
   listenForNotifications = () => {
     Notifications.addNotificationReceivedListener((notification) => {
-      console.log("addNotificationReceivedListener", notification);
+      // 通知が発火すると、ここでペイロードにアクセスできる。
     });
 
-    Notifications.addNotificationResponseReceivedListener((notification) => {
-      console.log("addNotificationResponseReceivedListener", notification);
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      // 通知をタップすると、このコールバックが発火する。
+      console.log(response);
     });
   };
 

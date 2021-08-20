@@ -17,6 +17,18 @@ import Modal from "react-native-modal";
 import { validation, arrangement } from "./registerAction";
 import { getTitle, getAllParams } from "../database";
 import { loadLanguage } from "../components";
+import * as Notifications from "expo-notifications";
+
+
+// とりあえず、通知処理はここで行われるので仕込んでおく。
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 
 export default class RegisterView extends Component {
   constructor(props) {

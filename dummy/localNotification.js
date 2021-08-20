@@ -18,17 +18,19 @@ export default function App() {
   const responseListener = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    // registerForPushNotificationsAsync().then((token) =>
+    //   setExpoPushToken(token)
+    // );
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
+        // 通知が発火すると、ここでペイロードにアクセスできる。
         setNotification(notification);
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
+        // 通知をタップすると、このコールバックが発火する。
         console.log(response);
       });
 
