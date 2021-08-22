@@ -13,11 +13,12 @@ export default class ConfigView extends Component {
 
   render() {
     const language = loadLanguage("scene");
+    const { navigation } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <FlatButton
           text={language.titleList}
-          function={() => Actions.titlelist()}
+          function={() => navigation.navigate("TitleSetting")}
         />
         <FlatButton
           text={language.noticeSetting}

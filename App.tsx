@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { initialize } from "./update";
 import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
+import NewAppRouter from "./src/NewRouter"
 import {cacheResourcesAsync} from "./src/Config/AssetLoader";
 
 enum USER_STATUS {
@@ -30,6 +31,7 @@ function App() {
 
     case USER_STATUS.PLAY:
       initialize();
+      // return (<NewAppRouter />);
       return (<AppRouter />);
   }
 }
