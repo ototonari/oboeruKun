@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { initialize } from "./update";
-import { AppLoading } from "expo";
-import { assetsLoad } from "./components";
+import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
+import {cacheResourcesAsync} from "./src/Config/AssetLoader";
 
 enum USER_STATUS {
   LOADING,
@@ -19,7 +19,7 @@ function App() {
     case USER_STATUS.LOADING:
       return (
         <AppLoading
-        startAsync={assetsLoad}
+        startAsync={cacheResourcesAsync}
         onFinish={() => setUserStatus(USER_STATUS.PLAY)}
         onError={console.warn}
       />

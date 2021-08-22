@@ -11,7 +11,7 @@ import { loadLanguage, TabIcon } from "../components";
 import {Tutorial} from "./Tutorial/Tutorial";
 
 const language = loadLanguage("scene");
-
+// TODO: 戻れないバグあり。
 function AppRouter() {
   return (
     <Router>
