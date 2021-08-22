@@ -1,4 +1,5 @@
 import { Asset } from 'expo-asset';
+import {Assets} from "./Assets";
 
 const smartPhoneSize = [
   require("../../assets/tutorial/STEP0.png"),
@@ -25,7 +26,7 @@ const assetImages = [
 ];
 
 export async function cacheResourcesAsync() {
-  const images = [...smartPhoneSize, ...assetImages];
+  const images = [...Assets.icons, ...Assets.tutorial];
   const cacheImages = images.map(image => {
     Asset.fromModule(image).downloadAsync();
   });
