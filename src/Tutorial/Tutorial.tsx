@@ -6,34 +6,16 @@ import {
   Platform,
   Dimensions,
   StyleSheet,
-  ImageSourcePropType, ImageResizeMode
+  ImageResizeMode
 } from 'react-native';
 import {requestNotificationPermission} from "../../notification";
 import {TabKey} from "../Const";
+import {TutorialImages} from "../Config/Assets";
 
 const {height, width} = Dimensions.get('window')
 console.log(`height : ${height}, width : ${width}`)
 
-const smartPhoneSize: ImageSourcePropType[] = [
-  require('../../assets/tutorial/STEP0.png'),
-  require('../../assets/tutorial/STEP1.png'),
-  require('../../assets/tutorial/STEP2.png'),
-  require('../../assets/tutorial/STEP3.png'),
-  require('../../assets/tutorial/STEP4.png'),
-  require('../../assets/tutorial/STEP5.png'),
-]
-
-// eslint-disable-next-line no-unused-vars
-const tabletSize: ImageSourcePropType[] = [
-  require('../../assets/tutorial/ipad/STEP0.png'),
-  require('../../assets/tutorial/ipad/STEP1.png'),
-  require('../../assets/tutorial/ipad/STEP2.png'),
-  require('../../assets/tutorial/ipad/STEP3.png'),
-  require('../../assets/tutorial/ipad/STEP4.png'),
-]
-
-// const images = Platform.isPad !== true ? smartPhoneSize : tabletSize
-const images = smartPhoneSize;
+const images = TutorialImages;
 
 const styles = StyleSheet.create({
   container : {
@@ -117,6 +99,7 @@ const imageProps: ImageResizeMode = Platform.select({
   default: 'stretch'
 })
 
+// @ts-ignore
 export function Tutorial({navigation}) {
   const [currentPage, setCurrentPage] = useState(0);
   const toSkip = async () => {

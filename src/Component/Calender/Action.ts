@@ -135,13 +135,3 @@ export function localization() {
     LocaleConfig.defaultLocale = "en";
   }
 }
-
-// function changeDate(registerdDate, date) {
-//   let tmpDate = new Date(registerdDate)
-//   // 通知する日時をセットする
-//   tmpDate.setDate(registerdDate.getDate() + date)
-//   tmpDate.setHours(7)
-//   tmpDate.setMinutes(0)
-//   tmpDate.setSeconds(0)
-//   return tmpDate
-// }

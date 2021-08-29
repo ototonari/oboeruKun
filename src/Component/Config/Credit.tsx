@@ -1,15 +1,7 @@
 import {Image, Linking, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 import * as MailComposer from 'expo-mail-composer';
-
-const images = {
-  // eslint-disable-next-line no-undef
-  facebook: require("../../../assets/facebookIcon58.png"),
-  // eslint-disable-next-line no-undef
-  email: require("../../../assets/email.png"),
-  // eslint-disable-next-line no-undef
-  twitter: require("../../../assets/twitterIcon400.png"),
-};
+import {Icons} from "../../Config/Assets";
 
 // 必須フィールド
 // *job --- *name
@@ -23,7 +15,7 @@ const developer = {
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
         {
-          icon: images.email,
+          icon: Icons.developer.email,
           type: "email",
           // mail object
           link: {
@@ -33,12 +25,12 @@ const developer = {
           },
         },
         {
-          icon: images.facebook,
+          icon: Icons.developer.facebook,
           type: "link",
           link: "https://www.facebook.com/profile.php?id=100004769313128",
         },
         {
-          icon: images.twitter,
+          icon: Icons.developer.twitter,
           type: "link",
           link: "https://twitter.com/TsubasaNagata",
         },
@@ -51,7 +43,7 @@ const developer = {
       // 画像アイコン(50*50)のパスを指定する
       contacts: [
         {
-          icon: images.email,
+          icon: Icons.developer.email,
           type: "email",
           // mail object
           link: {
@@ -61,7 +53,7 @@ const developer = {
           },
         },
         {
-          icon: images.facebook,
+          icon: Icons.developer.facebook,
           type: "link",
           link: "https://www.facebook.com/shonohibiki",
         },
@@ -70,16 +62,19 @@ const developer = {
   ],
 };
 
-function _renderDevContents (obj) {
-  let contentList = [];
+type DevType = typeof developer;
+
+function _renderDevContents (obj: DevType) {
+  let contentList: React.ReactElement[] = [];
   if (obj !== null) {
     Object.keys(obj).forEach((key) => {
       // exp. programer
+      // @ts-ignore
       obj[key].forEach((v, i) => {
         const person = obj[key][i];
         //console.log('person :', person)
         const renderContents = (contents) => {
-          let contactList = [];
+          let contactList: React.ReactElement[] = [];
           contents.forEach(function (v, i) {
             let func;
             const type = contents[i].type;

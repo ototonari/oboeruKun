@@ -116,6 +116,7 @@ function AppRouter() {
   );
 }
 
+// @ts-ignore
 // eslint-disable-next-line react/prop-types
 function AgendaContainer({ navigation }) {
   return (
