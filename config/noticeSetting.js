@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import Swipeable from "react-native-swipeable";
 import Modal from "react-native-modal";
-import { Actions } from "react-native-router-flux";
 import {
   getAllParams,
   deleteList,

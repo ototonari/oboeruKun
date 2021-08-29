@@ -9,7 +9,6 @@ import {
   insertNotice,
 } from "./database";
 import Constants from "expo-constants";
-import {Actions} from "react-native-router-flux";
 import {dateToFormatString} from "./dateToFormatString";
 import {requestNotificationPermission} from "./notification";
 
@@ -54,17 +53,12 @@ async function update() {
   console.log("update process.");
   await transferDataToNewTable();
   await versionChange(currentBuildNumber);
-  startTutorial();
 }
 
 async function versionChange(versionNumber) {
   let buildNumber = "1.0.0";
   if (versionNumber !== null) buildNumber = versionNumber;
   await updateBuildNumber(buildNumber);
-}
-
-export function startTutorial() {
-  Actions.tutorial();
 }
 
 export async function endTutorial() {
