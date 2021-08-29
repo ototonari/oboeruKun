@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Linking, Alert } from "react-native";
 import { FlatButton, loadLanguage } from "../../../components";
-import {ScreenKey} from "../../Const";
+import {ScreenKey} from "../../Config/Const";
 
 const privacyPolicy = "https://oboerukun.firebaseapp.com/";
 

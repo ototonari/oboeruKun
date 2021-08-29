@@ -8,9 +8,9 @@ import {
   StyleSheet,
   ImageResizeMode
 } from 'react-native';
-import {requestNotificationPermission} from "../../notification";
-import {TabKey} from "../Const";
-import {TutorialImages} from "../Config/Assets";
+import {requestNotificationPermission} from "../../../notification";
+import {TabKey} from "../../Config/Const";
+import {TutorialImages} from "../../Config/Assets";
 
 const {height, width} = Dimensions.get('window')
 console.log(`height : ${height}, width : ${width}`)

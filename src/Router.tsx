@@ -7,11 +7,11 @@ import RegisterView from "../register/registerView";
 import Developers from "./Component/Config/Credit";
 import AgendaView from "../calenders/agendaView";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
-import {Tutorial} from "./Tutorial/Tutorial";
+import {Tutorial} from "./Component/Tutorial/Tutorial";
 import {Locale} from "./Config/Language"
 import ConfigView from "./Component/Config/Config"
 import TitleList from "./Component/Config/TitleList"
-import {ScreenKey, TabKey} from "./Const";
+import {ScreenKey, TabKey} from "./Config/Const";
 import { Icons } from "./Config/Assets"
 
 const Stack = createNativeStackNavigator();
