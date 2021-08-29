@@ -10,6 +10,8 @@ import { dateToFormatString } from "../dateToFormatString";
 import { loadLanguage } from "../components";
 import Cell from "../src/Component/Calender/Cell";
 import * as Notifications from "expo-notifications";
+import {hasShownTutorials} from "../src/Config/Libs";
+import {ScreenKey} from "../src/Config/Const";
 
 export default class AgendaView extends Component {
   constructor(props) {
@@ -31,6 +33,12 @@ export default class AgendaView extends Component {
 
   componentDidMount() {
     initializeCalender().then((items) => this.setState({ items }));
+    hasShownTutorials().then((result) => {
+      if (!result) {
+        // eslint-disable-next-line react/prop-types
+        setTimeout(() => this.props.navigation.navigate(ScreenKey.Tutorial, null, {headerShown: false}), 3000);
+      }
+    })
   }
 
   listenForNotifications = () => {

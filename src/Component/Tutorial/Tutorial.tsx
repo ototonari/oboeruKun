@@ -11,6 +11,7 @@ import {
 import {requestNotificationPermission} from "../../../notification";
 import {TabKey} from "../../Config/Const";
 import {TutorialImages} from "../../Config/Assets";
+import {alreadyShownTutorials} from "../../Config/Libs";
 
 const {height, width} = Dimensions.get('window')
 console.log(`height : ${height}, width : ${width}`)
@@ -104,6 +105,7 @@ export function Tutorial({navigation}) {
   const [currentPage, setCurrentPage] = useState(0);
   const toSkip = async () => {
     await requestNotificationPermission();
+    await alreadyShownTutorials()
     navigation.navigate(TabKey.Calendar);
   }
 

@@ -1,37 +1,28 @@
-import React, { useState } from "react";
-import { initialize } from "./update";
+import React, {useState} from "react";
 import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
-import {assetsPreLoader} from "./src/Config/Assets";
+import {initialization} from "./src/Config/Libs";
 
 enum USER_STATUS {
-  LOADING,
-  // GETTING_STARTED,
+  INITIALIZE,
   PLAY
 }
 
 function App() {
-  const [userStatus, setUserStatus] = useState(USER_STATUS.LOADING);
-
-  // TODO: チュートリアルを表示済かみたい。
+  const [userStatus, setUserStatus] = useState(USER_STATUS.INITIALIZE);
 
   switch (userStatus) {
-    case USER_STATUS.LOADING:
+    case USER_STATUS.INITIALIZE:
       return (
         <AppLoading
-        startAsync={assetsPreLoader}
-        onFinish={() => setUserStatus(USER_STATUS.PLAY)}
-        onError={console.warn}
-      />
+          startAsync={initialization}
+          onFinish={() => setUserStatus(USER_STATUS.PLAY)}
+          onError={console.warn}
+        />
       );
 
-    // case USER_STATUS.GETTING_STARTED:
-    //   return null;
-
     case USER_STATUS.PLAY:
-      initialize();
-      // return (<NewAppRouter />);
-      return (<AppRouter />);
+      return (<AppRouter/>);
   }
 }
 

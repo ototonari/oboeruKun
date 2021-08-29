@@ -110,7 +110,7 @@ function AppRouter() {
         />
         <Stack.Screen name={ScreenKey.RegisterSetting} component={RegisterSetting} />
         <Stack.Screen name={ScreenKey.Developers} component={Developers} options={{title: titles.developer}} />
-        <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: titles.tutorial}} />
+        <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: titles.tutorial, headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

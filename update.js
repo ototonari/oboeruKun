@@ -1,8 +1,6 @@
 // those actions need when this app was update.
 import {
   updateBuildNumber,
-  getBuildNumber,
-  initializeUpdateTable,
   initDB,
   showNotificationTable,
   dropNotificationTable,
@@ -11,8 +9,8 @@ import {
   insertNotice,
 } from "./database";
 import Constants from "expo-constants";
-import { Actions } from "react-native-router-flux";
-import { dateToFormatString } from "./dateToFormatString";
+import {Actions} from "react-native-router-flux";
+import {dateToFormatString} from "./dateToFormatString";
 import {requestNotificationPermission} from "./notification";
 
 const currentBuildNumber = Constants.manifest.ios.buildNumber;
