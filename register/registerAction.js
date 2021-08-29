@@ -1,6 +1,5 @@
 import React from "react";
 import { Alert, View, Picker, TouchableOpacity, Text } from "react-native";
-import { Actions } from "react-native-router-flux";
 import {
   checkTitle,
   insertPage,
@@ -13,7 +12,7 @@ import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
 import { loadLanguage } from "../components";
 import {schedulePushNotification} from "../notification";
-import {ScreenKey, TabKey} from "../src/Const";
+import {resetToHome} from "../src/Config/RouterLib"
 
 // eslint-disable-next-line no-unused-vars
 export function validation(target, callback, language) {
@@ -110,7 +109,7 @@ export async function arrangement(target) {
     {
       text: "OK",
       onPress: () => {
-        self.props.navigation.navigate(TabKey.Calendar);
+        resetToHome(self.props.navigation);
       },
     },
   ]);

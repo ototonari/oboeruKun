@@ -11,7 +11,8 @@ export const Icons = {
     inactive: require("../../assets/icon/configuration_false.png"),
   },
   button: {
-    plus: require("../../assets/plus.png")
+    plus: require("../../assets/plus.png"),
+    error: require("../../assets/error.png")
   },
   developer: {
     facebook: require("../../assets/facebookIcon58.png"),
@@ -45,6 +46,7 @@ const images = [
   Icons.config.active,
   Icons.config.inactive,
   Icons.button.plus,
+  Icons.button.error,
   Icons.developer.facebook,
   Icons.developer.email,
   Icons.developer.twitter,
