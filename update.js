@@ -71,7 +71,6 @@ export function startTutorial() {
 
 export async function endTutorial() {
   await requestNotificationPermission();
-  Actions.reset("tabbar");
 }
 
 async function transferDataToNewTable() {

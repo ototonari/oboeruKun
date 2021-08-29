@@ -8,7 +8,8 @@ import {
   StyleSheet,
   ImageSourcePropType, ImageResizeMode
 } from 'react-native';
-import { endTutorial } from "../../update";
+import {requestNotificationPermission} from "../../notification";
+import {TabKey} from "../Const";
 
 const {height, width} = Dimensions.get('window')
 console.log(`height : ${height}, width : ${width}`)
@@ -116,9 +117,12 @@ const imageProps: ImageResizeMode = Platform.select({
   default: 'stretch'
 })
 
-export function Tutorial() {
+export function Tutorial({navigation}) {
   const [currentPage, setCurrentPage] = useState(0);
-  const toSkip = async () => await endTutorial();
+  const toSkip = async () => {
+    await requestNotificationPermission();
+    navigation.navigate(TabKey.Calendar);
+  }
 
   if (currentPage === 0) {
     return startScreen(setCurrentPage, toSkip, currentPage);

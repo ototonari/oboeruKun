@@ -22,9 +22,14 @@ import {
 import styles from "../register/registerStyle";
 import { locale, loadLanguage } from "../components";
 
+// eslint-disable-next-line no-unused-vars
+let navigation = null;
+
 export class NoticeSetting extends Component {
   constructor(props) {
     super(props);
+    // eslint-disable-next-line react/prop-types
+    navigation = props.navigation;
     this.state = {
       items: [],
     };
@@ -70,7 +75,7 @@ export class NoticeSetting extends Component {
     };
 
     const rightButtons = [
-      <TouchableOpacity
+      <TouchableOpacity key={0}
         style={localStyles.swipeButton}
         onPress={() => deleteItem(item.id)}
       >
@@ -333,7 +338,7 @@ async function addNoticeInterval(list, name, language) {
       {
         text: "OK",
         onPress: () => {
-          Actions.reset("tabbar");
+          navigation.navigate("Calender");
         },
       },
     ]);

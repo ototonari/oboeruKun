@@ -13,28 +13,13 @@ import { loadLanguage, TabIcon } from "../components";
 import {Tutorial} from "./Tutorial/Tutorial";
 import {Locale} from "./Config/Language"
 import ConfigView from "./Component/Config/Config"
+import {ScreenKey, TabKey} from "./Const";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const language = loadLanguage("scene");
 const titles = Locale.jp.scene;
-
-export enum ScreenKey {
-  Agenda= "Agenda",
-  Config= "Config",
-  Register= "Register",
-  Developers="Developers",
-  TitleSetting = "TitleSetting",
-  NoticeSetting = "NoticeSetting",
-  RegisterSetting = "RegisterSetting",
-  Tutorial = "Tutorial"
-}
-
-export enum TabKey {
-  Calendar = "Calender",
-  ConfigTab = "ConfigTab"
-}
 
 function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: boolean}){
   const _iconList = {
@@ -81,47 +66,43 @@ function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: bool
   return managerIcon(screenName, isFocused);
 }
 
-function _AppRouter() {
+function HomeScreen() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          // eslint-disable-next-line react/display-name
-          tabBarIcon: ({ focused }: {focused: boolean}) => {
-            return <TabIcon2 screenName={route.name} isFocused={focused} />;
-          },
-          headerShown: false
-        })}
-      >
-        <Tab.Screen name={TabKey.Calendar} component={CalendarTabContainer} />
-        <Tab.Screen name={TabKey.ConfigTab} component={ConfigTabContainer} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        // eslint-disable-next-line react/display-name
+        tabBarIcon: ({ focused }: {focused: boolean}) => {
+          return <TabIcon2 screenName={route.name} isFocused={focused} />;
+        },
+        headerShown: true
+
+      })}
+    >
+      {/*右ボタンの位置が崩れるため、あえて1階層余分にStack.Navigatorを挟んでいる*/}
+      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false}} />
+      <Tab.Screen name={TabKey.ConfigTab} component={ConfigView} options={{title: titles.config}} />
+    </Tab.Navigator>
   );
 }
 
-function CalendarTabContainer({ navigation }) {
+const RightButton = (callBack) => () =>
+  <TouchableOpacity onPress={callBack} >
+    <Image
+      source={require("../assets/plus.png")}
+      style={{ width:20, height: 20}}
+      resizeMode={'contain'}
+    />
+  </TouchableOpacity>
+
+function AppRouter() {
   return (
-      <Stack.Navigator initialRouteName={ScreenKey.Agenda}>
+    <NavigationContainer>
+      <Stack.Navigator >
         <Stack.Screen
-          name={ScreenKey.Agenda}
-          component={AgendaView}
-          options={{
-            headerRight: function RightButton () {
-              return <TouchableOpacity onPress={() => {
-                console.log("CalendarTabContainer")
-                navigation.navigate(ScreenKey.Register)
-              }} >
-                <Image
-                  source={require("../assets/plus.png")}
-                  style={{ width:20, height: 20}}
-                  resizeMode={'contain'}
-                />
-              </TouchableOpacity>
-            },
-            title: titles.agenda
-        }
-        } />
+          name={ScreenKey.Home}
+          component={HomeScreen}
+          options={{ headerShown: false}}
+        />
         <Stack.Screen
           name={ScreenKey.Register}
           component={RegisterView}
@@ -129,36 +110,42 @@ function CalendarTabContainer({ navigation }) {
             title: titles.register
           }}
         />
+        <Stack.Screen name={ScreenKey.TitleSetting} component={TitleList} options={{title: titles.titleList}} />
+        <Stack.Screen
+          name={ScreenKey.NoticeSetting}
+          component={NoticeSetting}
+          options={({navigation}) => ({
+            title: titles.noticeSetting,
+            headerRight: RightButton(() => navigation.navigate(ScreenKey.RegisterSetting))
+          })
+          }
+        />
+        <Stack.Screen name={ScreenKey.RegisterSetting} component={RegisterSetting} />
+        <Stack.Screen name={ScreenKey.Developers} component={Developers} options={{title: titles.developer}} />
+        <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: titles.tutorial}} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function AgendaContainer({ navigation }) {
+  return (
+      <Stack.Navigator initialRouteName={ScreenKey.Agenda}>
+        <Stack.Screen
+          name={ScreenKey.Agenda}
+          component={AgendaView}
+          options={{
+            headerRight: RightButton(() => navigation.navigate(ScreenKey.Register)),
+            title: titles.agenda
+        }
+        } />
       </Stack.Navigator>
   )
 }
 
-function ConfigTabContainer ({ navigation }) {
-  return (
-    <Stack.Navigator initialRouteName={ScreenKey.Config}>
-      <Stack.Screen name={ScreenKey.Config} component={ConfigView} options={{title: titles.config}} />
-      <Stack.Screen name={ScreenKey.TitleSetting} component={TitleList} options={{title: titles.titleList}} />
-      <Stack.Screen name={ScreenKey.NoticeSetting} component={NoticeSetting} options={{title: titles.noticeSetting, headerRight: function RightButton () {
-          return <TouchableOpacity onPress={() => {
-            console.log("ConfigTabContainer.")
-            navigation.navigate(ScreenKey.RegisterSetting)
-          }} >
-            <Image
-              source={require("../assets/plus.png")}
-              style={{ width:20, height: 20}}
-              resizeMode={'contain'}
-            />
-          </TouchableOpacity>
-        },}} />
-      <Stack.Screen name={ScreenKey.Developers} component={Developers} options={{title: titles.developer}} />
-      <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: titles.tutorial}} />
-      <Stack.Screen name={ScreenKey.RegisterSetting} component={RegisterSetting} />
-    </Stack.Navigator>
-  )
-}
 
 // TODO: 戻れないバグあり。
-function AppRouter() {
+function _AppRouter() {
   return (
     <Router>
       <Scene key="root">
@@ -254,4 +241,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default _AppRouter;
+export default AppRouter;

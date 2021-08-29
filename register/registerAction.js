@@ -13,6 +13,7 @@ import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
 import { loadLanguage } from "../components";
 import {schedulePushNotification} from "../notification";
+import {ScreenKey, TabKey} from "../src/Const";
 
 // eslint-disable-next-line no-unused-vars
 export function validation(target, callback, language) {
@@ -109,7 +110,7 @@ export async function arrangement(target) {
     {
       text: "OK",
       onPress: () => {
-        Actions.reset("tabbar");
+        self.props.navigation.navigate(TabKey.Calendar);
       },
     },
   ]);
