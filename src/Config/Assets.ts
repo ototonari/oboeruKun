@@ -27,3 +27,17 @@ export const Assets = {
 //   require("../../assets/tutorial/ipad/STEP3.png"),
 //   require("../../assets/tutorial/ipad/STEP4.png"),
 // ];
+
+export const Icons = {
+  calender: {
+    active: require("../assets/icon/iconList.png"),
+    inactive: require("../assets/icon/iconList2.png"),
+  },
+  config: {
+    active: require("../assets/icon/configuration_true.png"),
+    inactive: require("../assets/icon/configuration_false.png"),
+  },
+  button: {
+    plus: require("../assets/plus.png")
+  }
+}

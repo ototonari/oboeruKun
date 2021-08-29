@@ -1,38 +1,25 @@
 import React from "react";
-import {StyleSheet, Platform, Image, View, ImageSourcePropType, TouchableOpacity} from "react-native";
+import {StyleSheet, Image, View, ImageSourcePropType, TouchableOpacity} from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegisterView from "../register/registerView";
-import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
 import Developers from "./Component/Config/Credit";
 import AgendaView from "../calenders/agendaView";
 import TitleList from "../config/titleList";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
-import { loadLanguage, TabIcon } from "../components";
 import {Tutorial} from "./Tutorial/Tutorial";
 import {Locale} from "./Config/Language"
 import ConfigView from "./Component/Config/Config"
 import {ScreenKey, TabKey} from "./Const";
+import { Icons } from "./Config/Assets"
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const language = loadLanguage("scene");
 const titles = Locale.jp.scene;
 
 function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: boolean}){
-  const _iconList = {
-    calender: {
-      active: require("../assets/icon/iconList.png"),
-      inactive: require("../assets/icon/iconList2.png"),
-    },
-    config: {
-      active: require("../assets/icon/configuration_true.png"),
-      inactive: require("../assets/icon/configuration_false.png"),
-    },
-  };
-
   const _style = StyleSheet.create({
     imageIcon: {
       width: 25,
@@ -43,9 +30,9 @@ function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: bool
   const managerIcon = (key: string, isFocused: boolean) => {
     let source: ImageSourcePropType | null;
     if (key === TabKey.Calendar) {
-      source = isFocused ? _iconList.calender.active : _iconList.calender.inactive
+      source = isFocused ? Icons.calender.active : Icons.calender.inactive
     } else if (key === TabKey.ConfigTab) {
-      source = isFocused ? _iconList.config.active : _iconList.config.inactive
+      source = isFocused ? Icons.config.active : Icons.config.inactive
     } else {
       source = null;
     }
@@ -85,10 +72,11 @@ function HomeScreen() {
   );
 }
 
-const RightButton = (callBack) => () =>
+// eslint-disable-next-line react/display-name
+const RightButton = (callBack: () => void) => () =>
   <TouchableOpacity onPress={callBack} >
     <Image
-      source={require("../assets/plus.png")}
+      source={Icons.button.plus}
       style={{ width:20, height: 20}}
       resizeMode={'contain'}
     />
@@ -128,6 +116,7 @@ function AppRouter() {
   );
 }
 
+// eslint-disable-next-line react/prop-types
 function AgendaContainer({ navigation }) {
   return (
       <Stack.Navigator initialRouteName={ScreenKey.Agenda}>
@@ -135,6 +124,7 @@ function AgendaContainer({ navigation }) {
           name={ScreenKey.Agenda}
           component={AgendaView}
           options={{
+            // eslint-disable-next-line react/prop-types
             headerRight: RightButton(() => navigation.navigate(ScreenKey.Register)),
             title: titles.agenda
         }
@@ -142,103 +132,5 @@ function AgendaContainer({ navigation }) {
       </Stack.Navigator>
   )
 }
-
-
-// TODO: 戻れないバグあり。
-function _AppRouter() {
-  return (
-    <Router>
-      <Scene key="root">
-        <Tabs
-          key="tabbar"
-          hideNavBar
-          swipeEnabled={false}
-          tabBarPosition={"bottom"}
-        >
-          <Scene
-            key="manager"
-            iconName="agenda"
-            title={language.agenda}
-            initial={true}
-            component={AgendaView}
-            icon={TabIcon}
-            onRight={() => Actions.push("register")}
-            // eslint-disable-next-line no-undef
-            rightButtonImage={require("../assets/plus.png")}
-          />
-          <Scene
-            key="config"
-            title={language.config}
-            component={ConfigView}
-            icon={TabIcon}
-          />
-        </Tabs>
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="register"
-          component={RegisterView}
-          title={language.register}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="developers"
-          component={Developers}
-          title={language.developer}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="titlelist"
-          component={TitleList}
-          title={language.titleList}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="noticesetting"
-          component={NoticeSetting}
-          title={language.noticeSetting}
-          // eslint-disable-next-line no-undef
-          rightButtonImage={require("../assets/plus.png")}
-          onRight={() => Actions.registersetting()}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="registersetting"
-          component={RegisterSetting}
-        />
-        <Scene hideNavBar key="tutorial" component={Tutorial} title={"Tutorial"} />
-        {/*<Scene*/}
-        {/*  sceneStyle={styles.oneCompHeader}*/}
-        {/*  key="localNotification"*/}
-        {/*  component={LocalNotification}*/}
-        {/*  initial={true}*/}
-        {/*/>*/}
-      </Scene>
-    </Router>
-  );
-}
-
-const styles = StyleSheet.create({
-  header: {
-    ...Platform.select({
-      ios: {
-        paddingTop: 0,
-      },
-      android: {
-        paddingTop: 13,
-      },
-    }),
-  },
-  oneCompHeader: {
-    ...Platform.select({
-      ios: {
-        paddingTop: 0,
-      },
-      android: {
-        position: "absolute",
-        top: 30,
-      },
-    }),
-  },
-});
 
 export default AppRouter;
