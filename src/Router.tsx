@@ -66,7 +66,7 @@ function HomeScreen() {
       })}
     >
       {/*右ボタンの位置が崩れるため、あえて1階層余分にStack.Navigatorを挟んでいる*/}
-      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false}} />
+      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false, title: titles.agenda}} />
       <Tab.Screen name={TabKey.ConfigTab} component={ConfigView} options={{title: titles.config}} />
     </Tab.Navigator>
   );
@@ -127,8 +127,7 @@ function AgendaContainer({ navigation }) {
           options={{
             // eslint-disable-next-line react/prop-types
             headerRight: RightButton(() => navigation.navigate(ScreenKey.Register)),
-            title: titles.agenda
-        }
+          }
         } />
       </Stack.Navigator>
   )
