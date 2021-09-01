@@ -10,8 +10,8 @@ import {
 // @ts-ignore
 import Swipeable from "react-native-swipeable";
 import { getAllTitle, deleteList } from "../../../database";
-import { locale } from "../../../components";
 import {Icons} from "../../Config/Assets";
+import {locale} from "../../Config/Locale";
 
 export default class TitleList extends Component {
   constructor(props: any) {
@@ -28,7 +28,7 @@ export default class TitleList extends Component {
       if (items.length == 0) {
         items = [
           {
-            title: locale.country === "JP" ? "履歴はありません" : "No history",
+            title: locale.titleList.emptyText,
             id: 0,
           },
         ];
@@ -53,8 +53,7 @@ export default class TitleList extends Component {
             } else {
               newItems = [
                 {
-                  title:
-                    locale.country === "JP" ? "履歴はありません" : "No history",
+                  title: locale.titleList.emptyText,
                   id: 0,
                 },
               ];

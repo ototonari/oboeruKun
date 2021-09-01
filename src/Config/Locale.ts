@@ -1,7 +1,16 @@
+import * as Localization from 'expo-localization';
 
+enum LocaleType {
+  JP= "JP",
+  EN= "EN"
+}
 
-export const Locale = {
-  jp: {
+const jpregex = /ja|JP/;
+
+let currentLocaleType: LocaleType;
+
+const localeSets = {
+  [LocaleType.JP]: {
     scene: {
       agenda: "カレンダー",
       config: "設定",
@@ -22,6 +31,7 @@ export const Locale = {
         monthNamesShort: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
         dayNames: ["日", "月", "火", "水", "木", "金", "土"],
         dayNamesShort: ["日", "月", "火", "水", "木", "金", "土"],
+        today: "今日"
       },
     },
     register: {
@@ -50,8 +60,11 @@ export const Locale = {
       memo: "メモ",
       done: "登録しました",
     },
+    titleList: {
+      emptyText: "履歴はありません",
+    }
   },
-  en: {
+  [LocaleType.EN]: {
     scene: {
       agenda: "Calendar",
       config: "Config",
@@ -64,6 +77,15 @@ export const Locale = {
         configText: "Privacy Policy",
         alertTitle: "Jump to Web page of Privacy Policy.",
         alertText: "",
+      },
+    },
+    agenda: {
+      localeConfig: {
+        monthNames: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
+        monthNamesShort: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
+        dayNames: ["日", "月", "火", "水", "木", "金", "土"],
+        dayNamesShort: ["日", "月", "火", "水", "木", "金", "土"],
+        today: "today"
       },
     },
     register: {
@@ -92,5 +114,27 @@ export const Locale = {
       memo: "Note",
       done: "Register success.",
     },
+    titleList: {
+      emptyText: "No history",
+    }
   },
 }
+
+// 宣言する場所はここで固定、だる。
+const initLocale = () => {
+  const result = Localization.locale;
+  if (jpregex.test(Localization.locale)) {
+    currentLocaleType = LocaleType.JP;
+  } else {
+    currentLocaleType = LocaleType.EN;
+  }
+  console.debug("current locale is: ", currentLocaleType, result);
+
+  return localeSets[LocaleType[currentLocaleType]];
+}
+
+export const locale = initLocale();
+
+export const getLocaleType = () => currentLocaleType;
+
+export const isJP = () => currentLocaleType === LocaleType.JP;

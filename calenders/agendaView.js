@@ -7,16 +7,16 @@ import {
   localization,
 } from "../src/Component/Calender/Action";
 import { dateToFormatString } from "../dateToFormatString";
-import { loadLanguage } from "../components";
 import Cell from "../src/Component/Calender/Cell";
 import * as Notifications from "expo-notifications";
 import {hasShownTutorials} from "../src/Config/Libs";
 import {ScreenKey} from "../src/Config/Const";
+import {locale} from "../src/Config/Locale"
 
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
-    this.language = loadLanguage("data");
+    this.language = locale.data;
     this.state = {
       items: {},
       today: dateToFormatString(new Date(), "%YYYY%-%MM%-%DD%"),

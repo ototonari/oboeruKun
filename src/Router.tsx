@@ -8,16 +8,16 @@ import Developers from "./Component/Config/Credit";
 import AgendaView from "../calenders/agendaView";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
 import {Tutorial} from "./Component/Tutorial/Tutorial";
-import {Locale} from "./Config/Language"
 import ConfigView from "./Component/Config/Config"
 import TitleList from "./Component/Config/TitleList"
 import {ScreenKey, TabKey} from "./Config/Const";
 import { Icons } from "./Config/Assets"
+import {locale} from "./Config/Locale";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const titles = Locale.jp.scene;
+const {scene} = locale;
 
 function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: boolean}){
   const _style = StyleSheet.create({
@@ -66,8 +66,8 @@ function HomeScreen() {
       })}
     >
       {/*右ボタンの位置が崩れるため、あえて1階層余分にStack.Navigatorを挟んでいる*/}
-      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false, title: titles.agenda}} />
-      <Tab.Screen name={TabKey.ConfigTab} component={ConfigView} options={{title: titles.config}} />
+      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false, title: scene.agenda}} />
+      <Tab.Screen name={TabKey.ConfigTab} component={ConfigView} options={{title: scene.config}} />
     </Tab.Navigator>
   );
 }
@@ -95,22 +95,22 @@ function AppRouter() {
           name={ScreenKey.Register}
           component={RegisterView}
           options={{
-            title: titles.register
+            title: scene.register
           }}
         />
-        <Stack.Screen name={ScreenKey.TitleSetting} component={TitleList} options={{title: titles.titleList}} />
+        <Stack.Screen name={ScreenKey.TitleSetting} component={TitleList} options={{title: scene.titleList}} />
         <Stack.Screen
           name={ScreenKey.NoticeSetting}
           component={NoticeSetting}
           options={({navigation}) => ({
-            title: titles.noticeSetting,
+            title: scene.noticeSetting,
             headerRight: RightButton(() => navigation.navigate(ScreenKey.RegisterSetting))
           })
           }
         />
         <Stack.Screen name={ScreenKey.RegisterSetting} component={RegisterSetting} />
-        <Stack.Screen name={ScreenKey.Developers} component={Developers} options={{title: titles.developer}} />
-        <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: titles.tutorial, headerShown: false}} />
+        <Stack.Screen name={ScreenKey.Developers} component={Developers} options={{title: scene.developer}} />
+        <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: scene.tutorial, headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -127,6 +127,7 @@ function AgendaContainer({ navigation }) {
           options={{
             // eslint-disable-next-line react/prop-types
             headerRight: RightButton(() => navigation.navigate(ScreenKey.Register)),
+            title: scene.agenda
           }
         } />
       </Stack.Navigator>

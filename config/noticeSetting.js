@@ -19,7 +19,7 @@ import {
   deleteParams,
 } from "../database";
 import styles from "../register/registerStyle";
-import { locale, loadLanguage } from "../components";
+import {locale} from "../src/Config/Locale"
 
 // eslint-disable-next-line no-unused-vars
 let navigation = null;
@@ -254,7 +254,7 @@ export class RegisterSetting extends Component {
   };
 
   render() {
-    const language = loadLanguage("registerSetting");
+    const language = locale.registerSetting;
     return (
       <View style={styles.container.container}>
         <View style={styles.container.view}>

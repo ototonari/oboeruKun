@@ -5,15 +5,11 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Platform,
-  Alert,
 } from "react-native";
-import { Asset } from "expo-asset";
 
 export let locale = {
   country: "JP",
 };
-export const localeJSON = require("./locale.json");
 
 export class Avatar extends Component {
   constructor(props) {
@@ -149,47 +145,4 @@ export class FlatButton extends Component {
       </TouchableOpacity>
     );
   }
-}
-
-const smartPhoneSize = [
-  require("./assets/tutorial/STEP0.png"),
-  require("./assets/tutorial/STEP1.png"),
-  require("./assets/tutorial/STEP2.png"),
-  require("./assets/tutorial/STEP3.png"),
-  require("./assets/tutorial/STEP4.png"),
-  require("./assets/tutorial/STEP5.png"),
-];
-
-const tabletSize = [
-  require("./assets/tutorial/ipad/STEP0.png"),
-  require("./assets/tutorial/ipad/STEP1.png"),
-  require("./assets/tutorial/ipad/STEP2.png"),
-  require("./assets/tutorial/ipad/STEP3.png"),
-  require("./assets/tutorial/ipad/STEP4.png"),
-];
-
-const assetImages = [
-  require("./assets/icon/iconList.png"),
-  require("./assets/icon/iconList2.png"),
-  require("./assets/icon/configuration_true.png"),
-  require("./assets/icon/configuration_false.png"),
-];
-
-export async function assetsLoad() {
-  // デバイスによってロードする画像を変更する
-  let tutorialImage = Platform.isPad !== true ? smartPhoneSize : tabletSize;
-  let asyncLoadImages = tutorialImage.concat(assetImages);
-  // 画像をディスクにキャッシュする
-  await Asset.loadAsync(asyncLoadImages);
-}
-
-export async function localization() {}
-
-export function loadLanguage(props) {
-  return localeJSON.jp[props];
-  // if (locale.country === "JP") {
-  //     return localeJSON.jp[props]
-  // } else {
-  //     return localeJSON.en[props]
-  // }
 }

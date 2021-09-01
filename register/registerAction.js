@@ -10,16 +10,16 @@ import {
 } from "../database";
 import styles from "./registerStyle";
 import { dateToFormatString } from "../dateToFormatString";
-import { loadLanguage } from "../components";
 import {schedulePushNotification} from "../notification";
 import {resetToHome} from "../src/Config/RouterLib"
+import {locale} from "../src/Config/Locale"
 
 // eslint-disable-next-line no-unused-vars
 export function validation(target, callback, language) {
   const self = target;
   // エラー処理
   if (self.state.title === "") {
-    const language = loadLanguage("register");
+    const language = locale.register;
     self.setState({ titleError: language.errTitle });
     return;
   } else {
@@ -33,7 +33,7 @@ export function validation(target, callback, language) {
 
 export async function arrangement(target) {
   const self = target;
-  const language = loadLanguage("data");
+  const language = locale.data;
   // 登録情報
   const { title, page, memo, repeat, notice, repeatId } = self.state;
   // タイトル履歴に保存

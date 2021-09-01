@@ -16,9 +16,8 @@ import { Dropdown } from "react-native-material-dropdown";
 import Modal from "react-native-modal";
 import { validation, arrangement } from "./registerAction";
 import { getTitle, getAllParams } from "../database";
-import { loadLanguage } from "../components";
 import * as Notifications from "expo-notifications";
-
+import {locale} from "../src/Config/Locale"
 
 // とりあえず、通知処理はここで行われるので仕込んでおく。
 Notifications.setNotificationHandler({
@@ -422,7 +421,7 @@ export default class RegisterView extends Component {
   }
 
   render() {
-    const language = loadLanguage("register");
+    const language = locale.register;
     return (
       // 画面全体に判定を持ち、条件に応じて処理する。
       <TouchableOpacity
