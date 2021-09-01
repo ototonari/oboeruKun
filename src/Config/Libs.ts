@@ -5,12 +5,14 @@ import Constants from "expo-constants";
 import {assetsPreLoader} from "./Assets";
 import {initDB} from "../../database";
 import {localStorage} from "../IO/LocalStorage";
+import {gettingDeviceType} from "./DeviceType";
 
 export const getCurrentAppVersion = (): string => {
   return Constants.manifest?.version ? Constants.manifest.version : "1.00";
 }
 
 export const initialization = async () => {
+  await gettingDeviceType();
   await assetsPreLoader();
   const versionOpt = await localStorage.GetAppVersion();
   if (versionOpt === null) {

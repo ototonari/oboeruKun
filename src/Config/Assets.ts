@@ -1,5 +1,8 @@
-import { Asset } from 'expo-asset';
+import {Asset} from 'expo-asset';
+import * as Device from 'expo-device';
+import {DeviceType} from 'expo-device';
 import {ImageSourcePropType} from "react-native";
+import {getDeviceType} from "./DeviceType";
 
 export const Icons = {
   calender: {
@@ -30,7 +33,6 @@ export const TutorialImages: ImageSourcePropType[] = [
   require('../../assets/tutorial/STEP5.png'),
 ]
 
-// eslint-disable-next-line no-unused-vars
 const TutorialImagesOnTablet: ImageSourcePropType[] = [
   require('../../assets/tutorial/ipad/STEP0.png'),
   require('../../assets/tutorial/ipad/STEP1.png'),
@@ -39,8 +41,16 @@ const TutorialImagesOnTablet: ImageSourcePropType[] = [
   require('../../assets/tutorial/ipad/STEP4.png'),
 ]
 
-const images = [
-  ...TutorialImages,
+export const tutorialImages = () => {
+  const deviceType = getDeviceType()
+  if (deviceType === DeviceType.TABLET) {
+    return TutorialImagesOnTablet;
+  } else {
+    return TutorialImages;
+  }
+}
+
+const presetImages = [
   Icons.calender.active,
   Icons.calender.inactive,
   Icons.config.active,
@@ -53,6 +63,7 @@ const images = [
 ];
 
 export async function assetsPreLoader() {
+  const images = [...presetImages, ...(tutorialImages())]
   const cacheImages = images.map(image => {
     Asset.fromModule(image).downloadAsync();
   });
