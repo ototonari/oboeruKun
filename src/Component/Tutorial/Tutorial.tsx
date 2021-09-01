@@ -14,7 +14,6 @@ import {TutorialImages} from "../../Config/Assets";
 import {alreadyShownTutorials} from "../../Config/Libs";
 
 const {height, width} = Dimensions.get('window')
-console.log(`height : ${height}, width : ${width}`)
 
 const images = TutorialImages;
 

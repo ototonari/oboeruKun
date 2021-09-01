@@ -16,8 +16,6 @@ import {ScreenKey} from "../src/Config/Const";
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
-    // eslint-disable-next-line react/prop-types
-    console.log("route to props", props.route.isReload);
     this.language = loadLanguage("data");
     this.state = {
       items: {},
