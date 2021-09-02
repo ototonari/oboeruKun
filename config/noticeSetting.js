@@ -19,7 +19,7 @@ import {
   deleteParams,
 } from "../database";
 import styles from "../register/registerStyle";
-import {locale} from "../src/Config/Locale"
+import {locale, isJP} from "../src/Config/Locale"
 
 // eslint-disable-next-line no-unused-vars
 let navigation = null;
@@ -61,7 +61,7 @@ export class NoticeSetting extends Component {
               newItems = [
                 {
                   title:
-                    locale.country === "JP" ? "履歴はありません" : "No history",
+                    isJP() ? "履歴はありません" : "No history",
                   id: 0,
                 },
               ];
@@ -85,12 +85,12 @@ export class NoticeSetting extends Component {
       </TouchableOpacity>,
     ];
 
-    let msg = locale.country === "JP" ? "" : "Notify after ";
+    let msg = isJP() ? "" : "Notify after ";
     const array = JSON.parse(item.interval);
     for (let i = 0, j = array.length; i < j; i++) {
-      msg += locale.country === "JP" ? `${array[i]}日後, ` : `${array[i]}, `;
+      msg += isJP() ? `${array[i]}日後, ` : `${array[i]}, `;
     }
-    msg += locale.country === "JP" ? "に復習する" : "days";
+    msg += isJP() ? "に復習する" : "days";
 
     return (
       <Swipeable rightButtons={rightButtons} rightButtonWidth={70}>
