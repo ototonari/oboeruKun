@@ -446,12 +446,8 @@ export function checkTitle(title) {
       [title],
       (_, { rows }) => {
         const length = rows.length;
-        if (length == 0) {
+        if (length === 0) {
           addTitle(title);
-        } else if (length == 1) {
-          const selectedId = rows._array[0].id;
-          console.log(selectedId);
-          //sortTitle(selectedId-1, title)
         }
       },
       () => console.log("checkTitle: error")
