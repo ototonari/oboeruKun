@@ -15,7 +15,7 @@ import {resetToHome} from "../src/Config/RouterLib"
 import {locale} from "../src/Config/Locale"
 
 // eslint-disable-next-line no-unused-vars
-export function validation(target, callback, language) {
+export function validation(target, callback) {
   const self = target;
   // エラー処理
   if (self.state.title === "") {
