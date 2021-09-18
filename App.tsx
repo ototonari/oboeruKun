@@ -1,10 +1,13 @@
 import React, {useState} from "react";
+import {NativeBaseProvider} from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
-import {initialization} from "./src/Config/Libs";
+import {initialization, isDebugMode} from "./src/Config/Libs";
+import RemindMe from "./src/Component/RemindMe/RemindMe";
 
 enum USER_STATUS {
   INITIALIZE,
+  DEBUG,
   PLAY
 }
 
@@ -16,13 +19,26 @@ function App() {
       return (
         <AppLoading
           startAsync={initialization}
-          onFinish={() => setUserStatus(USER_STATUS.PLAY)}
+          onFinish={() => setUserStatus(
+            isDebugMode() ? USER_STATUS.DEBUG : USER_STATUS.PLAY
+          )}
           onError={console.warn}
         />
       );
 
+    case USER_STATUS.DEBUG:
+      return (
+        <NativeBaseProvider>
+          <RemindMe/>
+        </NativeBaseProvider>
+      )
+
     case USER_STATUS.PLAY:
-      return (<AppRouter/>);
+      return (
+        <NativeBaseProvider>
+          <AppRouter/>
+        </NativeBaseProvider>
+      );
   }
 }
 

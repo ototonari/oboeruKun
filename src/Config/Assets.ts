@@ -21,6 +21,9 @@ export const Icons = {
     facebook: require("../../assets/facebookIcon58.png"),
     email: require("../../assets/email.png"),
     twitter: require("../../assets/twitterIcon400.png"),
+  },
+  remind: {
+    modalButton: require("../../assets/modalButton.png")
   }
 }
 
@@ -60,6 +63,7 @@ const presetImages = [
   Icons.developer.facebook,
   Icons.developer.email,
   Icons.developer.twitter,
+  Icons.remind.modalButton
 ];
 
 export async function assetsPreLoader() {

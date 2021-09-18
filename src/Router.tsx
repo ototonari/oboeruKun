@@ -3,7 +3,7 @@ import {StyleSheet, Image, View, ImageSourcePropType, TouchableOpacity} from "re
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import RegisterView from "../register/registerView";
+import RemindMeView from "./Component/RemindMe/RemindMe"
 import Developers from "./Component/Config/Credit";
 import AgendaView from "../calenders/agendaView";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
@@ -93,7 +93,7 @@ function AppRouter() {
         />
         <Stack.Screen
           name={ScreenKey.Register}
-          component={RegisterView}
+          component={RemindMeView}
           options={{
             title: scene.register
           }}
