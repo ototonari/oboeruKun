@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { Agenda } from "react-native-calendars";
 // import { initializeCalender, localization } from "./agendaAction";
 import {
@@ -7,14 +7,16 @@ import {
   localization,
 } from "../src/Component/Calender/Action";
 import { dateToFormatString } from "../dateToFormatString";
-import { Notifications } from "expo";
-import { loadLanguage } from "../components";
 import Cell from "../src/Component/Calender/Cell";
+import * as Notifications from "expo-notifications";
+import {hasShownTutorials} from "../src/Config/Libs";
+import {ScreenKey} from "../src/Config/Const";
+import {locale} from "../src/Config/Locale"
 
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
-    this.language = loadLanguage("data");
+    this.language = locale.data;
     this.state = {
       items: {},
       today: dateToFormatString(new Date(), "%YYYY%-%MM%-%DD%"),
@@ -29,15 +31,22 @@ export default class AgendaView extends Component {
 
   componentDidMount() {
     initializeCalender().then((items) => this.setState({ items }));
+    hasShownTutorials().then((result) => {
+      if (!result) {
+        // eslint-disable-next-line react/prop-types
+        setTimeout(() => this.props.navigation.navigate(ScreenKey.Tutorial, null, {headerShown: false}), 3000);
+      }
+    })
   }
 
   listenForNotifications = () => {
-    Notifications.addListener((notification) => {
-      //console.log(notification.origin)
-      if (notification.origin === "received" && Platform.OS === "ios") {
-        console.log("notification receaved", notification.data);
-        //Alert.alert(notification.data.title, notification.data.body);
-      }
+    Notifications.addNotificationReceivedListener((notification) => {
+      // 通知が発火すると、ここでペイロードにアクセスできる。
+    });
+
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      // 通知をタップすると、このコールバックが発火する。
+      console.log(response);
     });
   };
 

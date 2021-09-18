@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import Swipeable from "react-native-swipeable";
 import Modal from "react-native-modal";
-import { Actions } from "react-native-router-flux";
 import {
   getAllParams,
   deleteList,
@@ -20,11 +19,16 @@ import {
   deleteParams,
 } from "../database";
 import styles from "../register/registerStyle";
-import { locale, loadLanguage } from "../components";
+import {locale, isJP} from "../src/Config/Locale"
+
+// eslint-disable-next-line no-unused-vars
+let navigation = null;
 
 export class NoticeSetting extends Component {
   constructor(props) {
     super(props);
+    // eslint-disable-next-line react/prop-types
+    navigation = props.navigation;
     this.state = {
       items: [],
     };
@@ -57,7 +61,7 @@ export class NoticeSetting extends Component {
               newItems = [
                 {
                   title:
-                    locale.country === "JP" ? "履歴はありません" : "No history",
+                    isJP() ? "履歴はありません" : "No history",
                   id: 0,
                 },
               ];
@@ -70,7 +74,7 @@ export class NoticeSetting extends Component {
     };
 
     const rightButtons = [
-      <TouchableOpacity
+      <TouchableOpacity key={0}
         style={localStyles.swipeButton}
         onPress={() => deleteItem(item.id)}
       >
@@ -81,12 +85,12 @@ export class NoticeSetting extends Component {
       </TouchableOpacity>,
     ];
 
-    let msg = locale.country === "JP" ? "" : "Notify after ";
+    let msg = isJP() ? "" : "Notify after ";
     const array = JSON.parse(item.interval);
     for (let i = 0, j = array.length; i < j; i++) {
-      msg += locale.country === "JP" ? `${array[i]}日後, ` : `${array[i]}, `;
+      msg += isJP() ? `${array[i]}日後, ` : `${array[i]}, `;
     }
-    msg += locale.country === "JP" ? "に復習する" : "days";
+    msg += isJP() ? "に復習する" : "days";
 
     return (
       <Swipeable rightButtons={rightButtons} rightButtonWidth={70}>
@@ -250,7 +254,7 @@ export class RegisterSetting extends Component {
   };
 
   render() {
-    const language = loadLanguage("registerSetting");
+    const language = locale.registerSetting;
     return (
       <View style={styles.container.container}>
         <View style={styles.container.view}>
@@ -333,7 +337,7 @@ async function addNoticeInterval(list, name, language) {
       {
         text: "OK",
         onPress: () => {
-          Actions.reset("tabbar");
+          navigation.navigate("Calender");
         },
       },
     ]);

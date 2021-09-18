@@ -1,5 +1,4 @@
 import * as SQLite from "expo-sqlite";
-import { Actions, ActionConst } from "react-native-router-flux";
 import { dateToFormatString } from "./dateToFormatString";
 import { locale } from "./components";
 
@@ -329,21 +328,6 @@ export async function testGetTitle() {
         (_, { rows: { _array } }) => resolve(_array)
       );
     });
-  });
-}
-
-export function addNotice(taskData, noticeDate, notificationId) {
-  const title = taskData.title;
-  const page = taskData.page;
-  db.transaction((tx) => {
-    tx.executeSql(
-      "insert into notification (title, page, noticeDate, notificationId) values (?, ?, ?, ?)",
-      [title, page, noticeDate, notificationId],
-      // 追加処理成功時
-      () => {
-        Actions.tabbar({ type: ActionConst.PUSH_OR_POP });
-      }
-    );
   });
 }
 

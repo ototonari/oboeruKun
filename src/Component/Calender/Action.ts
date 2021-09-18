@@ -6,7 +6,7 @@ import {
   createNotificationObject,
 } from "../../../notification";
 import { LocaleConfig } from "react-native-calendars";
-import { locale, localeJSON } from "../../../components";
+import {isJP, locale} from "../../Config/Locale";
 
 interface Day {
   dateString: string;
@@ -126,22 +126,11 @@ export async function changeNotification(
 }
 
 export function localization() {
-  console.log(`locale : ${locale.country}`);
-  if (locale.country === "JP") {
-    LocaleConfig.locales["jp"] = localeJSON.jp.agenda.localeConfig;
+  if (isJP()) {
+    LocaleConfig.locales["jp"] = locale.agenda.localeConfig;
     LocaleConfig.defaultLocale = "jp";
-  } else if (locale.country !== "JP") {
-    LocaleConfig.locales["en"] = localeJSON.jp.agenda.localeConfig;
+  } else {
+    LocaleConfig.locales["en"] = locale.agenda.localeConfig;
     LocaleConfig.defaultLocale = "en";
   }
 }
-
-// function changeDate(registerdDate, date) {
-//   let tmpDate = new Date(registerdDate)
-//   // 通知する日時をセットする
-//   tmpDate.setDate(registerdDate.getDate() + date)
-//   tmpDate.setHours(7)
-//   tmpDate.setMinutes(0)
-//   tmpDate.setSeconds(0)
-//   return tmpDate
-// }

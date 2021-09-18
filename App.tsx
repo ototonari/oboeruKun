@@ -1,23 +1,28 @@
-import React, { useState } from "react";
-import { initialize } from "./update";
-import { AppLoading } from "expo";
-import { assetsLoad } from "./components";
+import React, {useState} from "react";
+import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
+import {initialization} from "./src/Config/Libs";
+
+enum USER_STATUS {
+  INITIALIZE,
+  PLAY
+}
 
 function App() {
-  const [isReady, setReady] = useState(false);
+  const [userStatus, setUserStatus] = useState(USER_STATUS.INITIALIZE);
 
-  if (isReady === false) {
-    return (
-      <AppLoading
-        startAsync={assetsLoad}
-        onFinish={() => setReady(true)}
-        onError={console.warn}
-      />
-    );
-  } else {
-    initialize();
-    return <AppRouter />;
+  switch (userStatus) {
+    case USER_STATUS.INITIALIZE:
+      return (
+        <AppLoading
+          startAsync={initialization}
+          onFinish={() => setUserStatus(USER_STATUS.PLAY)}
+          onError={console.warn}
+        />
+      );
+
+    case USER_STATUS.PLAY:
+      return (<AppRouter/>);
   }
 }
 

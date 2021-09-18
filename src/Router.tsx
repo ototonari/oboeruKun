@@ -1,112 +1,137 @@
 import React from "react";
-import { StyleSheet, Platform } from "react-native";
+import {StyleSheet, Image, View, ImageSourcePropType, TouchableOpacity} from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegisterView from "../register/registerView";
-import { Actions, Router, Scene, Tabs } from "react-native-router-flux";
-import ConfigView from "../config/config";
-import Developers from "../config/developer";
-import { Step0, Step1, Step2, Step3, Step4, Step5 } from "../dummy/tutorial";
+import Developers from "./Component/Config/Credit";
 import AgendaView from "../calenders/agendaView";
-import TitleList from "../config/titleList";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
-import { loadLanguage, TabIcon } from "../components";
+import {Tutorial} from "./Component/Tutorial/Tutorial";
+import ConfigView from "./Component/Config/Config"
+import TitleList from "./Component/Config/TitleList"
+import {ScreenKey, TabKey} from "./Config/Const";
+import { Icons } from "./Config/Assets"
+import {locale} from "./Config/Locale";
 
-const language = loadLanguage("scene");
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function AppRouter() {
+const {scene} = locale;
+
+function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: boolean}){
+  const _style = StyleSheet.create({
+    imageIcon: {
+      width: 25,
+      height: 25,
+    }
+  });
+
+  const managerIcon = (key: string, isFocused: boolean) => {
+    let source: ImageSourcePropType | null;
+    if (key === TabKey.Calendar) {
+      source = isFocused ? Icons.calender.active : Icons.calender.inactive
+    } else if (key === TabKey.ConfigTab) {
+      source = isFocused ? Icons.config.active : Icons.config.inactive
+    } else {
+      source = null;
+    }
+
+    if (source !== null) {
+      return (
+        <Image
+          source={source}
+          style={_style.imageIcon}
+          resizeMode={'contain'}
+        />
+      );
+    } else {
+      return (<View />);
+    }
+  };
+
+  return managerIcon(screenName, isFocused);
+}
+
+function HomeScreen() {
   return (
-    <Router>
-      <Scene key="root">
-        <Tabs
-          key="tabbar"
-          hideNavBar
-          swipeEnabled={false}
-          tabBarPosition={"bottom"}
-        >
-          <Scene
-            key="manager"
-            iconName="agenda"
-            title={language.agenda}
-            initial={true}
-            component={AgendaView}
-            icon={TabIcon}
-            onRight={() => Actions.push("register")}
-            // eslint-disable-next-line no-undef
-            rightButtonImage={require("../assets/plus.png")}
-          />
-          <Scene
-            key="config"
-            title={language.config}
-            component={ConfigView}
-            icon={TabIcon}
-          />
-        </Tabs>
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="register"
-          component={RegisterView}
-          title={language.register}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="developers"
-          component={Developers}
-          title={language.developer}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="titlelist"
-          component={TitleList}
-          title={language.titleList}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="noticesetting"
-          component={NoticeSetting}
-          title={language.noticeSetting}
-          // eslint-disable-next-line no-undef
-          rightButtonImage={require("../assets/plus.png")}
-          onRight={() => Actions.registersetting()}
-        />
-        <Scene
-          sceneStyle={styles.oneCompHeader}
-          key="registersetting"
-          component={RegisterSetting}
-        />
-        <Scene key="tutorial" hideNavBar>
-          <Scene key="step0" component={Step0} title={"step0"} />
-          <Scene key="step1" component={Step1} title={"step1"} />
-          <Scene key="step2" component={Step2} title={"step2"} />
-          <Scene key="step3" component={Step3} title={"step3"} />
-          <Scene key="step4" component={Step4} title={"step4"} />
-          <Scene key="step5" component={Step5} title={"step5"} />
-        </Scene>
-      </Scene>
-    </Router>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        // eslint-disable-next-line react/display-name
+        tabBarIcon: ({ focused }: {focused: boolean}) => {
+          return <TabIcon2 screenName={route.name} isFocused={focused} />;
+        },
+        headerShown: true
+
+      })}
+    >
+      {/*右ボタンの位置が崩れるため、あえて1階層余分にStack.Navigatorを挟んでいる*/}
+      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false, title: scene.agenda}} />
+      <Tab.Screen name={TabKey.ConfigTab} component={ConfigView} options={{title: scene.config}} />
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    ...Platform.select({
-      ios: {
-        paddingTop: 0,
-      },
-      android: {
-        paddingTop: 13,
-      },
-    }),
-  },
-  oneCompHeader: {
-    ...Platform.select({
-      ios: {
-        paddingTop: 0,
-      },
-      android: {
-        position: "absolute",
-        top: 30,
-      },
-    }),
-  },
-});
+// eslint-disable-next-line react/display-name
+const RightButton = (callBack: () => void) => () =>
+  <TouchableOpacity onPress={callBack} >
+    <Image
+      source={Icons.button.plus}
+      style={{ width:20, height: 20}}
+      resizeMode={'contain'}
+    />
+  </TouchableOpacity>
+
+function AppRouter() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator >
+        <Stack.Screen
+          name={ScreenKey.Home}
+          component={HomeScreen}
+          options={{ headerShown: false}}
+        />
+        <Stack.Screen
+          name={ScreenKey.Register}
+          component={RegisterView}
+          options={{
+            title: scene.register
+          }}
+        />
+        <Stack.Screen name={ScreenKey.TitleSetting} component={TitleList} options={{title: scene.titleList}} />
+        <Stack.Screen
+          name={ScreenKey.NoticeSetting}
+          component={NoticeSetting}
+          options={({navigation}) => ({
+            title: scene.noticeSetting,
+            headerRight: RightButton(() => navigation.navigate(ScreenKey.RegisterSetting))
+          })
+          }
+        />
+        <Stack.Screen name={ScreenKey.RegisterSetting} component={RegisterSetting} />
+        <Stack.Screen name={ScreenKey.Developers} component={Developers} options={{title: scene.developer}} />
+        <Stack.Screen name={ScreenKey.Tutorial} component={Tutorial} options={{title: scene.tutorial, headerShown: false}} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+// @ts-ignore
+// eslint-disable-next-line react/prop-types
+function AgendaContainer({ navigation }) {
+  return (
+      <Stack.Navigator initialRouteName={ScreenKey.Agenda}>
+        <Stack.Screen
+          name={ScreenKey.Agenda}
+          component={AgendaView}
+          options={{
+            // eslint-disable-next-line react/prop-types
+            headerRight: RightButton(() => navigation.navigate(ScreenKey.Register)),
+            title: scene.agenda
+          }
+        } />
+      </Stack.Navigator>
+  )
+}
 
 export default AppRouter;
