@@ -11,6 +11,15 @@ export const getCurrentAppVersion = (): string => {
   return Constants.manifest?.version ? Constants.manifest.version : "1.00";
 }
 
+export const isDebugMode = (): boolean => {
+  const { manifest } = Constants
+  if (manifest && manifest.extra) {
+    return manifest.extra.isDebugMode ?? false;
+  } else {
+    return false
+  }
+}
+
 export const initialization = async () => {
   await gettingDeviceType();
   await assetsPreLoader();
