@@ -19,7 +19,6 @@ import {IRemindUsageSituation, Remind, remindService, remindUsageSituationDto, R
 import {resetToHome} from "../../Config/RouterLib";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../../Router";
-import * as Notifications from "expo-notifications";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RemindMe'>;
 
@@ -128,28 +127,35 @@ export default class RemindMe extends Component<Props, SRemindMe> {
           maxLength={200}
           underlineColorAndroid={"white"}
         />
-        <View
-          style={{
-            position: "absolute",
-            top: 3,
-            right: 5,
-            overflow: "visible",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => this.setState({ visibleModal: VISIBLE_MODAL.TITLE })}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Image
-              // eslint-disable-next-line no-undef
-              source={Icons.remind.modalButton}
-              style={styles.styles.titleListIcom}
-            />
-          </TouchableOpacity>
-        </View>
+        {this._selectRecordedTitleButton()}
       </View>
     </View>
   );
+
+  _selectRecordedTitleButton = () => {
+    if (this.state.recordedTitles.length === 0) return null;
+    return (
+      <View
+        style={{
+          position: "absolute",
+          top: 3,
+          right: 5,
+          overflow: "visible",
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => this.setState({ visibleModal: VISIBLE_MODAL.TITLE })}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Image
+            // eslint-disable-next-line no-undef
+            source={Icons.remind.modalButton}
+            style={styles.styles.titleListIcom}
+          />
+        </TouchableOpacity>
+      </View>
+    )
+  }
 
   renderTitleModal = () => {
     const {visibleModal, recordedTitles} = this.state;
@@ -271,7 +277,7 @@ export default class RemindMe extends Component<Props, SRemindMe> {
     const { repeatSetting } = this.state;
 
     const defaultValue = repeatSetting.getCurrentSetting().name
-    const selectItems = this.state.repeatSetting?.ownSettings.map((noticeInterval, i) => (
+    const selectItems = this.state.repeatSetting.ownSettings.map((noticeInterval, i) => (
       <Select.Item label={noticeInterval.name} value={String(noticeInterval.id)} key={i} />
     ))
 

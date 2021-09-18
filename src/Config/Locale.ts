@@ -62,6 +62,9 @@ const localeSets = {
     },
     titleList: {
       emptyText: "履歴はありません",
+    },
+    sample: {
+      title: "忘却曲線に基づいた復習"
     }
   },
   [LocaleType.EN]: {
@@ -116,6 +119,9 @@ const localeSets = {
     },
     titleList: {
       emptyText: "No history",
+    },
+    sample: {
+      title: "Forgetting curve"
     }
   },
 }
