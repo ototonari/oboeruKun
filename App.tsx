@@ -3,7 +3,6 @@ import {NativeBaseProvider} from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
 import {initialization, isDebugMode} from "./src/Config/Libs";
-import RemindMe from "./src/Component/RemindMe/RemindMe";
 
 enum USER_STATUS {
   INITIALIZE,
@@ -27,11 +26,9 @@ function App() {
       );
 
     case USER_STATUS.DEBUG:
-      return (
-        <NativeBaseProvider>
-          <RemindMe/>
-        </NativeBaseProvider>
-      )
+      console.debug("this is debug mode.")
+      setUserStatus(USER_STATUS.PLAY);
+      return null;
 
     case USER_STATUS.PLAY:
       return (

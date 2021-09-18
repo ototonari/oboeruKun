@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {
   Alert,
   Image,
-  Keyboard, Picker,
-  Platform,
+  Keyboard,
   ScrollView,
   StyleSheet,
   Switch,
@@ -13,18 +12,20 @@ import {
   View
 } from "react-native";
 import {Icons} from "../../Config/Assets";
-import Modal from "react-native-modal";
 import {locale} from "../../Config/Locale";
 import {getNoticeIntervals, getTitlesAsync} from "../../IO/SQLite";
-import {CheckIcon, Select} from "native-base";
+import {Actionsheet, CheckIcon, Input, Select, TextArea} from "native-base";
 import {IRemindUsageSituation, Remind, remindService, remindUsageSituationDto, RepeatSetting} from "./lib";
 import {resetToHome} from "../../Config/RouterLib";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../../Router";
+import * as Notifications from "expo-notifications";
+
+type Props = NativeStackScreenProps<RootStackParamList, 'RemindMe'>;
 
 enum VISIBLE_MODAL {
   DEFAULT,
   TITLE,
-  PAGE_START,
-  PAGE_END
 }
 
 interface SRemindMe extends IRemindUsageSituation {
@@ -36,7 +37,7 @@ interface SRemindMe extends IRemindUsageSituation {
   titleError: string; // TODO
 }
 
-export default class RemindMe extends Component<{}, SRemindMe> {
+export default class RemindMe extends Component<Props, SRemindMe> {
   keyboardWillHideListener: any
   keyboardDidHideListener: any
   constructor(props: any) {
@@ -58,7 +59,7 @@ export default class RemindMe extends Component<{}, SRemindMe> {
 
   componentDidMount() {
     getTitlesAsync().then((titles) => this.setState({
-      recordedTitles: titles
+      recordedTitles: titles.map((obj) => obj.title)
     }))
 
     getNoticeIntervals().then((noticeIntervals) => {
@@ -110,7 +111,7 @@ export default class RemindMe extends Component<{}, SRemindMe> {
     </TouchableOpacity>
   );
 
-  _title = () => (
+  titleForm = () => (
     <View style={styles.container.title}>
       <View style={{ flex: 1 }}>
         <Text style={styles.styles.titleLabel}>{locale.register.title}</Text>
@@ -150,78 +151,31 @@ export default class RemindMe extends Component<{}, SRemindMe> {
     </View>
   );
 
-  _renderTitleModal = () => (
-    <TouchableOpacity
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
-        zIndex: 0,
-      }}
-      disabled={this.state.visibleModal !== VISIBLE_MODAL.TITLE}
-      onPress={() => this.setState({ visibleModal: VISIBLE_MODAL.DEFAULT })}
-      accessible={false}
-    >
-      <View style={[styles.container.pageModal]}>
-        <TouchableOpacity
-          style={[styles.container.pageModal, { zIndex: 1, flex: 1 }]}
-        >
-          {Platform.select({
-            ios: (
-              <Picker
-                onValueChange={(text) => this.setState({
-                  remind: this.state.remind.setTitle(text)
-                })}
-                selectedValue={this.state.remind.title}
-                style={{ width: "100%", flex: 0.6 }}
-              >
-                {this._renderTitlePickerItems(this.state.recordedTitles)}
-              </Picker>
-            ),
-            android: (
-              <Picker
-                onValueChange={(text) => this.setState({
-                  remind: this.state.remind.setTitle(text)
-                })}
-                selectedValue={this.state.remind.title}
-                style={{ width: "100%", flex: 0.6, zIndex: 10 }}
-                hitSlop={{ top: 100, bottom: 100, left: 100, right: 100 }}
-              >
-                {this._renderTitlePickerItems(this.state.recordedTitles)}
-              </Picker>
-            ),
-          })}
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
+  renderTitleModal = () => {
+    const {visibleModal, recordedTitles} = this.state;
+    const isOpen = visibleModal === VISIBLE_MODAL.TITLE;
+    const onClose = () => this.setState({visibleModal: VISIBLE_MODAL.DEFAULT});
+    const onSelect = (title: string) => () => this.setState({
+      remind: this.state.remind.setTitle(title),
+      visibleModal: VISIBLE_MODAL.DEFAULT
+    })
 
-  _renderTitlePickerItems = (array: string[]) => {
-    const srvItems = [];
-    if (array.length > 0) {
-      srvItems.push(
-        <Picker.Item key={-1} label={locale.register.pickerFirstItem} value={""} />
-      );
-      array.forEach((value, index) => {
-        srvItems.push(
-          <Picker.Item
-            key={index}
-            // @ts-ignore
-            label={String(value.title)}
-            // @ts-ignore
-            value={String(value.title)}
-          />
-        );
-      });
-    } else {
-      srvItems.push(
-        <Picker.Item key={-1} label={locale.register.pickerNoItem} value={""} />
-      );
-    }
-    return srvItems;
-  };
+    const selectItems = recordedTitles.map((title, i) => (
+      <Select.Item onPress={onSelect(title)} label={title} value={title} key={i} />
+    ))
 
-  _page = () => (
+    return (
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content >
+          <ScrollView style={{maxHeight: 200}} >
+            {selectItems}
+          </ScrollView>
+        </Actionsheet.Content>
+      </Actionsheet>
+    )
+  }
+
+  rangeForm = () => (
     <View style={styles.container.page}>
       <View style={styles.container.switch}>
         <Text style={styles.styles.titleLabel}>{locale.register.page}</Text>
@@ -230,120 +184,46 @@ export default class RemindMe extends Component<{}, SRemindMe> {
           value={this.state.canUseRange}
         />
       </View>
-      {this._renderPagePicker()}
+      {this._rangeForm()}
     </View>
   );
 
-  _renderPagePicker = () => {
-    if (!this.state.canUseRange) return;
+  _rangeForm = () => {
+    const {canUseRange, remind} = this.state;
+    if (!canUseRange) return;
 
     return (
       <View style={styles.container.pageSet}>
-        <TouchableOpacity
-          onPress={() => {
-            if (this.state.canUseRange) {
-              this.setState({ visibleModal: VISIBLE_MODAL.PAGE_START });
-            }
+        <Input
+          keyboardType={"numeric"}
+          w={20}
+          defaultValue={String(remind.range.start)}
+          onChangeText={(text) => {
+            const n = Number(text)
+            this.setState({
+              remind: remind.setStartRange(n),
+            })
           }}
-        >
-          <View style={styles.styles.pageButton}>
-            <Text style={styles.styles.pageText}>
-              p.{this.state.remind.range.start}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        />
         <Text style={{ fontSize: 20, marginLeft: 30, marginRight: 30 }}>
           〜
         </Text>
-        <TouchableOpacity
-          onPress={() => {
-            if (this.state.canUseRange) {
-              this.setState({ visibleModal: VISIBLE_MODAL.PAGE_END });
-            }
+        <Input
+          keyboardType={"numeric"}
+          w={20}
+          defaultValue={String(remind.range.end)}
+          onChangeText={(text) => {
+            const n = Number(text)
+            this.setState({
+              remind: remind.setEndRange(n),
+            })
           }}
-        >
-          <View style={styles.styles.pageButton}>
-            <Text style={styles.styles.pageText}>p.{this.state.remind.range.end}</Text>
-          </View>
-        </TouchableOpacity>
+        />
       </View>
     );
-  };
+  }
 
-  _renderPageModal = () => (
-    <TouchableOpacity
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
-        zIndex: 0,
-      }}
-      disabled={
-        !(this.state.visibleModal === VISIBLE_MODAL.PAGE_START || this.state.visibleModal === VISIBLE_MODAL.PAGE_END)
-      }
-      onPress={() => this.setState({ visibleModal: VISIBLE_MODAL.DEFAULT })}
-      accessible={false}
-    >
-      <View style={styles.container.pageModal}>
-        <TouchableOpacity
-          style={[styles.container.pageModal, { zIndex: 1, flex: 1 }]}
-        >
-          <Picker
-            onValueChange={(value) => {
-              if (this.state.visibleModal === VISIBLE_MODAL.PAGE_START) {
-                if (Number(value) > Number(this.state.remind.range.end)) {
-                  this.setState({
-                    remind: this.state.remind.setRange({
-                      start: value,
-                      end: value
-                    })
-                  })
-                } else {
-                  this.setState({
-                    remind: this.state.remind.setRange({
-                      start: value,
-                      end: this.state.remind.range.end
-                    })
-                  })
-                }
-              }
-              if (this.state.visibleModal === VISIBLE_MODAL.PAGE_END) {
-                if (!(Number(value) < Number(this.state.remind.range.start))) {
-                  this.setState({
-                    remind: this.state.remind.setRange({
-                      start: this.state.remind.range.start,
-                      end: value
-                    })
-                  })
-                }
-              }
-            }}
-            selectedValue={
-              this.state.visibleModal === VISIBLE_MODAL.PAGE_START
-                ? this.state.remind.range.start
-                : this.state.remind.range.end
-            }
-            style={{ width: "100%", flex: 0.6 }}
-            hitSlop={{ top: 100, bottom: 100, left: 100, right: 100 }}
-          >
-            {this._renderPickerItems()}
-          </Picker>
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
-
-  _renderPickerItems = () => {
-    const srvItems = [];
-    for (let i = 1; i <= 500; i++) {
-      srvItems.push(
-        <Picker.Item key={String(i)} label={String(i)} value={String(i)} />
-      );
-    }
-    return srvItems;
-  };
-
-  _memo = () => (
+  memoForm = () => (
     <View style={styles.container.page}>
       <View style={styles.container.switch}>
         <Text style={styles.styles.titleLabel}>{locale.register.memo}</Text>
@@ -361,20 +241,17 @@ export default class RemindMe extends Component<{}, SRemindMe> {
 
     return (
       <View style={styles.container.boxContainer}>
-        <TextInput
-          style={styles.styles.inputBox}
-          multiline={true}
-          maxLength={400}
+        <TextArea
+          h={20}
           onChangeText={(text) => this.setState({
             remind: this.state.remind.setMemo(text)
           })}
-          value={this.state.remind.memo}
         />
       </View>
     );
   };
 
-  _repeat = () => (
+  repeatSettingForm = () => (
     <View style={styles.container.page}>
       <View style={styles.container.switch}>
         <Text style={styles.styles.titleLabel}>{locale.register.repeat}</Text>
@@ -459,11 +336,11 @@ export default class RemindMe extends Component<{}, SRemindMe> {
         <View style={styles.container.container}>
           <View style={styles.container.view}>
             <ScrollView style={{ flex: 1 }}>
-              <View style={styles.params.title}>{this._title()}</View>
+              <View style={styles.params.title}>{this.titleForm()}</View>
 
-              <View style={styles.params.param}>{this._page()}</View>
-              <View style={styles.params.param}>{this._memo()}</View>
-              <View style={styles.params.param}>{this._repeat()}</View>
+              <View style={styles.params.param}>{this.rangeForm()}</View>
+              <View style={styles.params.param}>{this.memoForm()}</View>
+              <View style={styles.params.param}>{this.repeatSettingForm()}</View>
 
               <View style={styles.container.blank}/>
             </ScrollView>
@@ -475,15 +352,7 @@ export default class RemindMe extends Component<{}, SRemindMe> {
               styles.styles.registerButton
             )}
           </View>
-          <Modal isVisible={this.state.visibleModal === VISIBLE_MODAL.PAGE_START}>
-            {this._renderPageModal()}
-          </Modal>
-          <Modal isVisible={this.state.visibleModal === VISIBLE_MODAL.PAGE_END}>
-            {this._renderPageModal()}
-          </Modal>
-          <Modal isVisible={this.state.visibleModal === VISIBLE_MODAL.TITLE}>
-            {this._renderTitleModal()}
-          </Modal>
+          {this.renderTitleModal()}
         </View>
       </TouchableOpacity>
     );

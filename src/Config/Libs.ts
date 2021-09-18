@@ -6,6 +6,15 @@ import {assetsPreLoader} from "./Assets";
 import {initDB} from "../../database";
 import {localStorage} from "../IO/LocalStorage";
 import {gettingDeviceType} from "./DeviceType";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export const getCurrentAppVersion = (): string => {
   return Constants.manifest?.version ? Constants.manifest.version : "1.00";

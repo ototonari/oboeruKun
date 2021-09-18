@@ -5,7 +5,7 @@ export interface registerProp extends NotificationRequestInput {}
 
 export interface contentProp extends NotificationContentInput {}
 
-export const toRegisterDto = (trigger: Date, content: contentProp): registerProp => ({
+export const toRegisterDto = (trigger: Date | null, content: contentProp): registerProp => ({
   content, trigger
 })
 

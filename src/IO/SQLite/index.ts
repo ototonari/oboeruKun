@@ -34,8 +34,12 @@ const exWithReadTx = <T>(query: string): Promise<T> => {
   })
 }
 
+export interface ITitle {
+  title: string
+}
+
 export const getTitlesAsync = () => {
-  return exWithReadTx<string[]>("SELECT title FROM titleList");
+  return exWithReadTx<ITitle[]>("SELECT title FROM titleList");
 }
 
 export interface INoticeInterval {

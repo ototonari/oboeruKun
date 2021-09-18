@@ -4,6 +4,7 @@ import {contentProp, register, toRegisterDto} from "../../Notification/register"
 import {locale} from "../../Config/Locale";
 import {checkTitle, insertMaster, insertMemo, insertNotice, insertPage} from "../../../database";
 import {dateToFormatString} from "../../../dateToFormatString";
+import {isDebugMode} from "../../Config/Libs";
 
 type Range = {
   start: number;
@@ -45,8 +46,8 @@ export class Remind implements IRemind {
     } else {
       this.title = "";
       this.range = {
-        start: 1,
-        end: 1
+        start: 0,
+        end: 0
       };
       this.memo = "";
     }
@@ -64,6 +65,24 @@ export class Remind implements IRemind {
 
   setRange = (range: Range) => {
     this.range = range;
+
+    return new Remind(this);
+  }
+
+  setStartRange = (num: number) => {
+    this.range = {
+      start: num,
+      end: this.range.end
+    };
+
+    return new Remind(this);
+  }
+
+  setEndRange = (num: number) => {
+    this.range = {
+      start: this.range.start,
+      end: num
+    }
 
     return new Remind(this);
   }
@@ -144,9 +163,16 @@ export class RepeatSetting implements IRepeatSetting {
     if (this.ownSettings.length === 0) throw new Error("invalid settings. it must be at least 1 in length.")
 
     const today = dayjs().hour(7).minute(0).second(0);
-    const notificationDates = this.getCurrentSetting().interval.map((addDayCount) => today.add(addDayCount, "day").toDate())
-    console.log(notificationDates)
-    return notificationDates.map((date) => toRegisterDto(date, content));
+    const notificationDates = this.getCurrentSetting()
+    .interval.map((addDayCount) => today.add(addDayCount, "day").toDate())
+
+    return notificationDates.map((date) => {
+      if (isDebugMode()) {
+        return toRegisterDto(null, content);
+      } else {
+        return toRegisterDto(date, content)
+      }
+    });
   }
 }
 
@@ -178,7 +204,9 @@ export const remindService = async (remind: Remind, repeatSetting: RepeatSetting
       notificationId = await register(prop);
     }
 
-    const registeredDate = dateToFormatString(prop.trigger, "%YYYY%-%MM%-%DD%");
-    await insertNotice(masterId, notificationId, registeredDate);
+    if (!isDebugMode()) {
+      const registeredDate = dateToFormatString(prop.trigger, "%YYYY%-%MM%-%DD%");
+      await insertNotice(masterId, notificationId, registeredDate);
+    }
   }
 }

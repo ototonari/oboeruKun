@@ -1,5 +1,5 @@
 export default {
   extra: {
-    isDebugMode: process.env.NODE_ENV === "DEBUG",
+    isDebugMode: process.env.DEBUG_MODE === "true",
   }
 }
