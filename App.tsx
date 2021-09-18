@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {NativeBaseProvider} from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
-import {initialization, isDebugMode} from "./src/Config/Libs";
+import {initialization} from "./src/Config/Libs";
 
 enum USER_STATUS {
   INITIALIZE,
@@ -19,7 +19,7 @@ function App() {
         <AppLoading
           startAsync={initialization}
           onFinish={() => setUserStatus(
-            isDebugMode() ? USER_STATUS.DEBUG : USER_STATUS.PLAY
+            USER_STATUS.PLAY
           )}
           onError={console.warn}
         />

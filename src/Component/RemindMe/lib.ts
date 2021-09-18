@@ -4,7 +4,6 @@ import {contentProp, register, toRegisterDto} from "../../Notification/register"
 import {locale} from "../../Config/Locale";
 import {checkTitle, insertMaster, insertMemo, insertNotice, insertPage} from "../../../database";
 import {dateToFormatString} from "../../../dateToFormatString";
-import {isDebugMode} from "../../Config/Libs";
 
 type Range = {
   start: number;
@@ -166,13 +165,7 @@ export class RepeatSetting implements IRepeatSetting {
     const notificationDates = this.getCurrentSetting()
     .interval.map((addDayCount) => today.add(addDayCount, "day").toDate())
 
-    return notificationDates.map((date) => {
-      if (isDebugMode()) {
-        return toRegisterDto(null, content);
-      } else {
-        return toRegisterDto(date, content)
-      }
-    });
+    return notificationDates.map((date) => toRegisterDto(date, content));
   }
 }
 
@@ -204,9 +197,7 @@ export const remindService = async (remind: Remind, repeatSetting: RepeatSetting
       notificationId = await register(prop);
     }
 
-    if (!isDebugMode()) {
-      const registeredDate = dateToFormatString(prop.trigger, "%YYYY%-%MM%-%DD%");
-      await insertNotice(masterId, notificationId, registeredDate);
-    }
+    const registeredDate = dateToFormatString(prop.trigger, "%YYYY%-%MM%-%DD%");
+    await insertNotice(masterId, notificationId, registeredDate);
   }
 }
