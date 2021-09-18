@@ -1,9 +1,9 @@
 import React from "react";
 import {StyleSheet, Image, View, ImageSourcePropType, TouchableOpacity} from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import RegisterView from "../register/registerView";
+import RemindMeView from "./Component/RemindMe/RemindMe"
 import Developers from "./Component/Config/Credit";
 import AgendaView from "../calenders/agendaView";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
@@ -16,6 +16,19 @@ import {locale} from "./Config/Locale";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+export type RootStackParamList = {
+  Calender: undefined;
+  Agenda: undefined;
+  RemindMe: undefined;
+  TitleSetting: undefined;
+  NoticeSetting: undefined;
+  RegisterSetting: undefined;
+  Developers: undefined;
+  Tutorial: undefined;
+  ConfigTab: undefined;
+  AgendaContainer: undefined;
+};
 
 const {scene} = locale;
 
@@ -92,8 +105,8 @@ function AppRouter() {
           options={{ headerShown: false}}
         />
         <Stack.Screen
-          name={ScreenKey.Register}
-          component={RegisterView}
+          name={ScreenKey.RemindMe}
+          component={RemindMeView}
           options={{
             title: scene.register
           }}
@@ -116,9 +129,9 @@ function AppRouter() {
   );
 }
 
-// @ts-ignore
-// eslint-disable-next-line react/prop-types
-function AgendaContainer({ navigation }) {
+type AgendaContainerProps = NativeStackScreenProps<RootStackParamList, 'AgendaContainer'>;
+
+function AgendaContainer({ navigation }: AgendaContainerProps) {
   return (
       <Stack.Navigator initialRouteName={ScreenKey.Agenda}>
         <Stack.Screen
@@ -126,7 +139,7 @@ function AgendaContainer({ navigation }) {
           component={AgendaView}
           options={{
             // eslint-disable-next-line react/prop-types
-            headerRight: RightButton(() => navigation.navigate(ScreenKey.Register)),
+            headerRight: RightButton(() => navigation.navigate(ScreenKey.RemindMe)),
             title: scene.agenda
           }
         } />

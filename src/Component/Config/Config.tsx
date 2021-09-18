@@ -3,10 +3,14 @@ import { View, Linking, Alert } from "react-native";
 import { FlatButton } from "../../../components";
 import {ScreenKey} from "../../Config/Const";
 import {locale} from "../../Config/Locale";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../../Router";
 
 const privacyPolicy = "https://oboerukun.firebaseapp.com/";
 
-function Config ({ navigation }) {
+type Props = NativeStackScreenProps<RootStackParamList, 'ConfigTab'>;
+
+function Config ({ navigation }: Props) {
   const {scene} = locale;
   return (
     <View style={{ flex: 1 }}>

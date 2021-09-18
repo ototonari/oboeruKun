@@ -15,8 +15,12 @@ import {tutorialImages} from "../../Config/Assets";
 import {alreadyShownTutorials} from "../../Config/Libs";
 import {getDeviceType} from "../../Config/DeviceType";
 import {DeviceType} from "expo-device";
+import {RootStackParamList} from "../../Router";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
 
 const {height, width} = Dimensions.get('window')
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Tutorial'>;
 
 const imageProps: ImageResizeMode = Platform.select({
   ios: 'stretch',
@@ -26,8 +30,7 @@ const imageProps: ImageResizeMode = Platform.select({
 
 let styles: any;
 
-// @ts-ignore
-export function Tutorial({navigation}) {
+export function Tutorial({navigation}: Props) {
   const [currentPage, setCurrentPage] = useState(0);
   const toSkip = async () => {
     await requestNotificationPermission();
