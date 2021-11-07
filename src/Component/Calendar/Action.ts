@@ -1,20 +1,8 @@
-import { dateToFormatString } from "../../../dateToFormatString";
-import { getNotice, getParams, getSpecificNotice } from "../../../database";
-import {
-  registerNotification,
-  cancelNotification,
-  createNotificationObject,
-} from "../../../notification";
-import { LocaleConfig } from "react-native-calendars";
+import {dateToFormatString} from "../../../dateToFormatString";
+import {getNotice, getParams, getSpecificNotice} from "../../../database";
+import {cancelNotification, createNotificationObject, registerNotification,} from "../../../notification";
+import {DateObject, LocaleConfig} from "react-native-calendars";
 import {isJP, locale} from "../../Config/Locale";
-
-interface Day {
-  dateString: string;
-  day: number;
-  month: number;
-  timestamp: number;
-  year: number;
-}
 
 interface NoticeProps {
   id: number;
@@ -27,12 +15,11 @@ interface Items {
   [key: string]: [];
 }
 
-export async function initializeCalender(day: Day) {
+export async function initializeCalender(day?: DateObject) {
   const rangeList = await getThisMonth(day);
   const items: Items = await rangeEmptyCalender(rangeList);
   const noticeArray: NoticeProps[] = await getNotice(rangeList);
-  const itemsObj = await makeItems(items, noticeArray);
-  return itemsObj;
+  return await makeItems(items, noticeArray);
 }
 
 async function rangeEmptyCalender(rangeList: [string, string]) {
@@ -58,7 +45,7 @@ async function rangeEmptyCalender(rangeList: [string, string]) {
   return loadedMonth;
 }
 
-async function getThisMonth(day: Day): Promise<[string, string]> {
+async function getThisMonth(day: DateObject | undefined): Promise<[string, string]> {
   if (day == null) {
     let thisMonth = new Date();
     thisMonth.setDate(1);

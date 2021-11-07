@@ -5,7 +5,6 @@ import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigat
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RemindMeView from "./Component/RemindMe/RemindMe"
 import Developers from "./Component/Config/Credit";
-import AgendaView from "../calenders/agendaView";
 import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
 import {Tutorial} from "./Component/Tutorial/Tutorial";
 import ConfigView from "./Component/Config/Config"
@@ -13,13 +12,13 @@ import TitleList from "./Component/Config/TitleList"
 import {ScreenKey, TabKey} from "./Config/Const";
 import { Icons } from "./Config/Assets"
 import {locale} from "./Config/Locale";
+import {Calendar} from "./Component/Calendar/Calendar";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export type RootStackParamList = {
   Calender: undefined;
-  Agenda: undefined;
   RemindMe: undefined;
   TitleSetting: undefined;
   NoticeSetting: undefined;
@@ -27,7 +26,6 @@ export type RootStackParamList = {
   Developers: undefined;
   Tutorial: undefined;
   ConfigTab: undefined;
-  AgendaContainer: undefined;
 };
 
 const {scene} = locale;
@@ -46,6 +44,8 @@ function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: bool
       source = isFocused ? Icons.calender.active : Icons.calender.inactive
     } else if (key === TabKey.ConfigTab) {
       source = isFocused ? Icons.config.active : Icons.config.inactive
+    } else if (key === TabKey.RemindMe) {
+      source = Icons.button.plus
     } else {
       source = null;
     }
@@ -66,7 +66,7 @@ function TabIcon2 ({screenName, isFocused}: {screenName: string, isFocused: bool
   return managerIcon(screenName, isFocused);
 }
 
-function HomeScreen() {
+function HomeContainer() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -78,8 +78,8 @@ function HomeScreen() {
 
       })}
     >
-      {/*右ボタンの位置が崩れるため、あえて1階層余分にStack.Navigatorを挟んでいる*/}
-      <Tab.Screen name={TabKey.Calendar} component={AgendaContainer} options={{headerShown: false, title: scene.agenda}} />
+      <Tab.Screen name={TabKey.Calendar} component={Calendar} options={{headerShown: false, title: scene.agenda}} />
+      <Tab.Screen name={TabKey.RemindMe} component={RemindMeView} options={{title: scene.register}} />
       <Tab.Screen name={TabKey.ConfigTab} component={ConfigView} options={{title: scene.config}} />
     </Tab.Navigator>
   );
@@ -101,15 +101,8 @@ function AppRouter() {
       <Stack.Navigator >
         <Stack.Screen
           name={ScreenKey.Home}
-          component={HomeScreen}
+          component={HomeContainer}
           options={{ headerShown: false}}
-        />
-        <Stack.Screen
-          name={ScreenKey.RemindMe}
-          component={RemindMeView}
-          options={{
-            title: scene.register
-          }}
         />
         <Stack.Screen name={ScreenKey.TitleSetting} component={TitleList} options={{title: scene.titleList}} />
         <Stack.Screen
@@ -127,24 +120,6 @@ function AppRouter() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
-
-type AgendaContainerProps = NativeStackScreenProps<RootStackParamList, 'AgendaContainer'>;
-
-function AgendaContainer({ navigation }: AgendaContainerProps) {
-  return (
-      <Stack.Navigator initialRouteName={ScreenKey.Agenda}>
-        <Stack.Screen
-          name={ScreenKey.Agenda}
-          component={AgendaView}
-          options={{
-            // eslint-disable-next-line react/prop-types
-            headerRight: RightButton(() => navigation.navigate(ScreenKey.RemindMe)),
-            title: scene.agenda
-          }
-        } />
-      </Stack.Navigator>
-  )
 }
 
 export default AppRouter;

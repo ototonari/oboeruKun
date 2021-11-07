@@ -26,7 +26,7 @@ export const remindUsageSituationDto = (props: IRemindUsageSituation): IRemindUs
   }
 }
 
-interface IRemind {
+export interface IRemind {
   title: string;
   range: Range;
   memo: string;
