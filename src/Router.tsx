@@ -75,7 +75,6 @@ function HomeContainer() {
           return <TabIcon2 screenName={route.name} isFocused={focused} />;
         },
         headerShown: true
-
       })}
     >
       <Tab.Screen name={TabKey.Calendar} component={Calendar} options={{headerShown: false, title: scene.agenda}} />

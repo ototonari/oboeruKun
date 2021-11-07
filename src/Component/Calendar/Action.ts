@@ -11,13 +11,24 @@ interface NoticeProps {
   done: number;
 }
 
-interface Items {
-  [key: string]: [];
+export type ItemProps = {
+  id: number,
+  noticeDate: string,
+  title: string,
+  page: {
+    startPage: number,
+    endPage: number
+  } | null,
+  memo: string | null
+}
+
+export interface CalendarItemsProps {
+  [key: string]: ItemProps[];
 }
 
 export async function initializeCalender(day?: DateObject) {
   const rangeList = await getThisMonth(day);
-  const items: Items = await rangeEmptyCalender(rangeList);
+  const items: CalendarItemsProps = await rangeEmptyCalender(rangeList);
   const noticeArray: NoticeProps[] = await getNotice(rangeList);
   return await makeItems(items, noticeArray);
 }
@@ -67,7 +78,7 @@ async function getThisMonth(day: DateObject | undefined): Promise<[string, strin
   }
 }
 
-async function makeItems(items: any, array: NoticeProps[]) {
+async function makeItems(items: CalendarItemsProps, array: NoticeProps[]) {
   for (let i = 0; i < array.length; i++) {
     const id = array[i].id;
     const day = array[i].noticeDate;
@@ -77,8 +88,7 @@ async function makeItems(items: any, array: NoticeProps[]) {
     title = title[0].title;
     page = page.length > 0 ? JSON.parse(page[0].value) : null;
     memo = memo.length > 0 ? memo[0].value : null;
-
-    const item = {
+    const item: ItemProps = {
       id: id,
       noticeDate: day,
       title: title,

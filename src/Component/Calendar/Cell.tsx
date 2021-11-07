@@ -1,36 +1,43 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
+import {ItemProps} from "./Action";
+import {locale} from "../../Config/Locale"
 
 interface CellPropsI {
-  item: any;
-  language: any;
+  item: ItemProps;
+  onPress: (id : number, key: string) => void;
 }
 
-function Cell(props: CellPropsI) {
-  const { item, language } = props;
+function _Cell(props: CellPropsI) {
+  const {item, onPress} = props;
+  const {data} = locale;
+  const _onPress = () => onPress(item.id, item.noticeDate)
+
   const page = item.page ? (
     <Text>
-      {language.page}: {item.page.startPage} ~ {item.page.endPage}
+      {data.page}: {item.page.startPage} ~ {item.page.endPage}
     </Text>
   ) : null;
   const memo = item.memo ? (
     <Text>
-      {language.memo}: {item.memo}
+      {data.memo}: {item.memo}
     </Text>
   ) : null;
 
   return (
-    <View style={[{ flex: 1 }, styles.cellPosition]}>
-      <View style={[{ flex: 1 }, styles.sidebar]}>
-        <View style={[{ flex: 1 }, styles.item]}>
-          <Text style={{ fontSize: 15, fontWeight: "bold" }}>{item.title}</Text>
+    <TouchableOpacity style={[{flex: 1}, styles.cellPosition]} onPress={_onPress}>
+      <View style={[{flex: 1}, styles.sidebar]}>
+        <View style={[{flex: 1}, styles.item]}>
+          <Text style={{fontSize: 15, fontWeight: "bold"}}>{item.title}</Text>
           {page}
           {memo}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
+
+const Cell = React.memo(_Cell);
 
 const styles = StyleSheet.create({
   item: {

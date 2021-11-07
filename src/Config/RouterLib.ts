@@ -1,6 +1,6 @@
-import {ScreenKey} from "./Const";
+import {TabKey} from "./Const";
 
 export const resetToHome = (navigation: any) => navigation.reset({
   index: 0,
-  routes: [{ name: ScreenKey.Home }],
+  routes: [{ name: TabKey.Calendar }],
 });
