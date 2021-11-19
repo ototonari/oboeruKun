@@ -68,7 +68,10 @@ export const Calendar = ({navigation}: Props) => {
           renderItem={(item => <Cell item={item} key={item.id} onPress={onEditStart}/>)}
           renderEmptyDate={() => null}
           rowHasChanged={(r1, r2) => {
-            return r1.title !== r2.title;
+            const a = r1.title !== r2.title
+            const b = !!r1.memo && !!r2.memo && r1.memo !== r2.memo
+            const c = !!r1.page && !!r2.page && (r1.page.startPage !== r2.page.startPage || r1.page.endPage !== r2.page.endPage)
+            return a || b || c;
           }}
           //maxDate={'2018-03-12'}
           // pastScrollRange={3}

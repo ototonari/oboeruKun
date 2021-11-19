@@ -1,9 +1,9 @@
 import {Button, FormControl, Input, Modal, View, Text, TextArea} from "native-base";
 import React, {useState} from "react";
 import {ItemProps} from "./Action";
-import {IRemind, IRemindUsageSituation, Remind} from "../RemindMe/lib";
+import {IRemind, Remind, updateRemindBody} from "../RemindMe/lib";
 import {locale} from "../../Config/Locale";
-import {StyleSheet} from "react-native";
+import {Switch, StyleSheet} from "react-native";
 
 type Props = {
   item: ItemProps;
@@ -24,22 +24,20 @@ const itemToRemindProps = (item: ItemProps): IRemind => {
 
 export const EditModal = ({item, onEdit, onCancel}: Props) => {
   const {register} = locale;
-  const usage = {
-    canUseRange: item.page !== null,
-    canUseMemo: item.memo !== null
-  }
 
   const [remind, setRemind] = useState(new Remind(itemToRemindProps(item)));
+  const [canUseRange, setUseRange] = useState(remind.isUseRange());
+  const [canUseMemo, setUseMemo] = useState(remind.isUseMemo());
 
   return (
     <Modal isOpen={true} onClose={onCancel}>
       <Modal.Content maxWidth="400px">
         <Modal.CloseButton />
-        <Modal.Header>
+        <Modal.Header >
           {remind.title}
         </Modal.Header>
         <Modal.Body>
-          <FormControl isRequired isInvalid={!remind.isValid()}>
+          <FormControl isRequired isInvalid={!remind.validTitle()}>
             <FormControl.Label>{register.title}</FormControl.Label>
             <Input
               defaultValue={remind.title}
@@ -48,46 +46,58 @@ export const EditModal = ({item, onEdit, onCancel}: Props) => {
                 setRemind(remind.setTitle(text))
               }}
             />
-            <FormControl.ErrorMessage>
-              only appear when FormControl have isInvalid props.
-            </FormControl.ErrorMessage>
-          </FormControl>
-          <FormControl mt="3">
-            <FormControl.Label>{register.page}</FormControl.Label>
-            <View style={styles.rangeView}>
-              <Input
-                keyboardType={"numeric"}
-                w={20}
-                defaultValue={String(remind.range.start)}
-                value={String(remind.range.start)}
-                onChangeText={(text) => {
-                  const n = Number(text)
-                  setRemind(remind.setStartRange(n))
-                }}
-              />
-              <Text style={styles.rangeText}>
-                〜
-              </Text>
-              <Input
-                keyboardType={"numeric"}
-                w={20}
-                defaultValue={String(remind.range.end)}
-                value={String(remind.range.end)}
-                onChangeText={(text) => {
-                  const n = Number(text)
-                  setRemind(remind.setEndRange(n))
-                }}
-              />
+            <View style={{height: 30}} >
+              <FormControl.ErrorMessage>
+                title must set.
+              </FormControl.ErrorMessage>
             </View>
           </FormControl>
           <FormControl mt="3">
-            <FormControl.Label>{register.memo}</FormControl.Label>
-            <TextArea
-              h={20}
-              onChangeText={(text) => setRemind(remind.setMemo(text))}
-              defaultValue={remind.memo}
-              value={remind.memo}
-            />
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <FormControl.Label>{register.page}</FormControl.Label>
+              <Switch value={canUseRange} onValueChange={setUseRange} />
+            </View>
+            {canUseRange ? (
+              <View style={styles.rangeView}>
+                <Input
+                  keyboardType={"numeric"}
+                  w={20}
+                  defaultValue={String(remind.range.start)}
+                  value={String(remind.range.start)}
+                  onChangeText={(text) => {
+                    const n = Number(text)
+                    setRemind(remind.setStartRange(n))
+                  }}
+                />
+                <Text style={styles.rangeText}>
+                  〜
+                </Text>
+                <Input
+                  keyboardType={"numeric"}
+                  w={20}
+                  defaultValue={String(remind.range.end)}
+                  value={String(remind.range.end)}
+                  onChangeText={(text) => {
+                    const n = Number(text)
+                    setRemind(remind.setEndRange(n))
+                  }}
+                />
+              </View>
+            ) : null}
+          </FormControl>
+          <FormControl mt="3">
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <FormControl.Label>{register.memo}</FormControl.Label>
+              <Switch value={canUseMemo} onValueChange={setUseMemo} />
+            </View>
+            {canUseMemo ? (
+              <TextArea
+                h={20}
+                onChangeText={(text) => setRemind(remind.setMemo(text))}
+                defaultValue={remind.memo}
+                value={remind.memo}
+              />
+            ) : null}
           </FormControl>
         </Modal.Body>
         <Modal.Footer>
@@ -100,7 +110,10 @@ export const EditModal = ({item, onEdit, onCancel}: Props) => {
               Cancel
             </Button>
             <Button
-              onPress={onCancel}
+              onPress={async() => {
+                await updateRemindBody(item.id, remind);
+                onEdit()
+              }}
             >
               Save
             </Button>

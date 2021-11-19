@@ -1,4 +1,4 @@
-import {INoticeInterval} from "../../IO/SQLite";
+import {getMemoAsync, getRangeAsync, INoticeInterval, updateMemoAsync, updateRangeAsync} from "../../IO/SQLite";
 import dayjs from "dayjs";
 import {contentProp, register, toRegisterDto} from "../../Notification/register";
 import {locale} from "../../Config/Locale";
@@ -56,6 +56,10 @@ export class Remind implements IRemind {
     return this.title !== "";
   }
 
+  validTitle = () => {
+    return this.title !== "";
+  }
+
   setTitle = (title: string) => {
     this.title = title;
 
@@ -66,6 +70,11 @@ export class Remind implements IRemind {
     this.range = range;
 
     return new Remind(this);
+  }
+
+  isUseRange = ():boolean => {
+    const {start, end} = this.range;
+    return start !== 0 && end !== 0;
   }
 
   setStartRange = (num: number) => {
@@ -84,6 +93,10 @@ export class Remind implements IRemind {
     }
 
     return new Remind(this);
+  }
+
+  isUseMemo = (): boolean => {
+    return this.memo !== '';
   }
 
   setMemo = (memo: string) => {
@@ -201,3 +214,23 @@ export const remindService = async (remind: Remind, repeatSetting: RepeatSetting
     await insertNotice(masterId, notificationId, registeredDate);
   }
 }
+
+export const updateRemindBody = async (masterId: number, remind: Remind) => {
+
+  if (remind.isUseRange()) {
+    if (await getRangeAsync(masterId) !== null) {
+      const pageInfo = JSON.stringify({startPage: remind.range.start, endPage: remind.range.end});
+      await updateRangeAsync(masterId, pageInfo);
+    }
+    // ない場合は新規登録
+  }
+
+  if (remind.isUseMemo()) {
+    if (await getMemoAsync(masterId) !== null) {
+      await updateMemoAsync(masterId, remind.memo);
+    }
+    // ない場合は新規登録
+  }
+
+  // 通知のリフレッシュを行う。
+};
