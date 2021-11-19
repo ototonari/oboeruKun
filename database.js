@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import { dateToFormatString } from "./dateToFormatString";
-import { locale } from "./components";
+import {locale} from "./src/Config/Locale"
 
 const db = SQLite.openDatabase("db.db");
 
@@ -88,10 +88,8 @@ export function initDB() {
         if (_array.length > 0) return;
         // 初期サンプルの挿入
         const sampleInterval = JSON.stringify([1, 7, 30]);
-        const name =
-          locale.country === "JP"
-            ? "忘却曲線に基づいた復習"
-            : "Forgetting curve";
+
+        const name = locale.sample.title
         tx.executeSql(
           "INSERT INTO noticeInterval (interval, name) values (?, ?)",
           [sampleInterval, name],
@@ -446,12 +444,8 @@ export function checkTitle(title) {
       [title],
       (_, { rows }) => {
         const length = rows.length;
-        if (length == 0) {
+        if (length === 0) {
           addTitle(title);
-        } else if (length == 1) {
-          const selectedId = rows._array[0].id;
-          console.log(selectedId);
-          //sortTitle(selectedId-1, title)
         }
       },
       () => console.log("checkTitle: error")

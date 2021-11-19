@@ -4,7 +4,7 @@ export enum ScreenKey {
   Home="Home",
   Agenda= "Agenda",
   Config= "Config",
-  Register= "Register",
+  RemindMe= "RemindMe",
   Developers="Developers",
   TitleSetting = "TitleSetting",
   NoticeSetting = "NoticeSetting",

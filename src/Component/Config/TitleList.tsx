@@ -12,9 +12,13 @@ import Swipeable from "react-native-swipeable";
 import { getAllTitle, deleteList } from "../../../database";
 import {Icons} from "../../Config/Assets";
 import {locale} from "../../Config/Locale";
+import {RootStackParamList} from "../../Router";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<RootStackParamList, 'TitleSetting'>;
 
 export default class TitleList extends Component {
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       items: [],
