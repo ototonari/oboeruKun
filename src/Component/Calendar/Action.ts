@@ -6,7 +6,7 @@ import {isJP, locale} from "../../Config/Locale";
 
 interface NoticeProps {
   id: number;
-  notificationId: null | any;
+  notificationId: string | null;
   noticeDate: string;
   done: number;
 }

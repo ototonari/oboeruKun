@@ -1,5 +1,6 @@
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import * as Notifications from "expo-notifications";
+import {ActivityIndicator, StyleSheet, View} from "react-native";
 
 export const BackGround = () => {
 
@@ -20,3 +21,16 @@ export const BackGround = () => {
 
   return null;
 }
+
+export const Loading = () => (
+  <View style={styles.loadingContainer} >
+    <ActivityIndicator size="large" />
+  </View>
+)
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+});

@@ -1,74 +1,60 @@
 import React, {useEffect, useState} from "react";
-import {Button, FormControl, Input, Modal,Text} from "native-base"
 import {Agenda, DateObject} from "react-native-calendars";
 import {CalendarItemsProps, initializeCalender, ItemProps,} from "./Action";
 import Cell from "./Cell";
-import {View} from "react-native";
 import {hasShownTutorials} from "../../Config/Libs";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../../Router";
 import {ScreenKey} from "../../Config/Const";
 import {EditModal} from "./EditModal";
+import {Loading} from "../BackGround";
+import {initState, ViewState} from "./state";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Calender'>;
 
-type CalendarStateProps = { init: boolean, items: CalendarItemsProps | null, targetDay: Date };
-
-type InitState = {
-  type: 'Init'
-}
-
-type EditableState = {
-  type: 'Editable',
-  itemId: number,
-  itemKey: string
-}
-
-export type EditModalState = InitState | EditableState
-
-const getItem = (items: CalendarItemsProps, key: string, id: number): ItemProps | undefined => {
-  return items[key].find(item => item.id === id);
+const getItem = (items: CalendarItemsProps, key: string, id: number): ItemProps => {
+  const itemProps = items[key].find(item => item.id === id);
+  if (!itemProps) throw new Error("invalid invoke.")
+  return itemProps;
 }
 
 export const Calendar = ({navigation}: Props) => {
-  const [{init, items, targetDay}, setItems] = useState<CalendarStateProps>({
-    init: false,
-    items: null,
-    targetDay: new Date()
-  });
-
-  const [editModalState, setEditModalState] = useState<EditModalState>({ type: 'Init' });
-  const _setEditModalState = (id: number, key: string) => setEditModalState({type: 'Editable', itemId: id, itemKey: key });
+  const [state, setState] = useState<ViewState>(initState)
 
   const updateCalendar = (day?: DateObject) => {
-    initializeCalender(day).then((items) => setItems({
-      init: true,
-      items: items,
-      targetDay: day ? new Date(day.dateString) : targetDay
-    }));
+    initializeCalender(day).then((items) => {
+      setState({
+        type: 'Basic',
+        items: items,
+        targetDay: day ? new Date(day.dateString) : new Date()
+      })
+    });
   }
 
   useEffect(() => {
-    if (!init) {
-      hasShownTutorials().then((done) => {
+    if (state.type === 'Init') {
+      hasShownTutorials()
+      .then((done) => {
         if (!done) navigation.navigate(ScreenKey.Tutorial);
-      }).finally(updateCalendar);
+      })
+      .finally(updateCalendar)
     }
   })
 
-  if (items === null) {
-    return <View/>;
+  if (state.type === 'Init') {
+    return <Loading/>;
   } else {
-    const closeEditModal = () => setEditModalState({type: 'Init'})
-    const _EditModal = ({editModalState}: {editModalState: EditModalState}) => {
-      if (editModalState.type === 'Init') return null;
-
-      const targetItem = getItem(items, editModalState.itemKey, editModalState.itemId);
-      if (targetItem === undefined) return null;
-      else return (
-        <EditModal item={targetItem} onEdit={closeEditModal} onCancel={closeEditModal} />
-      )
-    }
+    const {items} = state;
+    const onEditStart = (id: number, key: string) => setState({
+      ...state,
+      type: 'Editable',
+      itemId: id,
+      itemKey: key
+    })
+    const onEditEnd = () => setState({
+      ...state,
+      type: "Basic"
+    })
 
     return (
       <>
@@ -78,8 +64,8 @@ export const Calendar = ({navigation}: Props) => {
           //loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
           onDayPress={updateCalendar}
           // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
-          selected={targetDay}
-          renderItem={(item => <Cell item={item} key={item.id} onPress={_setEditModalState} />)}
+          selected={state.targetDay}
+          renderItem={(item => <Cell item={item} key={item.id} onPress={onEditStart}/>)}
           renderEmptyDate={() => null}
           rowHasChanged={(r1, r2) => {
             return r1.title !== r2.title;
@@ -101,7 +87,13 @@ export const Calendar = ({navigation}: Props) => {
           // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
           //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
         />
-        <_EditModal editModalState={editModalState} />
+        {state.type === 'Editable' ? (
+          <EditModal
+            item={getItem(items, state.itemKey, state.itemId)}
+            onEdit={updateCalendar}
+            onCancel={onEditEnd}
+          />
+        ) : null}
       </>
     )
   }
