@@ -1,51 +1,71 @@
-import { dateToFormatString } from "../dateToFormatString";
-import { getNotice, getParams, getSpecificNotice } from "../database";
+import { dateToFormatString } from "../../../dateToFormatString";
+import { getNotice, getParams, getSpecificNotice } from "../../../database";
 import {
   registerNotification,
   cancelNotification,
   createNotificationObject,
-} from "../notification";
+} from "../../../notification";
+import { LocaleConfig } from "react-native-calendars";
+import {isJP, locale} from "../../Config/Locale";
 
-export async function initializeCalender(target, day) {
-  const self = target;
-  let items = {};
-  let rangeList;
-  rangeList = await getThisMonth(day);
-  items = await rangeEmptyCalender(rangeList);
-  let noticeArray = [];
-  noticeArray = await getNotice(rangeList);
-  let itemsObj = {};
-  itemsObj = await makeItems(items, noticeArray);
-  self.setState({ items: itemsObj });
+interface Day {
+  dateString: string;
+  day: number;
+  month: number;
+  timestamp: number;
+  year: number;
 }
 
-async function rangeEmptyCalender(rangeList) {
-  let loadedMonth = {};
+interface NoticeProps {
+  id: number;
+  notificationId: null | any;
+  noticeDate: string;
+  done: number;
+}
+
+interface Items {
+  [key: string]: [];
+}
+
+export async function initializeCalender(day: Day) {
+  const rangeList = await getThisMonth(day);
+  const items: Items = await rangeEmptyCalender(rangeList);
+  const noticeArray: NoticeProps[] = await getNotice(rangeList);
+  const itemsObj = await makeItems(items, noticeArray);
+  return itemsObj;
+}
+
+async function rangeEmptyCalender(rangeList: [string, string]) {
   let makeDay = new Date(rangeList[0]);
-  let makeString = dateToFormatString(makeDay, "%YYYY%-%MM%-%DD%");
+  let makeString: string = dateToFormatString(makeDay, "%YYYY%-%MM%-%DD%");
   const endDay = new Date(rangeList[1]);
-  const endString = dateToFormatString(endDay, "%YYYY%-%MM%-%DD%");
-  loadedMonth[makeString] = [];
+  const endString: string = dateToFormatString(endDay, "%YYYY%-%MM%-%DD%");
+  // loadedMonth[makeString] = [];
+  let loadedMonth: { [key: string]: [] } = {
+    [makeString]: [],
+  };
   //console.log('add item : ', makeString)
   //first incriment
   while (makeString !== endString) {
     makeDay.setDate(makeDay.getDate() + 1);
     makeString = dateToFormatString(makeDay, "%YYYY%-%MM%-%DD%");
-    loadedMonth[makeString] = [];
+    loadedMonth = {
+      ...loadedMonth,
+      [makeString]: [],
+    };
     //console.log('add item : ', makeString)
   }
   return loadedMonth;
 }
 
-async function getThisMonth(day) {
-  console.log("day: ", day);
+async function getThisMonth(day: Day): Promise<[string, string]> {
   if (day == null) {
     let thisMonth = new Date();
     thisMonth.setDate(1);
-    const firstDay = dateToFormatString(thisMonth, "%YYYY%-%MM%-%DD%");
+    const firstDay: string = dateToFormatString(thisMonth, "%YYYY%-%MM%-%DD%");
     thisMonth.setMonth(thisMonth.getMonth() + 2);
     thisMonth.setDate(thisMonth.getDate() - 1);
-    const endDay = dateToFormatString(thisMonth, "%YYYY%-%MM%-%DD%");
+    const endDay: string = dateToFormatString(thisMonth, "%YYYY%-%MM%-%DD%");
     console.log("first Day ; ", firstDay, "end Day ; ", endDay);
     return [firstDay, endDay];
   } else {
@@ -60,7 +80,7 @@ async function getThisMonth(day) {
   }
 }
 
-async function makeItems(items, array) {
+async function makeItems(items: any, array: NoticeProps[]) {
   for (let i = 0; i < array.length; i++) {
     const id = array[i].id;
     const day = array[i].noticeDate;
@@ -84,7 +104,10 @@ async function makeItems(items, array) {
   return items;
 }
 
-export async function changeNotification(item, registerdDate) {
+export async function changeNotification(
+  item: { noticeDate: any; id: any },
+  registerdDate: any
+) {
   // キャンセル用通知Idの取得
   let notificationId;
   notificationId = await getSpecificNotice(item.noticeDate, item.id);
@@ -102,23 +125,12 @@ export async function changeNotification(item, registerdDate) {
   });
 }
 
-// export function localization() {
-//   console.log(`locale : ${locale.country}`);
-//   if (locale.country === "JP") {
-//     LocaleConfig.locales["jp"] = localeJSON.jp.agenda.localeConfig;
-//     LocaleConfig.defaultLocale = "jp";
-//   } else if (locale.country !== "JP") {
-//     LocaleConfig.locales["en"] = localeJSON.jp.agenda.localeConfig;
-//     LocaleConfig.defaultLocale = "en";
-//   }
-// }
-
-// function changeDate(registerdDate, date) {
-//   let tmpDate = new Date(registerdDate)
-//   // 通知する日時をセットする
-//   tmpDate.setDate(registerdDate.getDate() + date)
-//   tmpDate.setHours(7)
-//   tmpDate.setMinutes(0)
-//   tmpDate.setSeconds(0)
-//   return tmpDate
-// }
+export function localization() {
+  if (isJP()) {
+    LocaleConfig.locales["jp"] = locale.agenda.localeConfig;
+    LocaleConfig.defaultLocale = "jp";
+  } else {
+    LocaleConfig.locales["en"] = locale.agenda.localeConfig;
+    LocaleConfig.defaultLocale = "en";
+  }
+}

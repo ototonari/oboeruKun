@@ -1,90 +1,73 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { View } from "react-native";
+import { Agenda } from "react-native-calendars";
+// import { initializeCalender, localization } from "./agendaAction";
 import {
-  Text,
-  View,
-  TouchableHighlight,
-  Image,
-  StyleSheet,
-  Platform
-} from 'react-native';
-import { isEqual } from "lodash";
-import { Agenda, LocaleConfig } from 'react-native-calendars';
-import { Actions, ActionConst } from "react-native-router-flux";
-import { getAllNoticeDate, getNotice } from "../database";
-import { initializeCalender, localization } from "./agendaAction";
-import { dateToFormatString } from '../dateToFormatString';
-import Swipeable from 'react-native-swipeable';
-import { Constants, Notifications, Permissions } from 'expo';
-import CellView from "./cellView";
-import { cancelNotification } from "../notification";
-import { setNotice } from "../database";
-import { locale, loadLanguage } from "../components";
-
-
-async function getiOSNotificationPermission() {
-  const { status } = await Permissions.getAsync(
-    Permissions.NOTIFICATIONS
-  );
-  if (status !== 'granted') {
-    await Permissions.askAsync(Permissions.NOTIFICATIONS);
-  }
-}
+  initializeCalender,
+  localization,
+} from "../src/Component/Calender/Action";
+import { dateToFormatString } from "../dateToFormatString";
+import Cell from "../src/Component/Calender/Cell";
+import * as Notifications from "expo-notifications";
+import {hasShownTutorials} from "../src/Config/Libs";
+import {ScreenKey} from "../src/Config/Const";
+import {locale} from "../src/Config/Locale"
 
 export default class AgendaView extends Component {
   constructor(props) {
     super(props);
-    this.language = loadLanguage('data')
+    this.language = locale.data;
     this.state = {
       items: {},
-      today: dateToFormatString(new Date(), '%YYYY%-%MM%-%DD%'),
+      today: dateToFormatString(new Date(), "%YYYY%-%MM%-%DD%"),
       currentlyOpenSwipeable: null,
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !(
-      this.state.currentlyOpenSwipeable === nextState.currentlyOpenSwipeable &&
-      isEqual(nextState.items, this.state.items)
-    )
-  }
-  
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.listenForNotifications();
-    localization()
+    localization();
   }
 
   componentDidMount() {
-    initializeCalender(this)
+    initializeCalender().then((items) => this.setState({ items }));
+    hasShownTutorials().then((result) => {
+      if (!result) {
+        // eslint-disable-next-line react/prop-types
+        setTimeout(() => this.props.navigation.navigate(ScreenKey.Tutorial, null, {headerShown: false}), 3000);
+      }
+    })
   }
 
   listenForNotifications = () => {
-    Notifications.addListener(notification => {
-      //console.log(notification.origin)
-      if (notification.origin === 'received' && Platform.OS === 'ios') {
-        console.log('notification receaved', notification.data)
-        //Alert.alert(notification.data.title, notification.data.body);
-      }
+    Notifications.addNotificationReceivedListener((notification) => {
+      // 通知が発火すると、ここでペイロードにアクセスできる。
+    });
+
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      // 通知をタップすると、このコールバックが発火する。
+      console.log(response);
     });
   };
 
   onOpen = (event, gestureState, swipeable) => {
-    const {currentlyOpenSwipeable} = this.state;
+    const { currentlyOpenSwipeable } = this.state;
     if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
       currentlyOpenSwipeable.recenter();
     }
-    
-    this.setState({currentlyOpenSwipeable: swipeable});
-  }
 
-  onClose = () => this.setState({currentlyOpenSwipeable: null})
+    this.setState({ currentlyOpenSwipeable: swipeable });
+  };
+
+  onClose = () => this.setState({ currentlyOpenSwipeable: null });
 
   onSuccess = (items) => {
-    let {currentlyOpenSwipeable} = this.state;
+    let { currentlyOpenSwipeable } = this.state;
     currentlyOpenSwipeable.recenter();
-    this.onClose()
+    this.onClose();
 
-    this.setState({ items })
-  }
+    this.setState({ items });
+  };
 
   render() {
     //console.log('Actions receive props : ', this.props)
@@ -94,14 +77,14 @@ export default class AgendaView extends Component {
         items={this.state.items}
         //loadItemsForMonth={this.loadItems.bind(this)}
         //loadItemsForMonth={(month) => {console.log('loadItemsForMonth called : ', month)}}
-        onDayPress={this.selectLoadItems.bind(this)}
+        onDayPress={this.selectLoadItems}
         // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
         selected={this.state.today}
-        renderItem={this.renderItem.bind(this)}
-        renderEmptyDate={this.renderEmptyDate.bind(this)}
-        rowHasChanged={this.rowHasChanged.bind(this)}
+        renderItem={this.renderItem}
+        renderEmptyDate={this.renderEmptyDate}
+        rowHasChanged={this.rowHasChanged}
         //maxDate={'2018-03-12'}
-        pastScrollRange={3}
+        // pastScrollRange={3}
         futureScrollRange={3}
         //markingType={'interactive'}
         //markedDates={{
@@ -120,39 +103,33 @@ export default class AgendaView extends Component {
     );
   }
 
-  selectLoadItems(day) {
-    initializeCalender(this, day)
-  }
+  selectLoadItems = (day) => {
+    initializeCalender(day).then((items) => this.setState({ items }));
+  };
 
   loadItems(day) {
-    console.log('called loadItems , day: ', day)
+    console.log("called loadItems , day: ", day);
   }
 
-  renderItem(item) {
-    
-    return (
-      <CellView item={item} this={this} onOpen={this.onOpen} onClose={this.onClose} onSuccess={this.onSuccess} language={this.language} />
-    );
-  }
+  renderItem = (item) => {
+    return <Cell item={item} language={this.language} />;
+  };
 
-  renderEmptyDate() {
+  renderEmptyDate = () => {
     return (
       //<View style={styles.emptyDate}></View>
       <View />
     );
-  }
+  };
 
-  rowHasChanged(r1, r2) {
+  rowHasChanged = (r1, r2) => {
     return r1.title !== r2.title;
-  }
+  };
 
-  testRowHasChanged() {
-    
-  }
+  testRowHasChanged() {}
 
   timeToString(time) {
     const date = new Date(time);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   }
 }
-

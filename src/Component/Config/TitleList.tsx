@@ -7,12 +7,14 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+// @ts-ignore
 import Swipeable from "react-native-swipeable";
-import { getAllTitle, deleteList } from "../database";
-import { locale } from "../components";
+import { getAllTitle, deleteList } from "../../../database";
+import {Icons} from "../../Config/Assets";
+import {locale} from "../../Config/Locale";
 
 export default class TitleList extends Component {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       items: [],
@@ -26,7 +28,7 @@ export default class TitleList extends Component {
       if (items.length == 0) {
         items = [
           {
-            title: locale.country === "JP" ? "履歴はありません" : "No history",
+            title: locale.titleList.emptyText,
             id: 0,
           },
         ];
@@ -37,7 +39,7 @@ export default class TitleList extends Component {
     setItems();
   }
 
-  _renderItems = (item) => {
+  _renderItems = (item: any) => {
     const deleteItem = (id) => {
       for (let i = 0, j = this.state.items.length; i < j; i++) {
         const tmpItem = this.state.items[i];
@@ -51,8 +53,7 @@ export default class TitleList extends Component {
             } else {
               newItems = [
                 {
-                  title:
-                    locale.country === "JP" ? "履歴はありません" : "No history",
+                  title: locale.titleList.emptyText,
                   id: 0,
                 },
               ];
@@ -69,7 +70,7 @@ export default class TitleList extends Component {
         style={styles.swipeButton}
         onPress={() => deleteItem(item.id)}
       >
-        <Image source={require("../assets/error.png")} style={styles.image} />
+        <Image source={Icons.button.error} style={styles.image} />
       </TouchableOpacity>,
     ];
 
@@ -86,6 +87,7 @@ export default class TitleList extends Component {
     return (
       <View style={styles.background}>
         <FlatList
+          // @ts-ignore
           data={this.state.items}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => this._renderItems(item)}
