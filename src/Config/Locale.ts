@@ -1,8 +1,8 @@
-import * as Localization from 'expo-localization';
+import * as Localization from "expo-localization";
 
 enum LocaleType {
-  JP= "JP",
-  EN= "EN"
+  JP = "JP",
+  EN = "EN",
 }
 
 const jpregex = /ja|JP/;
@@ -27,11 +27,37 @@ const localeSets = {
     },
     agenda: {
       localeConfig: {
-        monthNames: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
-        monthNamesShort: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
+        monthNames: [
+          "1月",
+          "2月",
+          "3月",
+          "4月",
+          "5月",
+          "6月",
+          "7月",
+          "8月",
+          "9月",
+          "10月",
+          "11月",
+          "12月",
+        ],
+        monthNamesShort: [
+          "1月",
+          "2月",
+          "3月",
+          "4月",
+          "5月",
+          "6月",
+          "7月",
+          "8月",
+          "9月",
+          "10月",
+          "11月",
+          "12月",
+        ],
         dayNames: ["日", "月", "火", "水", "木", "金", "土"],
         dayNamesShort: ["日", "月", "火", "水", "木", "金", "土"],
-        today: "今日"
+        today: "今日",
       },
     },
     register: {
@@ -46,6 +72,8 @@ const localeSets = {
       errTitle: "タイトルを入力してください。",
       pickerFirstItem: "選択して下さい",
       pickerNoItem: "履歴がありません",
+      cancel: "戻る",
+      edit: "保存",
     },
     registerSetting: {
       title: "タイトル",
@@ -64,8 +92,8 @@ const localeSets = {
       emptyText: "履歴はありません",
     },
     sample: {
-      title: "忘却曲線に基づいた復習"
-    }
+      title: "忘却曲線に基づいた復習",
+    },
   },
   [LocaleType.EN]: {
     scene: {
@@ -84,11 +112,45 @@ const localeSets = {
     },
     agenda: {
       localeConfig: {
-        monthNames: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-        monthNamesShort: ["Jan.","Feb.","Mar.","Apr.","May.","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."],
-        dayNames: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-        dayNamesShort: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
-        today: "today"
+        monthNames: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        monthNamesShort: [
+          "Jan.",
+          "Feb.",
+          "Mar.",
+          "Apr.",
+          "May.",
+          "Jun.",
+          "Jul.",
+          "Aug.",
+          "Sep.",
+          "Oct.",
+          "Nov.",
+          "Dec.",
+        ],
+        dayNames: [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ],
+        dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        today: "today",
       },
     },
     register: {
@@ -103,6 +165,8 @@ const localeSets = {
       errTitle: "Please input title.",
       pickerFirstItem: "Please select.",
       pickerNoItem: "No history.",
+      cancel: "Cancel",
+      edit: "Save",
     },
     registerSetting: {
       title: "Title",
@@ -121,10 +185,10 @@ const localeSets = {
       emptyText: "No history",
     },
     sample: {
-      title: "Forgetting curve"
-    }
+      title: "Forgetting curve",
+    },
   },
-}
+};
 
 // 宣言する場所はここで固定、だる。
 const initLocale = () => {
@@ -137,7 +201,7 @@ const initLocale = () => {
   console.debug("current locale is: ", currentLocaleType, result);
 
   return localeSets[LocaleType[currentLocaleType]];
-}
+};
 
 export const locale = initLocale();
 

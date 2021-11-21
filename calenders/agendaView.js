@@ -5,9 +5,9 @@ import { Agenda } from "react-native-calendars";
 import {
   initializeCalender,
   localization,
-} from "../src/Component/Calender/Action";
+} from "../src/Component/Calendar/Action";
 import { dateToFormatString } from "../dateToFormatString";
-import Cell from "../src/Component/Calender/Cell";
+import Cell from "../src/Component/Calendar/Cell";
 import * as Notifications from "expo-notifications";
 import {hasShownTutorials} from "../src/Config/Libs";
 import {ScreenKey} from "../src/Config/Const";
