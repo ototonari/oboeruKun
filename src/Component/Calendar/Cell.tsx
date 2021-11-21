@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { ItemProps } from "./Action";
 import { locale } from "../../Config/Locale";
-import { Icon } from "native-base";
+import { Icon, Pressable } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { UseCase } from "../../UseCase";
 
@@ -93,17 +93,24 @@ function Cell(props: CellPropsI) {
         </View>
       </TouchableOpacity>
       <View style={styles.actionsContainer}>
-        <TouchableOpacity style={{ marginRight: 20 }} onPress={_onEdit}>
-          <Icon as={AntDesign} name="edit" size="6" color="emerald.500" />
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginLeft: 5 }} onPress={_onComplete}>
+        <Pressable mr="25" onPress={_onEdit}>
           <Icon
+            as={AntDesign}
+            name="edit"
+            size="6"
+            color="emerald.500"
+            onPress={_onEdit}
+          />
+        </Pressable>
+        <Pressable onPress={_onComplete}>
+          <Icon
+            onPress={_onComplete}
             as={AntDesign}
             name="checkcircle"
             size="6"
             color="emerald.500"
           />
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </Animated.View>
   );

@@ -132,7 +132,7 @@ export const EditModal = ({ item, onEdit, onCancel }: Props) => {
             <Button
               mt="2"
               mr="5"
-              w="70%"
+              w="60%"
               isDisabled={remind.areEqual(item.data)}
               onPress={async () => {
                 await UseCase.updateRemind(item.id, remind, item.data);
