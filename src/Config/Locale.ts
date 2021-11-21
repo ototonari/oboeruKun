@@ -73,6 +73,7 @@ const localeSets = {
       pickerFirstItem: "選択して下さい",
       pickerNoItem: "履歴がありません",
       cancel: "戻る",
+      edit: "保存",
     },
     registerSetting: {
       title: "タイトル",
@@ -165,6 +166,7 @@ const localeSets = {
       pickerFirstItem: "Please select.",
       pickerNoItem: "No history.",
       cancel: "Cancel",
+      edit: "Save",
     },
     registerSetting: {
       title: "Title",

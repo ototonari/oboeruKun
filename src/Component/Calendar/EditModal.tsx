@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { ItemProps } from "./Action";
 import { locale } from "../../Config/Locale";
 import { Switch, StyleSheet } from "react-native";
-import {UseCase} from "../../UseCase";
+import { UseCase } from "../../UseCase";
 
 type Props = {
   item: ItemProps;
@@ -28,7 +28,7 @@ export const EditModal = ({ item, onEdit, onCancel }: Props) => {
 
   return (
     <Modal isOpen={true} onClose={onCancel}>
-      <Modal.Content maxWidth="400px">
+      <Modal.Content h="90%" w="90%">
         <Modal.CloseButton />
         <Modal.Header>{remind.title}</Modal.Header>
         <Modal.Body>
@@ -121,17 +121,25 @@ export const EditModal = ({ item, onEdit, onCancel }: Props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button.Group space={2}>
-            <Button variant="ghost" colorScheme="blueGray" onPress={onCancel}>
-              Cancel
+            <Button
+              mt="2"
+              variant="ghost"
+              colorScheme="blueGray"
+              onPress={onCancel}
+            >
+              {register.cancel}
             </Button>
             <Button
+              mt="2"
+              mr="5"
+              w="70%"
               isDisabled={remind.areEqual(item.data)}
               onPress={async () => {
                 await UseCase.updateRemind(item.id, remind, item.data);
                 await onEdit();
               }}
             >
-              Save
+              {register.edit}
             </Button>
           </Button.Group>
         </Modal.Footer>
