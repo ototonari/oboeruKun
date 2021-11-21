@@ -1,8 +1,14 @@
-import {dateToFormatString} from "../../../dateToFormatString";
-import {getNotice, getParams, getSpecificNotice} from "../../../database";
-import {cancelNotification, createNotificationObject, registerNotification,} from "../../../notification";
-import {DateObject, LocaleConfig} from "react-native-calendars";
-import {isJP, locale} from "../../Config/Locale";
+import { dateToFormatString } from "../../../dateToFormatString";
+import { getNotice, getSpecificNotice } from "../../../database";
+import {
+  cancelNotification,
+  createNotificationObject,
+  registerNotification,
+} from "../../../notification";
+import { DateObject, LocaleConfig } from "react-native-calendars";
+import { isJP, locale } from "../../Config/Locale";
+import { Remind } from "../RemindMe/lib";
+import { getMemoAsync, getRangeAsync, getTitleAsync } from "../../IO/SQLite";
 
 interface NoticeProps {
   id: number;
@@ -12,21 +18,18 @@ interface NoticeProps {
 }
 
 export type ItemProps = {
-  id: number,
-  noticeDate: string,
-  title: string,
-  page: {
-    startPage: number,
-    endPage: number
-  } | null,
-  memo: string | null
-}
+  id: number;
+  noticeDate: string;
+  data: Remind;
+};
 
 export interface CalendarItemsProps {
   [key: string]: ItemProps[];
 }
 
-export async function initializeCalender(day?: DateObject) {
+export async function initializeCalender(
+  day?: DateObject
+): Promise<CalendarItemsProps> {
   const rangeList = await getThisMonth(day);
   const items: CalendarItemsProps = await rangeEmptyCalender(rangeList);
   const noticeArray: NoticeProps[] = await getNotice(rangeList);
@@ -56,7 +59,9 @@ async function rangeEmptyCalender(rangeList: [string, string]) {
   return loadedMonth;
 }
 
-async function getThisMonth(day: DateObject | undefined): Promise<[string, string]> {
+async function getThisMonth(
+  day: DateObject | undefined
+): Promise<[string, string]> {
   if (day == null) {
     let thisMonth = new Date();
     thisMonth.setDate(1);
@@ -82,20 +87,16 @@ async function makeItems(items: CalendarItemsProps, array: NoticeProps[]) {
   for (let i = 0; i < array.length; i++) {
     const id = array[i].id;
     const day = array[i].noticeDate;
-    let title = await getParams("title", "master", id);
-    let page = await getParams("value", "page", id);
-    let memo = await getParams("value", "memo", id);
-    title = title[0].title;
-    page = page.length > 0 ? JSON.parse(page[0].value) : null;
-    memo = memo.length > 0 ? memo[0].value : null;
+    const title = await getTitleAsync(id);
+    const range = (await getRangeAsync(id)) ?? { range: { start: 0, end: 0 } };
+    const memo = (await getMemoAsync(id)) ?? "";
+    const remind = new Remind({ title: title, range: range.range, memo: memo });
+
     const item: ItemProps = {
       id: id,
       noticeDate: day,
-      title: title,
-      page: page,
-      memo: memo,
+      data: remind,
     };
-    //console.log('setCalender obj: ', item)
     items[day].push(item);
   }
   return items;

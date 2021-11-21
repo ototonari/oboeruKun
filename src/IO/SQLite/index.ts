@@ -15,10 +15,10 @@ const exWithTx = <T>(query: string, args: string[]): Promise<T> => {
         // @ts-ignore
         const { _array } = result.rows;
         r(_array);
-      })
-    })
-  })
-}
+      });
+    });
+  });
+};
 
 /**
  * Read用糖衣構文
@@ -32,18 +32,38 @@ const exWithReadTx = <T>(query: string, args: string[]): Promise<T> => {
         // @ts-ignore
         const { _array } = result.rows;
         r(_array);
-      })
-    })
-  })
-}
+      });
+    });
+  });
+};
 
 export interface ITitle {
-  title: string
+  title: string;
 }
 
-export const getTitlesAsync = () => {
-  return exWithReadTx<ITitle[]>("SELECT title FROM titleList", []);
-}
+export const getTitlesAsync = async (): Promise<string[]> => {
+  const raw = await exWithReadTx<ITitle[]>("SELECT title FROM titleList", []);
+  return raw.map((r) => r.title);
+};
+
+export const getTitleAsync = async (masterId: number): Promise<string> => {
+  const raw = await exWithReadTx<{ title: string }[]>(
+    "SELECT title FROM master WHERE id = ?",
+    [String(masterId)]
+  );
+  const [{ title }] = raw;
+  return title;
+};
+
+export const updateTitleAsync = async (
+  masterId: number,
+  title: string
+): Promise<void> => {
+  await exWithTx("UPDATE master SET title = ? WHERE id = ?", [
+    title,
+    String(masterId),
+  ]);
+};
 
 export interface INoticeInterval {
   id: number;
@@ -52,49 +72,118 @@ export interface INoticeInterval {
 }
 
 export const getNoticeIntervals = async (): Promise<INoticeInterval[]> => {
-  const noticeIntervals = await exWithReadTx<any[]>("SELECT id, name, interval FROM noticeInterval", []);
+  const noticeIntervals = await exWithReadTx<any[]>(
+    "SELECT id, name, interval FROM noticeInterval",
+    []
+  );
   return noticeIntervals.map((n) => ({
     ...n,
-    interval: JSON.parse(n.interval)
-  }))
-}
+    interval: JSON.parse(n.interval),
+  }));
+};
 
 interface IRange {
   range: {
-    start: number,
-    end: number
-  }
+    start: number;
+    end: number;
+  };
 }
 
-export const getRangeAsync = async (masterId: number): Promise<IRange | null> => {
-  const raw = await exWithReadTx<{value: string}[]>("SELECT value FROM page WHERE id = ?", [String(masterId)]);
+export const getRangeAsync = async (
+  masterId: number
+): Promise<IRange | null> => {
+  const raw = await exWithReadTx<{ value: string }[]>(
+    "SELECT value FROM page WHERE id = ?",
+    [String(masterId)]
+  );
   if (raw.length === 0) return null;
 
-  const [{value}] = raw;
+  const [{ value }] = raw;
   const page = JSON.parse(value);
   return {
     range: {
       start: page.startPage,
-      end: page.endPage
-    }
-  }
-}
+      end: page.endPage,
+    },
+  };
+};
+
+export const insertRangeAsync = async (masterId: number, range: string) => {
+  await exWithTx("INSERT INTO page (id, value) values (?, ?)", [
+    String(masterId),
+    range,
+  ]);
+};
 
 export const updateRangeAsync = async (masterId: number, range: string) => {
-  await exWithTx("UPDATE page SET value = ? WHERE id = ?", [range, String(masterId)])
-}
+  await exWithTx("UPDATE page SET value = ? WHERE id = ?", [
+    range,
+    String(masterId),
+  ]);
+};
+
+export const deleteRangeAsync = async (masterId: number) => {
+  await exWithTx("DELETE FROM page WHERE id = ?", [String(masterId)]);
+};
 
 type IMemo = string;
 
 export const getMemoAsync = async (masterId: number): Promise<IMemo | null> => {
-  const raw = await exWithReadTx<{value: string}[]>("SELECT value FROM memo WHERE id = ?", [String(masterId)]);
+  const raw = await exWithReadTx<{ value: string }[]>(
+    "SELECT value FROM memo WHERE id = ?",
+    [String(masterId)]
+  );
   if (raw.length === 0) return null;
 
-  const [{value}] = raw;
-  console.log(value);
+  const [{ value }] = raw;
   return value;
-}
+};
+
+export const insertMemoAsync = async (masterId: number, memo: string) => {
+  await exWithTx("INSERT INTO memo (id, value) values (?, ?)", [
+    String(masterId),
+    memo,
+  ]);
+};
 
 export const updateMemoAsync = async (masterId: number, memo: string) => {
-  await exWithTx("UPDATE memo SET value = ? WHERE id = ?", [memo, String(masterId)])
-}
+  await exWithTx("UPDATE memo SET value = ? WHERE id = ?", [
+    memo,
+    String(masterId),
+  ]);
+};
+
+export const deleteMemoAsync = async (masterId: number) => {
+  await exWithTx("DELETE FROM memo WHERE id = ?", [String(masterId)]);
+};
+
+type NoticeData = {
+  notificationId: string;
+  noticeDate: string;
+};
+
+// notice Table について
+// done:  0:success, 1:not yet.
+export const getNoticesAsync = async (
+  masterId: number
+): Promise<NoticeData[] | null> => {
+  const raw = await exWithReadTx<NoticeData[]>(
+    "SELECT notificationId, noticeDate FROM notice WHERE done = 1 AND notificationId IS NOT NULL AND id = ?",
+    [String(masterId)]
+  );
+  if (raw.length === 0) return null;
+  return raw;
+};
+
+// "SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1"
+export const getNoticesOnlyFutureAndNotComplete = async (
+  masterId: number,
+  targetDate: string
+): Promise<NoticeData[] | null> => {
+  const raw = await exWithReadTx<NoticeData[]>(
+    "SELECT notificationId, noticeDate FROM notice WHERE done = 1 AND notificationId IS NOT NULL AND id = ? AND noticeDate > ?",
+    [String(masterId), targetDate]
+  );
+  if (raw.length === 0) return null;
+  return raw;
+};

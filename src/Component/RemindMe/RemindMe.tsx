@@ -1,549 +1,348 @@
-import React, {Component} from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  Image,
-  Keyboard,
-  ScrollView,
-  StyleSheet,
-  Switch,
+  Box,
+  Button,
+  Center,
+  FormControl,
+  Input,
+  VStack,
   Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from "react-native";
-import {Icons} from "../../Config/Assets";
-import {locale} from "../../Config/Locale";
-import {getNoticeIntervals, getTitlesAsync} from "../../IO/SQLite";
-import {Actionsheet, CheckIcon, Input, Select, TextArea} from "native-base";
-import {IRemindUsageSituation, Remind, remindService, remindUsageSituationDto, RepeatSetting} from "./lib";
-import {resetToHome} from "../../Config/RouterLib";
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import {RootStackParamList} from "../../Router";
+  ScrollView,
+  TextArea,
+  Select,
+  CheckIcon,
+  ChevronDownIcon,
+  Actionsheet,
+} from "native-base";
+import { locale } from "../../Config/Locale";
+import { StyleSheet, View, Switch } from "react-native";
+import { Remind, RepeatSetting } from "./lib";
+import { RemindService } from "../../Service/RemindService";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../Router";
+import { getNoticeIntervals, getTitlesAsync } from "../../IO/SQLite";
+import { Loading } from "../BackGround";
+import { str2int } from "../../Config/Libs";
+import { resetToHome } from "../../Config/RouterLib";
+import { TabKey } from "../../Config/Const";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'RemindMe'>;
+type Props = NativeStackScreenProps<RootStackParamList, "RemindMe">;
 
-enum VISIBLE_MODAL {
-  DEFAULT,
-  TITLE,
-}
+type InitState = {
+  type: "Init";
+};
 
-interface SRemindMe extends IRemindUsageSituation {
-  remind: Remind;
+type OptionProps = {
+  titleHistory: string[];
   repeatSetting: RepeatSetting;
-  visibleModal: VISIBLE_MODAL;
-  recordedTitles: string[];
-  keyboardHidden: boolean; // TODO
-  titleError: string; // TODO
-}
+};
 
-export default class RemindMe extends Component<Props, SRemindMe> {
-  keyboardWillHideListener: any
-  keyboardDidHideListener: any
-  constructor(props: any) {
-    super(props);
+type LoadedState = {
+  type: "Loaded";
+} & OptionProps;
 
-    this.state = {
-      remind: new Remind(),
-      repeatSetting: new RepeatSetting(),
-      visibleModal: VISIBLE_MODAL.DEFAULT,
-      canUseRange: true,
-      canUseMemo: false,
-      recordedTitles: [],
-      isRepeatable: false,
-      isNotice: false,
-      titleError: "",
-      keyboardHidden: true,
-    };
-  }
+type ModalState = {
+  type: "Modal";
+  screen: "TitleSelect" | "NoticeSelect";
+} & OptionProps;
 
-  componentDidMount() {
-    getTitlesAsync().then((titles) => this.setState({
-      recordedTitles: titles.map((obj) => obj.title)
-    }))
+type ViewState = InitState | LoadedState | ModalState;
 
-    getNoticeIntervals().then((noticeIntervals) => {
-      const repeatSetting = new RepeatSetting({
-        ownSettings: noticeIntervals,
-      })
-
-      this.setState({
-        repeatSetting: repeatSetting,
-        isRepeatable: true
-      })
-    })
-
-    this.keyboardWillHideListener = Keyboard.addListener(
-      "keyboardWillHide",
-      this._keyboardWillHide.bind(this)
-    );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      this._keyboardDidHide.bind(this)
-    );
-  }
-
-  onRegister = () => {
-    const {remind, repeatSetting} = this.state;
-
-    if (remind.isValid()) {
-      const dto = remindUsageSituationDto(this.state);
-      remindService(remind, repeatSetting, dto).then(() => {
-        Alert.alert(locale.data.done, "", [
-          {
-            text: "OK",
-            onPress: () => {
-              resetToHome(this.props.navigation);
-            },
-          },
-        ]);
-      })
-    } else {
-      this.setState({ titleError: locale.register.errTitle });
+export const RemindMe = ({ navigation }: Props) => {
+  const { register } = locale;
+  const [remind, setRemind] = useState(
+    new Remind({ title: "", memo: "", range: { start: 1, end: 1 } })
+  );
+  const [viewState, setViewState] = useState<ViewState>({ type: "Init" });
+  useEffect(() => {
+    if (viewState.type === "Init") {
+      Promise.all([getTitlesAsync(), getNoticeIntervals()]).then(
+        ([titles, noticeIntervals]) => {
+          const repeatSetting = new RepeatSetting({
+            ownSettings: noticeIntervals,
+          });
+          setViewState({
+            type: "Loaded",
+            titleHistory: titles,
+            repeatSetting: repeatSetting,
+          });
+        }
+      );
     }
+  });
+
+  const [canUseRange, setUseRange] = useState(true);
+  const [canUseMemo, setUseMemo] = useState(true);
+  const [canUseRepeat, setUseRepeat] = useState(true);
+
+  if (viewState.type === "Init") {
+    return <Loading />;
   }
 
-  _renderButton = (text: string, onPress: any, style: any) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={style}>
-        <Text style={styles.styles.registerText}>{text}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const { repeatSetting, titleHistory } = viewState;
 
-  titleForm = () => (
-    <View style={styles.container.title}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.styles.titleLabel}>{locale.register.title}</Text>
-        <Text style={{ color: "red" }}>{this.state.titleError}</Text>
-      </View>
-      <View style={{ flex: 1, borderColor: "pink", borderWidth: 0 }}>
-        <TextInput
-          style={styles.styles.titleInputBox}
-          onChangeText={(text) => this.setState({
-            remind: this.state.remind.setTitle(text),
-            titleError: ""
-          })}
-          value={this.state.remind.title}
-          maxLength={200}
-          underlineColorAndroid={"white"}
-        />
-        {this._selectRecordedTitleButton()}
-      </View>
-    </View>
-  );
-
-  _selectRecordedTitleButton = () => {
-    if (this.state.recordedTitles.length === 0) return null;
-    return (
-      <View
-        style={{
-          position: "absolute",
-          top: 3,
-          right: 5,
-          overflow: "visible",
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => this.setState({ visibleModal: VISIBLE_MODAL.TITLE })}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Image
-            // eslint-disable-next-line no-undef
-            source={Icons.remind.modalButton}
-            style={styles.styles.titleListIcom}
-          />
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  renderTitleModal = () => {
-    const {visibleModal, recordedTitles} = this.state;
-    const isOpen = visibleModal === VISIBLE_MODAL.TITLE;
-    const onClose = () => this.setState({visibleModal: VISIBLE_MODAL.DEFAULT});
-    const onSelect = (title: string) => () => this.setState({
-      remind: this.state.remind.setTitle(title),
-      visibleModal: VISIBLE_MODAL.DEFAULT
-    })
-
-    const selectItems = recordedTitles.map((title, i) => (
-      <Select.Item onPress={onSelect(title)} label={title} value={title} key={i} />
-    ))
-
-    return (
-      <Actionsheet isOpen={isOpen} onClose={onClose}>
-        <Actionsheet.Content >
-          <ScrollView style={{maxHeight: 200}} >
-            {selectItems}
-          </ScrollView>
-        </Actionsheet.Content>
-      </Actionsheet>
-    )
-  }
-
-  rangeForm = () => (
-    <View style={styles.container.page}>
-      <View style={styles.container.switch}>
-        <Text style={styles.styles.titleLabel}>{locale.register.page}</Text>
-        <Switch
-          onValueChange={() => this.setState({ canUseRange: !this.state.canUseRange })}
-          value={this.state.canUseRange}
-        />
-      </View>
-      {this._rangeForm()}
-    </View>
-  );
-
-  _rangeForm = () => {
-    const {canUseRange, remind} = this.state;
-    if (!canUseRange) return;
-
-    return (
-      <View style={styles.container.pageSet}>
-        <Input
-          keyboardType={"numeric"}
-          w={20}
-          defaultValue={String(remind.range.start)}
-          onChangeText={(text) => {
-            const n = Number(text)
-            this.setState({
-              remind: remind.setStartRange(n),
-            })
-          }}
-        />
-        <Text style={{ fontSize: 20, marginLeft: 30, marginRight: 30 }}>
-          〜
-        </Text>
-        <Input
-          keyboardType={"numeric"}
-          w={20}
-          defaultValue={String(remind.range.end)}
-          onChangeText={(text) => {
-            const n = Number(text)
-            this.setState({
-              remind: remind.setEndRange(n),
-            })
-          }}
-        />
-      </View>
-    );
-  }
-
-  memoForm = () => (
-    <View style={styles.container.page}>
-      <View style={styles.container.switch}>
-        <Text style={styles.styles.titleLabel}>{locale.register.memo}</Text>
-        <Switch
-          onValueChange={() => this.setState({ canUseMemo: !this.state.canUseMemo })}
-          value={this.state.canUseMemo}
-        />
-      </View>
-      {this._renderMemoInputBox()}
-    </View>
-  );
-
-  _renderMemoInputBox = () => {
-    if (!this.state.canUseMemo) return;
-
-    return (
-      <View style={styles.container.boxContainer}>
-        <TextArea
-          h={20}
-          onChangeText={(text) => this.setState({
-            remind: this.state.remind.setMemo(text)
-          })}
-        />
-      </View>
-    );
+  const handleTitleSelect = (selected: string) => () => {
+    setRemind(remind.setTitle(selected));
+    setViewState({
+      ...viewState,
+      type: "Loaded",
+    });
   };
 
-  repeatSettingForm = () => (
-    <View style={styles.container.page}>
-      <View style={styles.container.switch}>
-        <Text style={styles.styles.titleLabel}>{locale.register.repeat}</Text>
-        <Switch
-          onValueChange={() => this.setState({ isRepeatable: !this.state.isRepeatable })}
-          value={this.state.isRepeatable}
-        />
-      </View>
-      {this._notice()}
-      {this._renderRepeatList()}
-    </View>
+  return (
+    <Box flex="1">
+      <ScrollView>
+        <Center>
+          <Box safeArea p="1" w="90%" py="1">
+            <VStack space={2} mt="5">
+              <FormControl isRequired isInvalid={!remind.validTitle()}>
+                <FormControl.Label>{register.title}</FormControl.Label>
+                <Input
+                  defaultValue={remind.title}
+                  value={remind.title}
+                  onChangeText={(text) => {
+                    setRemind(remind.setTitle(text));
+                  }}
+                  InputRightElement={
+                    <Button
+                      style={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+                      w="15%"
+                      h="100%"
+                      onPress={() =>
+                        setViewState({
+                          ...viewState,
+                          type: "Modal",
+                          screen: "TitleSelect",
+                        })
+                      }
+                    >
+                      <ChevronDownIcon size="5" />
+                    </Button>
+                  }
+                />
+                <View style={{ height: 30 }}>
+                  <FormControl.ErrorMessage pl="1">
+                    {register.errTitle}
+                  </FormControl.ErrorMessage>
+                </View>
+
+                <TitleSelector
+                  titles={titleHistory}
+                  isOpen={
+                    viewState.type === "Modal" &&
+                    viewState.screen === "TitleSelect"
+                  }
+                  onPress={handleTitleSelect}
+                  onClose={() =>
+                    setViewState({
+                      ...viewState,
+                      type: "Loaded",
+                    })
+                  }
+                />
+              </FormControl>
+              <FormControl mt="3">
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <FormControl.Label>{register.page}</FormControl.Label>
+                  <Switch
+                    value={canUseRange}
+                    onValueChange={(v) => {
+                      setUseRange(v);
+                    }}
+                  />
+                </View>
+                {canUseRange ? (
+                  <View style={styles.rangeView}>
+                    <Input
+                      keyboardType={"numeric"}
+                      w={20}
+                      defaultValue={String(remind.range.start)}
+                      value={String(remind.range.start)}
+                      onChangeText={(text) => {
+                        setRemind(remind.setStartRange(str2int(text)));
+                      }}
+                    />
+                    <Text style={styles.rangeText}>〜</Text>
+                    <Input
+                      keyboardType={"numeric"}
+                      w={20}
+                      defaultValue={String(remind.range.end)}
+                      value={String(remind.range.end)}
+                      onChangeText={(text) => {
+                        setRemind(remind.setEndRange(str2int(text)));
+                      }}
+                    />
+                  </View>
+                ) : null}
+              </FormControl>
+              <FormControl mt="3">
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <FormControl.Label>{register.memo}</FormControl.Label>
+                  <Switch
+                    value={canUseMemo}
+                    onValueChange={(v) => {
+                      setUseMemo(v);
+                    }}
+                  />
+                </View>
+                {canUseMemo ? (
+                  <TextArea
+                    h={20}
+                    onChangeText={(text) => setRemind(remind.setMemo(text))}
+                    defaultValue={remind.memo}
+                    value={remind.memo}
+                  />
+                ) : null}
+              </FormControl>
+              <FormControl mt="3">
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <FormControl.Label>{register.repeat}</FormControl.Label>
+                  <Switch
+                    value={canUseRepeat}
+                    onValueChange={(v) => {
+                      setUseRepeat(v);
+                    }}
+                  />
+                </View>
+                {canUseRepeat ? (
+                  <NoticeSelecter
+                    repeatSetting={repeatSetting}
+                    onPress={(id) => {
+                      setViewState({
+                        ...viewState,
+                        repeatSetting:
+                          viewState.repeatSetting.setCurrentSetting(Number(id)),
+                      });
+                    }}
+                  />
+                ) : null}
+              </FormControl>
+            </VStack>
+          </Box>
+        </Center>
+      </ScrollView>
+      <Center>
+        <Box p="1" w="90%" py="2">
+          <Button.Group space={2}>
+            <Button
+              mt="2"
+              variant="ghost"
+              colorScheme="blueGray"
+              onPress={() => navigation.goBack()}
+            >
+              {register.cancel}
+            </Button>
+            <Button
+              isDisabled={!remind.isValid()}
+              onPress={async () => {
+                await RemindService.register(
+                  remind,
+                  repeatSetting,
+                  canUseRange,
+                  canUseMemo,
+                  canUseRepeat
+                );
+                resetToHome(navigation);
+                navigation.navigate(TabKey.Calendar);
+              }}
+              mt="2"
+              w="75%"
+            >
+              {register.registerButton}
+            </Button>
+          </Button.Group>
+        </Box>
+      </Center>
+    </Box>
   );
+};
 
-  _renderRepeatList = () => {
-    if (!this.state.isRepeatable || this.state.repeatSetting.ownSettings.length === 0) return;
-
-    const { repeatSetting } = this.state;
-
-    const defaultValue = repeatSetting.getCurrentSetting().name
-    const selectItems = this.state.repeatSetting.ownSettings.map((noticeInterval, i) => (
-      <Select.Item label={noticeInterval.name} value={String(noticeInterval.id)} key={i} />
-    ))
-
-    return (
-      <Select
-        selectedValue={defaultValue}
-        minWidth={200}
-        accessibilityLabel={defaultValue}
-        placeholder={defaultValue}
-        onValueChange={(itemValue) => {
-          const id = Number(itemValue)
-          this.setState({
-            repeatSetting: this.state.repeatSetting.setCurrentSetting(id)
-          })
-        }}
-        _selectedItem={{
-          bg: "cyan.600",
-          endIcon: <CheckIcon size={4} />,
-        }}
-      >
-        {selectItems}
-      </Select>
-    )
-  };
-
-  _notice = () => {
-    if (!this.state.isRepeatable) return;
-    return (
-      <View style={styles.container.page}>
-        <View style={styles.container.subContents}>
-          <Text style={styles.styles.subTitleLabel}>・{locale.register.notice}</Text>
-          <Switch
-            onValueChange={() => this.setState({ isNotice: !this.state.isNotice })}
-            style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }] }}
-            value={this.state.isNotice}
-          />
-        </View>
-      </View>
-    );
-  };
-
-  _keyboardWillHide() {
-    // console.log("Keyboard will show");
-    this.setState({ keyboardHidden: false });
-  }
-
-  _keyboardDidHide() {
-    // console.log("Keyboard Hidden");
-    this.setState({ keyboardHidden: true });
-  }
-
-  render() {
-    return (
-      // 画面全体に判定を持ち、条件に応じて処理する。
-      <TouchableOpacity
-        style={styles.container.modalBackground}
-        disabled={this.state.keyboardHidden}
-        activeOpacity={0}
-        onPress={() => Keyboard.dismiss}
-        accessible={false}
-      >
-        <View style={styles.container.container}>
-          <View style={styles.container.view}>
-            <ScrollView style={{ flex: 1 }}>
-              <View style={styles.params.title}>{this.titleForm()}</View>
-
-              <View style={styles.params.param}>{this.rangeForm()}</View>
-              <View style={styles.params.param}>{this.memoForm()}</View>
-              <View style={styles.params.param}>{this.repeatSettingForm()}</View>
-
-              <View style={styles.container.blank}/>
-            </ScrollView>
-          </View>
-          <View style={styles.container.register}>
-            {this._renderButton(
-              locale.register.registerButton,
-              this.onRegister,
-              styles.styles.registerButton
-            )}
-          </View>
-          {this.renderTitleModal()}
-        </View>
-      </TouchableOpacity>
-    );
-  }
+function TitleSelector({
+  titles,
+  isOpen,
+  onPress,
+  onClose,
+}: {
+  titles: string[];
+  isOpen: boolean;
+  onPress: (selected: string) => () => void;
+  onClose: () => void;
+}) {
+  return (
+    <Actionsheet isOpen={isOpen} onClose={onClose}>
+      <Actionsheet.Content>
+        <ScrollView style={{ maxHeight: 200 }}>
+          {titles.map((title) => (
+            <Select.Item
+              onPress={onPress(title)}
+              label={title}
+              value={title}
+              key={title}
+            />
+          ))}
+        </ScrollView>
+      </Actionsheet.Content>
+    </Actionsheet>
+  );
 }
 
-const styles = {
-  container: StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: 'white',
-
-    },
-    view: {
-      flex: 9,
-      //alignItems: 'center',
-    },
-    register: {
-      height: 70
-    },
-    title: {
-      width: '100%',
-      height: '100%',
-      paddingTop: 10,
-      paddingLeft: 10,
-      paddingRight: 10,
-      flex: 1,
-
-    },
-    page: {
-
-    },
-    switch: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingTop: 5,
-      paddingBottom: 5,
-      paddingLeft: 10,
-      paddingRight: 10,
-      borderColor: 'gray',
-      borderBottomWidth: 1,
-      borderTopWidth: 1,
-      width: '100%'
-    },
-    subContents: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingTop: 3,
-      paddingBottom: 3,
-      paddingLeft: 10,
-      paddingRight: 10,
-      borderColor: 'gray',
-      borderBottomWidth: 1,
-      borderTopWidth: 1,
-      width: '100%',
-      backgroundColor: 'whitesmoke'
-    },
-    pageSet: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 10,
-      borderColor: 'gray',
-      borderBottomWidth: 1,
-    },
-    pageModal: {
-      backgroundColor: 'white',
-      flex: 0.4,
-      justifyContent: 'space-between',
-      alignContent: 'center',
-      borderRadius: 10,
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-    },
-    modalBackground: {
-      flex: 1,
-    },
-    boxContainer: {
-      padding: 10,
-      borderWidth: 0,
-      borderColor: 'blue'
-    },
-    blank: {
-      height: 300
-    }
-  }),
-
-  params: StyleSheet.create({
-    title: {
-      height: 100,
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderColor: 'gray',
-      borderBottomWidth: 1,
-
-    },
-
-
-    param: {
-      width: '100%',
-      borderColor: 'gray',
-      borderWidth: 0
-    },
-    notice: {
-      width: '100%',
-      marginTop: 5,
-      borderColor: 'gray',
-    },
-
-  }),
-
-
-  styles: StyleSheet.create({
-    registerButton: {
-      backgroundColor: 'lightblue',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      width: '100%',
-      height: '100%',
-    },
-    pageButton: {
-      backgroundColor: 'powderblue',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      borderRadius: 10,
-      width: 80,
-      height: 40,
-    },
-    titleLabel: {
-      fontSize: 20,
-    },
-    subTitleLabel: {
-      fontSize: 16,
-      paddingLeft: 14
-    },
-    titleInputBox: {
-      height: 30,
-      width: '100%',
-      fontSize: 20,
-      paddingLeft: 5,
-      borderRadius: 5,
-      borderColor: 'powderblue',
-      borderWidth: 2,
-      backgroundColor: 'white',
-      position: 'absolute',
-    },
-    modalButton: {
-      backgroundColor: 'lightblue',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      borderRadius: 10,
-      width: '100%',
-      height: 50,
-    },
-    registerText: {
-      fontWeight: 'bold',
-      fontSize: 30,
-    },
-    pageText: {
-      fontSize: 20
-    },
-    cameraIcon: {
-      width: 20,
-      height: 20,
-      overflow: 'visible',
-      position: 'absolute',
-      top: 5,
-      right: 5
-    },
-    inputBox: {
-      height: 80,
-      borderWidth: 2,
-      borderRadius: 5,
-      paddingLeft: 5,
-      borderColor: 'powderblue',
-      backgroundColor: 'whitesmoke'
-    },
-    titleListIcom: {
-      width: 25,
-      height: 25,
-    }
-  })
+function NoticeSelecter({
+  repeatSetting,
+  onPress,
+}: {
+  repeatSetting: RepeatSetting;
+  onPress: (value: string) => void;
+}) {
+  const selectedValue = String(repeatSetting.getCurrentSetting().id);
+  return (
+    <Select
+      variant="underlined"
+      selectedValue={selectedValue}
+      _selectedItem={{
+        bg: "emerald.500",
+        endIcon: <CheckIcon size="5" />,
+      }}
+      mt={1}
+      onValueChange={onPress}
+    >
+      {repeatSetting.ownSettings.map((setting) => (
+        <Select.Item
+          label={setting.name}
+          value={String(setting.id)}
+          key={setting.name}
+        />
+      ))}
+    </Select>
+  );
 }
+
+const styles = StyleSheet.create({
+  rangeView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+  },
+  rangeText: { fontSize: 20, marginLeft: 30, marginRight: 30 },
+});

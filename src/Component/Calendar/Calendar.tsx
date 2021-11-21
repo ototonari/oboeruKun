@@ -1,60 +1,96 @@
-import React, {useEffect, useState} from "react";
-import {Agenda, DateObject} from "react-native-calendars";
-import {CalendarItemsProps, initializeCalender, ItemProps,} from "./Action";
+import React, { useEffect, useState } from "react";
+import { Agenda, DateObject } from "react-native-calendars";
+import { CalendarItemsProps, initializeCalender, ItemProps } from "./Action";
 import Cell from "./Cell";
-import {hasShownTutorials} from "../../Config/Libs";
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import {RootStackParamList} from "../../Router";
-import {ScreenKey} from "../../Config/Const";
-import {EditModal} from "./EditModal";
-import {Loading} from "../BackGround";
-import {initState, ViewState} from "./state";
+import { hasShownTutorials } from "../../Config/Libs";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../Router";
+import { ScreenKey } from "../../Config/Const";
+import { EditModal } from "./EditModal";
+import { Loading } from "../BackGround";
+import { initState, ViewState } from "./state";
+import { AddIcon, Button } from "native-base";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Calender'>;
+type Props = NativeStackScreenProps<RootStackParamList, "Calender">;
 
-const getItem = (items: CalendarItemsProps, key: string, id: number): ItemProps => {
-  const itemProps = items[key].find(item => item.id === id);
-  if (!itemProps) throw new Error("invalid invoke.")
+const getItem = (
+  items: CalendarItemsProps,
+  key: string,
+  id: number
+): ItemProps => {
+  const itemProps = items[key].find((item) => item.id === id);
+  if (!itemProps) throw new Error("invalid invoke.");
   return itemProps;
-}
+};
 
-export const Calendar = ({navigation}: Props) => {
-  const [state, setState] = useState<ViewState>(initState)
+export const Calendar = ({ navigation }: Props) => {
+  const [state, setState] = useState<ViewState>(initState);
+  const { items } = state;
 
-  const updateCalendar = (day?: DateObject) => {
-    initializeCalender(day).then((items) => {
+  const setInitState = async () => setState(initState);
+
+  const updateCalendar = async (day?: DateObject) => {
+    await initializeCalender(day).then((items) => {
       setState({
-        type: 'Basic',
+        type: "Basic",
         items: items,
-        targetDay: day ? new Date(day.dateString) : new Date()
-      })
+        targetDay: day ? new Date(day.dateString) : new Date(),
+      });
     });
-  }
+  };
+
+  const HeaderRightButton = () => (
+    <Button
+      style={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+      onPress={() => {
+        navigation.push(ScreenKey.RemindMe);
+      }}
+    >
+      <AddIcon size="5" color="emerald.500" />
+    </Button>
+  );
 
   useEffect(() => {
-    if (state.type === 'Init') {
-      hasShownTutorials()
-      .then((done) => {
-        if (!done) navigation.navigate(ScreenKey.Tutorial);
-      })
-      .finally(updateCalendar)
-    }
-  })
+    navigation.setOptions({
+      headerRight: HeaderRightButton,
+    });
 
-  if (state.type === 'Init') {
-    return <Loading/>;
+    if (state.type === "Init") {
+      hasShownTutorials()
+        .then((done) => {
+          if (!done) navigation.navigate(ScreenKey.Tutorial);
+        })
+        .finally(updateCalendar);
+    }
+  });
+
+  if (state.type === "Init") {
+    return (
+      <Agenda
+        items={items}
+        selected={new Date()}
+        renderEmptyData={() => <Loading />}
+        onDayPress={() => {}}
+        renderItem={(item) => (
+          <Cell item={item} key={item.id} onPress={() => {}} />
+        )}
+        renderEmptyDate={() => null}
+        rowHasChanged={(r1, r2) => r1.data.areEqual(r2.data)}
+      />
+    );
   } else {
-    const {items} = state;
-    const onEditStart = (id: number, key: string) => setState({
-      ...state,
-      type: 'Editable',
-      itemId: id,
-      itemKey: key
-    })
-    const onEditEnd = () => setState({
-      ...state,
-      type: "Basic"
-    })
+    const onEditStart = (id: number, key: string) =>
+      setState({
+        ...state,
+        type: "Editable",
+        itemId: id,
+        itemKey: key,
+      });
+    const onEditEnd = () =>
+      setState({
+        ...state,
+        type: "Basic",
+      });
 
     return (
       <>
@@ -65,14 +101,11 @@ export const Calendar = ({navigation}: Props) => {
           onDayPress={updateCalendar}
           // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
           selected={state.targetDay}
-          renderItem={(item => <Cell item={item} key={item.id} onPress={onEditStart}/>)}
+          renderItem={(item) => (
+            <Cell item={item} key={item.id} onPress={onEditStart} />
+          )}
           renderEmptyDate={() => null}
-          rowHasChanged={(r1, r2) => {
-            const a = r1.title !== r2.title
-            const b = !!r1.memo && !!r2.memo && r1.memo !== r2.memo
-            const c = !!r1.page && !!r2.page && (r1.page.startPage !== r2.page.startPage || r1.page.endPage !== r2.page.endPage)
-            return a || b || c;
-          }}
+          rowHasChanged={(r1, r2) => r1.data.areEqual(r2.data)}
           //maxDate={'2018-03-12'}
           // pastScrollRange={3}
           // futureScrollRange={3}
@@ -90,14 +123,14 @@ export const Calendar = ({navigation}: Props) => {
           // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
           //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
         />
-        {state.type === 'Editable' ? (
+        {state.type === "Editable" ? (
           <EditModal
             item={getItem(items, state.itemKey, state.itemId)}
-            onEdit={updateCalendar}
+            onEdit={setInitState}
             onCancel={onEditEnd}
           />
         ) : null}
       </>
-    )
+    );
   }
-}
+};

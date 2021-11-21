@@ -1,25 +1,27 @@
-import {CalendarItemsProps} from "./Action";
+import { CalendarItemsProps } from "./Action";
 
 type InitState = {
-  type: 'Init'
-}
+  type: "Init";
+  items: CalendarItemsProps;
+};
 
 export const initState: InitState = {
-  type: "Init"
-}
+  type: "Init",
+  items: {},
+};
 
 type BasicState = {
-  type: 'Basic',
-  items: CalendarItemsProps,
-  targetDay: Date
-}
+  type: "Basic";
+  items: CalendarItemsProps;
+  targetDay: Date;
+};
 
 type EditableState = {
-  type: 'Editable',
-  itemId: number,
-  itemKey: string,
-  items: CalendarItemsProps,
-  targetDay: Date
-}
+  type: "Editable";
+  itemId: number;
+  itemKey: string;
+  items: CalendarItemsProps;
+  targetDay: Date;
+};
 
-export type ViewState = InitState | BasicState | EditableState
+export type ViewState = InitState | BasicState | EditableState;
