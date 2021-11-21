@@ -3,6 +3,7 @@ import {NativeBaseProvider} from 'native-base';
 import AppLoading from 'expo-app-loading';
 import AppRouter from "./src/Router";
 import {initialization} from "./src/Config/Libs";
+import {BackGround} from "./src/Component/BackGround";
 
 enum USER_STATUS {
   INITIALIZE,
@@ -34,6 +35,7 @@ function App() {
       return (
         <NativeBaseProvider>
           <AppRouter/>
+          <BackGround />
         </NativeBaseProvider>
       );
   }

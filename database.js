@@ -162,12 +162,12 @@ export async function insertPage(id, page) {
   });
 }
 
-export async function insertNotice(id, notificationId, noticeDate) {
+export async function insertNotice(masterId, notificationId, noticeDate) {
   return new Promise((resolve) => {
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO notice (id, notificationId, noticeDate) values (?, ?, ?)",
-        [id, notificationId, noticeDate],
+        [masterId, notificationId, noticeDate],
         () => {
           console.log("insertNotice success");
           resolve();
