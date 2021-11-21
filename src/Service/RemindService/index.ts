@@ -10,32 +10,26 @@ import {
   updateRangeAsync,
   updateTitleAsync,
 } from "../../IO/SQLite";
-import { checkTitle, insertMaster } from "../../../database";
-import { NoticeService } from "../NoticeService";
 
 export interface IRemindService {
   register: (
+    masterId: number,
     remind: Remind,
     repeatSetting: RepeatSetting,
     canUseRange: boolean,
     canUseMemo: boolean,
-    canUseRepeat: boolean
   ) => Promise<void>;
   update: (masterId: number, after: Remind, before: Remind) => Promise<void>;
 }
 
 // Remindを通知と保存を行う。
 const registerRemind = async (
+  masterId: number,
   remind: Remind,
   repeatSetting: RepeatSetting,
   canUseRange: boolean,
   canUseMemo: boolean,
-  canUseRepeat: boolean
 ) => {
-  console.log(remind.title);
-  checkTitle(remind.title);
-  const masterId = await insertMaster(remind.title);
-
   if (canUseRange) {
     const pageInfo = JSON.stringify({
       startPage: remind.range.start,
@@ -46,15 +40,9 @@ const registerRemind = async (
   if (canUseMemo) {
     await insertMemoAsync(masterId, remind.memo);
   }
-
-  if (canUseRepeat) {
-    await NoticeService.registerNotices(masterId, remind, repeatSetting);
-  } else {
-    await NoticeService.registerNotice(masterId, remind);
-  }
 };
 
-const update = async (masterId: number, after: Remind, before: Remind) => {
+const updateSpecificRemind = async (masterId: number, after: Remind, before: Remind) => {
   if (after.areEqual(before)) return;
 
   if (!after.areEqualTitle(before)) {
@@ -94,5 +82,5 @@ const update = async (masterId: number, after: Remind, before: Remind) => {
 // 外部提供用
 export const RemindService: IRemindService = {
   register: registerRemind,
-  update: update,
+  update: updateSpecificRemind,
 };

@@ -9,7 +9,8 @@ import { ScreenKey } from "../../Config/Const";
 import { EditModal } from "./EditModal";
 import { Loading } from "../BackGround";
 import { initState, ViewState } from "./state";
-import { AddIcon, Button } from "native-base";
+import {Button, Icon} from "native-base";
+import { AntDesign } from '@expo/vector-icons';
 
 type Props = NativeStackScreenProps<RootStackParamList, "Calender">;
 
@@ -27,7 +28,7 @@ export const Calendar = ({ navigation }: Props) => {
   const [state, setState] = useState<ViewState>(initState);
   const { items } = state;
 
-  const setInitState = async () => setState(initState);
+  const setInitState = () => setState(initState);
 
   const updateCalendar = async (day?: DateObject) => {
     await initializeCalender(day).then((items) => {
@@ -46,7 +47,12 @@ export const Calendar = ({ navigation }: Props) => {
         navigation.push(ScreenKey.RemindMe);
       }}
     >
-      <AddIcon size="5" color="emerald.500" />
+      <Icon
+        as={AntDesign}
+        name="pluscircle"
+        size="6"
+        color="emerald.500"
+      />
     </Button>
   );
 
@@ -72,7 +78,7 @@ export const Calendar = ({ navigation }: Props) => {
         renderEmptyData={() => <Loading />}
         onDayPress={() => {}}
         renderItem={(item) => (
-          <Cell item={item} key={item.id} onPress={() => {}} />
+          <Cell item={item} key={item.id} onEdit={() => {}} onComplete={() => {}} />
         )}
         renderEmptyDate={() => null}
         rowHasChanged={(r1, r2) => r1.data.areEqual(r2.data)}
@@ -102,7 +108,7 @@ export const Calendar = ({ navigation }: Props) => {
           // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
           selected={state.targetDay}
           renderItem={(item) => (
-            <Cell item={item} key={item.id} onPress={onEditStart} />
+            <Cell item={item} key={item.id} onEdit={onEditStart} onComplete={setInitState} />
           )}
           renderEmptyDate={() => null}
           rowHasChanged={(r1, r2) => r1.data.areEqual(r2.data)}

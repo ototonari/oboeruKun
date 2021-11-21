@@ -1,43 +1,107 @@
-import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import React, {useRef, useState} from "react";
+import {Text, View, StyleSheet, TouchableOpacity, Animated, Dimensions} from "react-native";
 import { ItemProps } from "./Action";
 import { locale } from "../../Config/Locale";
+import {Icon} from "native-base";
+import { AntDesign } from '@expo/vector-icons';
+import {UseCase} from "../../UseCase";
 
 interface CellPropsI {
   item: ItemProps;
-  onPress: (id: number, key: string) => void;
+  onEdit: (id: number, key: string) => void;
+  onComplete: () => void;
 }
 
-function _Cell(props: CellPropsI) {
-  const { item, onPress } = props;
-  const { data: remind } = item;
+const SCREEN_WIDTH = Dimensions.get("window").width
+const ACTIONS_WIDTH = 150
+const ACTIONS_TIME = 250
+
+function expandAnimation(value: Animated.Value) {
+  Animated.timing(value, {
+    toValue: -ACTIONS_WIDTH,
+    duration: ACTIONS_TIME,
+    useNativeDriver: true
+  }).start()
+}
+
+function closeAnimaiton(value: Animated.Value) {
+  Animated.timing(value, {
+    toValue: 0,
+    duration: ACTIONS_TIME,
+    useNativeDriver: true
+  }).start()
+}
+
+function Cell (props: CellPropsI) {
   const { data } = locale;
-  const _onPress = () => onPress(item.id, item.noticeDate);
+  const { item, onEdit, onComplete } = props;
+  const { data: remind } = item;
+  const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedStyle = { transform: [{ translateX: animatedValue }] }
+  const [isExpand, setExpand] = useState(false);
+
+  const _onComplete = async () => {
+    await UseCase.completeNotice(item.id, item.noticeDate);
+    // setExpand(false);
+    // closeAnimaiton(animatedValue);
+    await onComplete();
+  }
+
+  const _onEdit = () => {
+    setExpand(false);
+    closeAnimaiton(animatedValue);
+    onEdit(item.id, item.noticeDate);
+  }
+
+  const onTapItem = () => {
+    if (!isExpand) {
+      expandAnimation(animatedValue);
+    } else {
+      closeAnimaiton(animatedValue);
+    }
+    setExpand(!isExpand);
+  }
 
   return (
-    <TouchableOpacity
-      style={[{ flex: 1 }, styles.cellPosition]}
-      onPress={_onPress}
-    >
-      <View style={[{ flex: 1 }, styles.item]}>
-        <Text style={{ fontSize: 15, fontWeight: "bold" }}>{remind.title}</Text>
-        {remind.isUseRange() ? (
-          <Text>
-            {data.page}: {remind.range.start} ~ {remind.range.end}
-          </Text>
-        ) : null}
-        {remind.isUseMemo() ? (
-          <Text>
-            {data.memo}: {remind.memo}
-          </Text>
-        ) : null}
+    <Animated.View style={[styles.cellPosition, {flexDirection: "row", alignItems: "center"}, animatedStyle]} >
+      <TouchableOpacity
+        onPress={onTapItem}
+      >
+        <View style={[styles.item, {width: SCREEN_WIDTH}]}>
+          <Text style={{ fontSize: 15, fontWeight: "bold" }}>{remind.title}</Text>
+          {remind.isUseRange() ? (
+            <Text>
+              {data.page}: {remind.range.start} ~ {remind.range.end}
+            </Text>
+          ) : null}
+          {remind.isUseMemo() ? (
+            <Text>
+              {data.memo}: {remind.memo}
+            </Text>
+          ) : null}
+        </View>
+      </TouchableOpacity>
+      <View style={styles.actionsContainer} >
+        <TouchableOpacity style={{marginRight: 20}} onPress={_onEdit} >
+          <Icon
+            as={AntDesign}
+            name="edit"
+            size="6"
+            color="emerald.500"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={{marginLeft: 5}} onPress={_onComplete}>
+          <Icon
+            as={AntDesign}
+            name="checkcircle"
+            size="6"
+            color="emerald.500"
+          />
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
-  );
+    </Animated.View>
+  )
 }
-
-// const Cell = React.memo(_Cell);
-const Cell = _Cell;
 
 const styles = StyleSheet.create({
   item: {
@@ -45,10 +109,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
     padding: 10,
-  },
-  sidebar: {
-    borderRightColor: "#16aef8",
-    borderRightWidth: 2,
   },
   swipeButton: {
     backgroundColor: "white",
@@ -62,6 +122,30 @@ const styles = StyleSheet.create({
     top: 10,
     marginTop: 10,
     marginBottom: 10,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    height: '100%',
+    width: ACTIONS_WIDTH,
+    left: SCREEN_WIDTH,
+    backgroundColor: "white",
+    alignItems: "center",
+    position: "absolute",
+  },
+  main: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: SCREEN_WIDTH,
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+  },
+  container: {
+    flexDirection: "row",
+    width: SCREEN_WIDTH,
+    position: "absolute",
+    alignItems: "center",
+    left: 0,
+    padding: 10
   },
 });
 

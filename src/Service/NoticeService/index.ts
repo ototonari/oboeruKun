@@ -5,7 +5,7 @@ import {
 } from "expo-notifications";
 import { NotificationContentInput } from "expo-notifications/src/Notifications.types";
 import dayjs from "dayjs";
-import { getNoticesOnlyFutureAndNotComplete } from "../../IO/SQLite";
+import {getNoticesOnlyFutureAndNotComplete, updateNoticeAsync} from "../../IO/SQLite";
 import { remindToNotice } from "./dto";
 import { Remind, RepeatSetting } from "../../Component/RemindMe/lib";
 import { insertNotice } from "../../../database";
@@ -23,6 +23,7 @@ export interface INoticeService {
     aDate?: dayjs.Dayjs
   ) => Promise<void>;
   updateNotice: (masterId: number, remind: Remind) => Promise<void>;
+  completeNotice: (masterId: number, noticeDate: string) => Promise<void>;
 }
 
 export interface registerProp extends NotificationRequestInput {}
@@ -111,8 +112,13 @@ const updateNotice = async (masterId: number, remind: Remind) => {
   }
 };
 
+const completeNotice = async (masterId: number, noticeDate: string) => {
+  await updateNoticeAsync(masterId, noticeDate);
+}
+
 export const NoticeService: INoticeService = {
   registerNotices: registerNotices,
   registerNotice: registerNotice,
   updateNotice: updateNotice,
+  completeNotice: completeNotice
 };

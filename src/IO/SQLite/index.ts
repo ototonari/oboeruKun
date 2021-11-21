@@ -162,19 +162,6 @@ type NoticeData = {
   noticeDate: string;
 };
 
-// notice Table について
-// done:  0:success, 1:not yet.
-export const getNoticesAsync = async (
-  masterId: number
-): Promise<NoticeData[] | null> => {
-  const raw = await exWithReadTx<NoticeData[]>(
-    "SELECT notificationId, noticeDate FROM notice WHERE done = 1 AND notificationId IS NOT NULL AND id = ?",
-    [String(masterId)]
-  );
-  if (raw.length === 0) return null;
-  return raw;
-};
-
 // "SELECT * FROM notice WHERE noticeDate >= ? AND noticeDate < ? AND done = 1"
 export const getNoticesOnlyFutureAndNotComplete = async (
   masterId: number,
@@ -187,3 +174,9 @@ export const getNoticesOnlyFutureAndNotComplete = async (
   if (raw.length === 0) return null;
   return raw;
 };
+
+// notice Table について
+// done:  0:success, 1:not yet.
+export const updateNoticeAsync = async (masterId: number, targetDate: string): Promise<void> => {
+  await exWithTx("UPDATE notice SET done = 0 WHERE id = ? AND noticeDate = ?", [String(masterId), targetDate]);
+}

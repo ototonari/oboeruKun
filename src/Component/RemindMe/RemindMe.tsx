@@ -17,7 +17,6 @@ import {
 import { locale } from "../../Config/Locale";
 import { StyleSheet, View, Switch } from "react-native";
 import { Remind, RepeatSetting } from "./lib";
-import { RemindService } from "../../Service/RemindService";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Router";
 import { getNoticeIntervals, getTitlesAsync } from "../../IO/SQLite";
@@ -25,6 +24,7 @@ import { Loading } from "../BackGround";
 import { str2int } from "../../Config/Libs";
 import { resetToHome } from "../../Config/RouterLib";
 import { TabKey } from "../../Config/Const";
+import {UseCase} from "../../UseCase";
 
 type Props = NativeStackScreenProps<RootStackParamList, "RemindMe">;
 
@@ -256,7 +256,7 @@ export const RemindMe = ({ navigation }: Props) => {
             <Button
               isDisabled={!remind.isValid()}
               onPress={async () => {
-                await RemindService.register(
+                await UseCase.registerRemind(
                   remind,
                   repeatSetting,
                   canUseRange,

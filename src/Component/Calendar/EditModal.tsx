@@ -11,12 +11,11 @@ import React, { useState } from "react";
 import { ItemProps } from "./Action";
 import { locale } from "../../Config/Locale";
 import { Switch, StyleSheet } from "react-native";
-import { RemindService } from "../../Service/RemindService";
-import { NoticeService } from "../../Service/NoticeService";
+import {UseCase} from "../../UseCase";
 
 type Props = {
   item: ItemProps;
-  onEdit: () => Promise<void>;
+  onEdit: () => void;
   onCancel: () => void;
 };
 
@@ -128,8 +127,7 @@ export const EditModal = ({ item, onEdit, onCancel }: Props) => {
             <Button
               isDisabled={remind.areEqual(item.data)}
               onPress={async () => {
-                await RemindService.update(item.id, remind, item.data);
-                await NoticeService.updateNotice(item.id, remind);
+                await UseCase.updateRemind(item.id, remind, item.data);
                 await onEdit();
               }}
             >
