@@ -9,8 +9,8 @@ import { ScreenKey } from "../../Config/Const";
 import { EditModal } from "./EditModal";
 import { Loading } from "../BackGround";
 import { initState, ViewState } from "./state";
-import {Button, Icon} from "native-base";
-import { AntDesign } from '@expo/vector-icons';
+import { Button, Icon } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Calender">;
 
@@ -47,12 +47,7 @@ export const Calendar = ({ navigation }: Props) => {
         navigation.push(ScreenKey.RemindMe);
       }}
     >
-      <Icon
-        as={AntDesign}
-        name="pluscircle"
-        size="6"
-        color="emerald.500"
-      />
+      <Icon as={AntDesign} name="pluscircle" size="6" color="emerald.500" />
     </Button>
   );
 
@@ -78,7 +73,12 @@ export const Calendar = ({ navigation }: Props) => {
         renderEmptyData={() => <Loading />}
         onDayPress={() => {}}
         renderItem={(item) => (
-          <Cell item={item} key={item.id} onEdit={() => {}} onComplete={() => {}} />
+          <Cell
+            item={item}
+            key={item.id}
+            onEdit={() => {}}
+            onComplete={() => {}}
+          />
         )}
         renderEmptyDate={() => null}
         rowHasChanged={(r1, r2) => r1.data.areEqual(r2.data)}
@@ -108,7 +108,12 @@ export const Calendar = ({ navigation }: Props) => {
           // onCalendarToggled={(calendarOpened) => {console.log(calendarOpened)}}
           selected={state.targetDay}
           renderItem={(item) => (
-            <Cell item={item} key={item.id} onEdit={onEditStart} onComplete={setInitState} />
+            <Cell
+              item={item}
+              key={item.id}
+              onEdit={onEditStart}
+              onComplete={setInitState}
+            />
           )}
           renderEmptyDate={() => null}
           rowHasChanged={(r1, r2) => r1.data.areEqual(r2.data)}

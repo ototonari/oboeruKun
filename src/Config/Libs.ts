@@ -7,6 +7,7 @@ import { initDB } from "../../database";
 import { localStorage } from "../IO/LocalStorage";
 import { gettingDeviceType } from "./DeviceType";
 import * as Notifications from "expo-notifications";
+import { localization } from "../Component/Calendar/Action";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -30,6 +31,7 @@ export const initialization = async () => {
     await localStorage.SetAppVersion(version);
     await initDB();
   }
+  localization();
 };
 
 export const hasShownTutorials = async () => {
