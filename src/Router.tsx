@@ -4,21 +4,21 @@ import {
   Image,
   View,
   ImageSourcePropType,
-  TouchableOpacity,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Developers from "./Component/Config/Credit";
-import { NoticeSetting, RegisterSetting } from "../config/noticeSetting";
+import { RegisterSetting } from "../config/noticeSetting";
 import { Tutorial } from "./Component/Tutorial/Tutorial";
 import ConfigView from "./Component/Config/Config";
-import TitleList from "./Component/Config/TitleList";
+import {TitleHistory} from "./Component/Config/TitleList";
 import { ScreenKey, TabKey } from "./Config/Const";
 import { Icons } from "./Config/Assets";
 import { locale } from "./Config/Locale";
 import { Calendar } from "./Component/Calendar/Calendar";
 import { RemindMe } from "./Component/RemindMe/RemindMe";
+import {NoticeSetting} from "./Component/Config/NoticeSetting";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -103,18 +103,6 @@ function HomeContainer() {
   );
 }
 
-// eslint-disable-next-line react/display-name
-const RightButton = (callBack: () => void) => () =>
-  (
-    <TouchableOpacity onPress={callBack}>
-      <Image
-        source={Icons.button.plus}
-        style={{ width: 20, height: 20 }}
-        resizeMode={"contain"}
-      />
-    </TouchableOpacity>
-  );
-
 function AppRouter() {
   return (
     <NavigationContainer>
@@ -131,18 +119,13 @@ function AppRouter() {
         />
         <Stack.Screen
           name={ScreenKey.TitleSetting}
-          component={TitleList}
+          component={TitleHistory}
           options={{ title: scene.titleList }}
         />
         <Stack.Screen
           name={ScreenKey.NoticeSetting}
           component={NoticeSetting}
-          options={({ navigation }) => ({
-            title: scene.noticeSetting,
-            headerRight: RightButton(() =>
-              navigation.navigate(ScreenKey.RegisterSetting)
-            ),
-          })}
+          options={{ title: scene.noticeSetting }}
         />
         <Stack.Screen
           name={ScreenKey.RegisterSetting}

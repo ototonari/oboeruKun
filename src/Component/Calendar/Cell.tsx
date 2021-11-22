@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import {
   Text,
   View,
@@ -7,11 +7,11 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { ItemProps } from "./Action";
-import { locale } from "../../Config/Locale";
-import { Icon, Pressable } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
-import { UseCase } from "../../UseCase";
+import {ItemProps} from "./Action";
+import {locale} from "../../Config/Locale";
+import {Icon, Pressable} from "native-base";
+import {AntDesign} from "@expo/vector-icons";
+import {UseCase} from "../../UseCase";
 
 interface CellPropsI {
   item: ItemProps;
@@ -40,11 +40,11 @@ function closeAnimaiton(value: Animated.Value) {
 }
 
 function Cell(props: CellPropsI) {
-  const { data } = locale;
-  const { item, onEdit, onComplete } = props;
-  const { data: remind } = item;
+  const {data} = locale;
+  const {item, onEdit, onComplete} = props;
+  const {data: remind} = item;
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const animatedStyle = { transform: [{ translateX: animatedValue }] };
+  const animatedStyle = {transform: [{translateX: animatedValue}]};
   const [isExpand, setExpand] = useState(false);
 
   const _onComplete = async () => {
@@ -71,13 +71,13 @@ function Cell(props: CellPropsI) {
     <Animated.View
       style={[
         styles.cellPosition,
-        { flexDirection: "row", alignItems: "center" },
+        {flexDirection: "row", alignItems: "center"},
         animatedStyle,
       ]}
     >
       <TouchableOpacity onPress={onTapItem}>
-        <View style={[styles.item, { width: SCREEN_WIDTH }]}>
-          <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+        <View style={[styles.item, {width: SCREEN_WIDTH}]}>
+          <Text style={{fontSize: 15, fontWeight: "bold"}}>
             {remind.title}
           </Text>
           {remind.isUseRange() ? (
@@ -93,7 +93,7 @@ function Cell(props: CellPropsI) {
         </View>
       </TouchableOpacity>
       <View style={styles.actionsContainer}>
-        <Pressable mr="25" onPress={_onEdit}>
+        <Pressable style={{marginRight: 25}} onPress={_onEdit}>
           <Icon
             as={AntDesign}
             name="edit"

@@ -1,106 +1,93 @@
-import React, { Component } from "react";
+import React, {useEffect, useState} from "react";
 import {
   Text,
   View,
-  TouchableOpacity,
-  Image,
-  FlatList,
   StyleSheet,
 } from "react-native";
-// @ts-ignore
-import Swipeable from "react-native-swipeable";
-import { getAllTitle, deleteList } from "../../../database";
-import {Icons} from "../../Config/Assets";
+import {SwipeListView} from 'react-native-swipe-list-view';
+import {deleteList} from "../../../database";
 import {locale} from "../../Config/Locale";
-import {RootStackParamList} from "../../Router";
-import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {getAllTitleListAsync, TitleListType} from "../../IO/SQLite";
+import {Icon, Pressable} from "native-base";
+import {AntDesign} from "@expo/vector-icons";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'TitleSetting'>;
-
-export default class TitleList extends Component {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      items: [],
-    };
-  }
-
-  componentDidMount() {
-    const setItems = async () => {
-      let items = [];
-      items = await getAllTitle();
-      if (items.length == 0) {
-        items = [
-          {
-            title: locale.titleList.emptyText,
-            id: 0,
-          },
-        ];
-      }
-      this.setState({ items });
-      console.log(items);
-    };
-    setItems();
-  }
-
-  _renderItems = (item: any) => {
-    const deleteItem = (id) => {
-      for (let i = 0, j = this.state.items.length; i < j; i++) {
-        const tmpItem = this.state.items[i];
-        if (tmpItem.id == id) {
-          console.log("hit : ", tmpItem);
-          deleteList(id).then(() => {
-            let newItems = this.state.items;
-            if (newItems.length > 1) {
-              const spliceIndex = i;
-              newItems.splice(spliceIndex, 1);
-            } else {
-              newItems = [
-                {
-                  title: locale.titleList.emptyText,
-                  id: 0,
-                },
-              ];
-            }
-            this.setState({ items: newItems });
-          });
-          break;
-        }
-      }
-    };
-    const rightButtons = [
-      // eslint-disable-next-line react/jsx-key
-      <TouchableOpacity
-        style={styles.swipeButton}
-        onPress={() => deleteItem(item.id)}
-      >
-        <Image source={Icons.button.error} style={styles.image} />
-      </TouchableOpacity>,
-    ];
-
-    return (
-      <Swipeable rightButtons={rightButtons} rightButtonWidth={70}>
-        <View style={styles.container}>
-          <Text style={{ fontSize: 18 }}>{item.title}</Text>
-        </View>
-      </Swipeable>
-    );
-  };
-
-  render() {
-    return (
-      <View style={styles.background}>
-        <FlatList
-          // @ts-ignore
-          data={this.state.items}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => this._renderItems(item)}
-          bounces={false}
-        />
-      </View>
-    );
-  }
+type InitState = {
+  type: 'Init',
+  items: TitleListType[]
 }
+
+type ReadyState = {
+  type: 'Ready',
+  items: TitleListType[]
+}
+
+type ViewState = InitState | ReadyState;
+
+const initState: InitState = {type: 'Init', items: []};
+
+const emptyList: TitleListType[] = [{
+  title: locale.titleList.emptyText,
+  id: -1,
+}]
+
+export const TitleHistory = () => {
+  const [state, setState] = useState<ViewState>(initState);
+
+  const deleteTitle = (id: number) => {
+    if (id === -1) return;
+    deleteList(id).then(() => {
+      setState(initState);
+    })
+  }
+
+  useEffect(() => {
+    if (state.type === 'Init') {
+      // title load
+      getAllTitleListAsync()
+      .then((items) => {
+        if (items.length === 0) {
+          setState({
+            type: 'Ready',
+            items: emptyList
+          })
+        } else {
+          setState({
+            type: 'Ready',
+            items: items
+          })
+        }
+      })
+    }
+  })
+
+  return (
+    <View style={styles.background}>
+      <SwipeListView
+        data={state.items}
+        keyExtractor={item => String(item.id)}
+        renderItem={(data) => (
+          <View style={styles.container} key={String(data.item.id)}>
+            <Text>{data.item.title}</Text>
+          </View>
+        )}
+        renderHiddenItem={(data) => (
+          <View style={styles.rowBack} key={String(data.item.id)}>
+            <Pressable onPress={() => deleteTitle(data.item.id)}>
+              <Icon
+                as={AntDesign}
+                name="closecircle"
+                size="6"
+                color="danger.500"
+              />
+            </Pressable>
+
+          </View>
+        )}
+        rightOpenValue={-60}
+      />
+    </View>
+  )
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -125,14 +112,29 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
   },
-  swipeButton: {
-    backgroundColor: "white",
-    marginTop: 5,
-    flex: 1,
-    paddingTop: 7,
-    paddingBottom: 7,
-    paddingLeft: 20,
-    alignContent: "center",
-    justifyContent: "center",
+  rowFront: {
+    alignItems: 'center',
+    backgroundColor: '#CCC',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    height: 50,
   },
+  rowBack: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 5,
+    marginLeft: 10,
+    paddingLeft: 20,
+    paddingTop: 7,
+    paddingRight: 20,
+    paddingBottom: 7,
+    backgroundColor: "white",
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+
+  },
+
 });

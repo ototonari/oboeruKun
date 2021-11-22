@@ -65,6 +65,12 @@ export const updateTitleAsync = async (
   ]);
 };
 
+export type TitleListType = {id: number, title: string};
+
+export const getAllTitleListAsync = async (): Promise<TitleListType[]> => {
+  return await exWithReadTx<TitleListType[]>("SELECT id, title FROM titleList", []);
+}
+
 export interface INoticeInterval {
   id: number;
   name: string;
