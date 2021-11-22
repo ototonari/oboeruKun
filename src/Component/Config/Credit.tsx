@@ -8,7 +8,23 @@ import {Icons} from "../../Config/Assets";
 //      |- contacts []
 //            |-- iconPath
 //            --- hyperLink
-const developer = {
+
+type Contact = {
+  icon: any,
+  type: string,
+  link: {
+    [key: string]: string | string[]
+  } | string
+}
+
+type DevType = {
+  [key: string]: {
+    name: string,
+    contacts: Contact[]
+  }[]
+}
+
+const developer: DevType = {
   Programer: [
     {
       name: "Tsubasa Nagata",
@@ -62,8 +78,6 @@ const developer = {
   ],
 };
 
-type DevType = typeof developer;
-
 function _renderDevContents (obj: DevType) {
   let contentList: React.ReactElement[] = [];
   if (obj !== null) {
@@ -73,10 +87,10 @@ function _renderDevContents (obj: DevType) {
       obj[key].forEach((v, i) => {
         const person = obj[key][i];
         //console.log('person :', person)
-        const renderContents = (contents) => {
+        const renderContents = (contents: Contact[]) => {
           let contactList: React.ReactElement[] = [];
           contents.forEach(function (v, i) {
-            let func;
+            let func: (url: any) => void;
             const type = contents[i].type;
             if (type == "link") {
               func = (url) =>
