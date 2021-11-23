@@ -14,5 +14,6 @@ export enum ScreenKey {
 
 export enum TabKey {
   Calendar = "Calender",
-  ConfigTab = "ConfigTab"
+  ConfigTab = "ConfigTab",
+  RemindMe= "RemindMe"
 }
