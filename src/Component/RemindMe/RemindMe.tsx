@@ -15,7 +15,7 @@ import {
   Actionsheet,
 } from "native-base";
 import { locale } from "../../Config/Locale";
-import { StyleSheet, View, Switch } from "react-native";
+import {StyleSheet, View, Switch, Alert} from "react-native";
 import { Remind, RepeatSetting } from "./lib";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Router";
@@ -246,8 +246,15 @@ export const RemindMe = ({ navigation }: Props) => {
                   canUseMemo,
                   canUseRepeat
                 );
-                resetToHome(navigation);
-                navigation.navigate(TabKey.Calendar);
+                Alert.alert(register.done, "", [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      resetToHome(navigation);
+                      navigation.navigate(TabKey.Calendar);
+                    },
+                  },
+                ]);
               }}
               mt="2"
               w="75%"
