@@ -13,12 +13,14 @@ interface IUseCase {
   ) => Promise<void>;
   updateRemind: (masterId: number, after: Remind, before: Remind) => Promise<void>;
   completeNotice: (masterId: number, noticeDate: string) => Promise<void>;
+  debug: () => Promise<void>;
 }
 
 export const UseCase: IUseCase = {
   registerRemind,
   updateRemind,
-  completeNotice
+  completeNotice,
+  debug
 }
 
 async function registerRemind(
@@ -51,4 +53,8 @@ async function updateRemind(
 
 async function completeNotice(masterId: number, noticeDate: string) {
   await NoticeService.completeNotice(masterId, noticeDate);
+}
+
+async function debug() {
+
 }
