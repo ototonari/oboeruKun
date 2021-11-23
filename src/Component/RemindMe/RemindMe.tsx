@@ -32,42 +32,43 @@ type InitState = {
   type: "Init";
 };
 
-type OptionProps = {
-  titleHistory: string[];
-  repeatSetting: RepeatSetting;
-};
+const initState: InitState = {type: 'Init'};
 
 type LoadedState = {
   type: "Loaded";
-} & OptionProps;
+}
+
+type TitleHistoryState = {
+  titleHistory: string[];
+} & LoadedState | InitState;
+
+type RepeatState = {
+  repeatSetting: RepeatSetting;
+} & LoadedState | InitState;
 
 type ModalState = {
-  type: "Modal";
-  screen: "TitleSelect" | "NoticeSelect";
-} & OptionProps;
-
-type ViewState = InitState | LoadedState | ModalState;
+  type: "Default" | "TitleSelect" | "NoticeSelect"
+}
 
 export const RemindMe = ({ navigation }: Props) => {
   const { register } = locale;
   const [remind, setRemind] = useState(
     new Remind({ title: "", memo: "", range: { start: 1, end: 1 } })
   );
-  const [viewState, setViewState] = useState<ViewState>({ type: "Init" });
+  const [titleHistory, setHistory] = useState<TitleHistoryState>(initState);
+  const [repeat, setRepeat] = useState<RepeatState>(initState);
+  const [modal, setModal] = useState<ModalState>({type: "Default"});
+
   useEffect(() => {
-    if (viewState.type === "Init") {
-      Promise.all([getTitlesAsync(), getNoticeIntervals()]).then(
-        ([titles, noticeIntervals]) => {
-          const repeatSetting = new RepeatSetting({
-            ownSettings: noticeIntervals,
-          });
-          setViewState({
-            type: "Loaded",
-            titleHistory: titles,
-            repeatSetting: repeatSetting,
-          });
-        }
-      );
+    if (titleHistory.type === "Init") {
+      getTitlesAsync().then((titleHistory) => setHistory({type: "Loaded", titleHistory}));
+    }
+
+    if (repeat.type === "Init") {
+      getNoticeIntervals().then((noticeIntervals) => setRepeat({
+        type: "Loaded",
+        repeatSetting: new RepeatSetting({ownSettings: noticeIntervals})
+      }))
     }
   });
 
@@ -75,22 +76,17 @@ export const RemindMe = ({ navigation }: Props) => {
   const [canUseMemo, setUseMemo] = useState(true);
   const [canUseRepeat, setUseRepeat] = useState(true);
 
-  if (viewState.type === "Init") {
+  if (titleHistory.type === "Init" || repeat.type === "Init") {
     return <Loading />;
   }
 
-  const { repeatSetting, titleHistory } = viewState;
-
   const handleTitleSelect = (selected: string) => () => {
     setRemind(remind.setTitle(selected));
-    setViewState({
-      ...viewState,
-      type: "Loaded",
-    });
+    setModal({type: "Default"});
   };
 
   return (
-    <Box flex="1">
+    <View style={styles.topContainer}>
       <ScrollView>
         <Center>
           <Box safeArea p="1" w="90%" py="1">
@@ -108,13 +104,7 @@ export const RemindMe = ({ navigation }: Props) => {
                       style={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
                       w="15%"
                       h="100%"
-                      onPress={() =>
-                        setViewState({
-                          ...viewState,
-                          type: "Modal",
-                          screen: "TitleSelect",
-                        })
-                      }
+                      onPress={() => setModal({type: "TitleSelect"})}
                     >
                       <ChevronDownIcon size="5" />
                     </Button>
@@ -127,18 +117,12 @@ export const RemindMe = ({ navigation }: Props) => {
                 </View>
 
                 <TitleSelector
-                  titles={titleHistory}
+                  titles={titleHistory.titleHistory}
                   isOpen={
-                    viewState.type === "Modal" &&
-                    viewState.screen === "TitleSelect"
+                    modal.type === "TitleSelect"
                   }
                   onPress={handleTitleSelect}
-                  onClose={() =>
-                    setViewState({
-                      ...viewState,
-                      type: "Loaded",
-                    })
-                  }
+                  onClose={() => setModal({type: "Default"})}
                 />
               </FormControl>
               <FormControl mt="3">
@@ -227,13 +211,12 @@ export const RemindMe = ({ navigation }: Props) => {
                 </View>
                 {canUseRepeat ? (
                   <NoticeSelecter
-                    repeatSetting={repeatSetting}
+                    repeatSetting={repeat.repeatSetting}
                     onPress={(id) => {
-                      setViewState({
-                        ...viewState,
-                        repeatSetting:
-                          viewState.repeatSetting.setCurrentSetting(Number(id)),
-                      });
+                      setRepeat({
+                        type: "Loaded",
+                        repeatSetting: repeat.repeatSetting.setCurrentSetting(Number(id))
+                      })
                     }}
                   />
                 ) : null}
@@ -258,7 +241,7 @@ export const RemindMe = ({ navigation }: Props) => {
               onPress={async () => {
                 await UseCase.registerRemind(
                   remind,
-                  repeatSetting,
+                  repeat.repeatSetting,
                   canUseRange,
                   canUseMemo,
                   canUseRepeat
@@ -274,7 +257,7 @@ export const RemindMe = ({ navigation }: Props) => {
           </Button.Group>
         </Box>
       </Center>
-    </Box>
+    </View>
   );
 };
 
@@ -338,6 +321,7 @@ function NoticeSelecter({
 }
 
 const styles = StyleSheet.create({
+  topContainer: {flex: 1},
   rangeView: {
     flexDirection: "row",
     alignItems: "center",
